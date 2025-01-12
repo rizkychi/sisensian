@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Dash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class LaporanController extends Controller
+class OfficeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dash.laporan.index');
+        return view('dash.office.index');
     }
 
     /**

@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Dash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class KaryawanController extends Controller
+class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dash.karyawan.index');
+        return view('dash.report.index');
     }
 
     /**

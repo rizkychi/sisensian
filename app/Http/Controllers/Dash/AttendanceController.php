@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Dash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class KantorController extends Controller
+class AttendanceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dash.kantor.index');
+        return view('dash.attendance.index');
     }
 
     /**

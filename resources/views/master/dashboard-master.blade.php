@@ -253,27 +253,27 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('karyawan') }}">
+                                <a class="nav-link menu-link" href="{{ route('employee') }}">
                                     <i class="ri-honour-line"></i> <span data-key="t-widgets">Karyawan</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('cuti') }}">
+                                <a class="nav-link menu-link" href="{{ route('leave') }}">
                                     <i class="ri-honour-line"></i> <span data-key="t-widgets">Cuti</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('presensi') }}">
+                                <a class="nav-link menu-link" href="{{ route('attendance') }}">
                                     <i class="ri-honour-line"></i> <span data-key="t-widgets">Presensi</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('laporan') }}">
+                                <a class="nav-link menu-link" href="{{ route('report') }}">
                                     <i class="ri-honour-line"></i> <span data-key="t-widgets">Laporan</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('kantor') }}">
+                                <a class="nav-link menu-link" href="{{ route('office') }}">
                                     <i class="ri-honour-line"></i> <span data-key="t-widgets">Setting</span>
                                 </a>
                             </li>

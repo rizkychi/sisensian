@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Dash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PresensiController extends Controller
+class LeaveController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dash.presensi.index');
+        return view('dash.leave.index');
     }
 
     /**
