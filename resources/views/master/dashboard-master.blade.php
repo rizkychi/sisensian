@@ -40,6 +40,7 @@
     </head>
 
     <body>
+        @include('sweetalert::alert')
 
         <!-- Begin page -->
         <div id="layout-wrapper">
@@ -180,7 +181,7 @@
                                     <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="pages-profile-settings.html"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
-                                    <a class="dropdown-item" href="auth-logout-basic.html"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
                                 </div>
                             </div>
                         </div>
@@ -327,11 +328,13 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6">
-                                <script>document.write(new Date().getFullYear())</script> © SiSensian
+                                <script>document.write(new Date().getFullYear())</script> © {{ env('APP_NAME') }}
                             </div>
                             <div class="col-sm-6">
                                 <div class="text-sm-end d-none d-sm-block">
-                                    Develop by <a href="https://www.masrizky.com/" target="_blank" class="text-reset">MasRizky</a>
+                                    @if (env('SHOW_APP_DEVELOPER'))
+                                        Develop by <a href="https://www.masrizky.com/" target="_blank" class="text-reset">MasRizky</a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
