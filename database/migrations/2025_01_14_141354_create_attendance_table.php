@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('employee_id')->unsigned();
             $table->bigInteger('office_id')->unsigned()->nullable();
+            $table->bigInteger('schedule_id')->unsigned()->nullable();
             $table->date('date');
             $table->time('time_in');
             $table->time('time_out');
@@ -27,12 +28,13 @@ return new class extends Migration
             $table->string('check_out_long');
             $table->string('check_out_address')->nullable();
             $table->string('note')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->boolean('is_on_leave')->default(false);
             $table->timestamps();
 
             $table->foreign('employee_id')->references('id')->on('employee')->onDelete('cascade');
             $table->foreign('office_id')->references('id')->on('office')->onDelete('set null');
+            $table->foreign('schedule_id')->references('id')->on('schedule')->onDelete('set null');
         });
     }
 

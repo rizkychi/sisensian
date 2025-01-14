@@ -274,7 +274,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('office') }}">
+                                <a class="nav-link menu-link" href="{{ route('office.index') }}">
                                     <i class="ri-honour-line"></i> <span data-key="t-widgets">Setting</span>
                                 </a>
                             </li>
