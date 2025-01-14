@@ -37,47 +37,6 @@
 
 @push('scripts')
     <script>
-        $(function() {
-            var table = $('#dtx').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('office.json') }}",
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        searchable: false
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'address',
-                        name: 'address'
-                    },
-                    {
-                        data: 'lat',
-                        name: 'lat',
-                        orderable: false,
-                        render: function(data, type, row) {
-                            link = 'https://www.google.com/maps/search/?api=1&query=' + row.lat + ',' + row.long;
-                            el = '<a href="' + link + '" target="_blank" class="btn btn-info btn-icon btn-sm waves-effect waves-light me-2"><i class="bx bxs-map fs-6"></i></a>'
-                            el += row.lat + ', ' + row.long;
-                            return el
-                        }
-                    },
-                    {
-                        data: 'radius',
-                        name: 'radius'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    }
-                ],
-            });
-        });
+            
     </script>
 @endpush

@@ -9,13 +9,13 @@
         <meta content="Sistem Informasi Presensi Karyawan" name="description" />
         <meta content="Rizkychi" name="author" />
         <!-- App favicon -->
-        <link rel="shortcut icon" href="assets/images/favicon.ico">
+        <link rel="shortcut icon" href="{{asset('/assets/images/favicon.ico')}}">
 
         <!-- jsvectormap css -->
-        <link href="assets/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{asset('/assets/libs/jsvectormap/jsvectormap.min.css')}}" rel="stylesheet" type="text/css" />
 
         <!-- gridjs css -->
-        <link rel="stylesheet" href="assets/libs/gridjs/theme/mermaid.min.css">
+        <link rel="stylesheet" href="{{asset('/assets/libs/gridjs/theme/mermaid.min.css')}}">
 
         <!--datatable css-->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -25,15 +25,15 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
         <!-- Layout config Js -->
-        <script src="assets/js/layout.js"></script>
+        <script src="{{asset('/assets/js/layout.js')}}"></script>
         <!-- Bootstrap Css -->
-        <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{asset('/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
-        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{asset('/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- App Css-->
-        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{asset('/assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- custom Css-->
-        <link href="assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{asset('/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
 
         {{-- additional Css --}}
         @stack('styles')
@@ -53,19 +53,19 @@
                             <div class="navbar-brand-box horizontal-logo">
                                 <a href="index.html" class="logo logo-dark">
                                     <span class="logo-sm">
-                                        <img src="assets/images/logo-sm.png" alt="" height="22">
+                                        <img src="{{asset('/assets/images/logo-sm.png')}}" alt="" height="22">
                                     </span>
                                     <span class="logo-lg">
-                                        <img src="assets/images/logo-dark.png" alt="" height="17">
+                                        <img src="{{asset('/assets/images/logo-dark.png')}}" alt="" height="17">
                                     </span>
                                 </a>
 
                                 <a href="index.html" class="logo logo-light">
                                     <span class="logo-sm">
-                                        <img src="assets/images/logo-sm.png" alt="" height="22">
+                                        <img src="{{asset('/assets/images/logo-sm.png')}}" alt="" height="22">
                                     </span>
                                     <span class="logo-lg">
-                                        <img src="assets/images/logo-light.png" alt="" height="17">
+                                        <img src="{{asset('/assets/images/logo-light.png')}}" alt="" height="17">
                                     </span>
                                 </a>
                             </div>
@@ -137,7 +137,7 @@
                                                 {{-- Notification --}}
                                                 <div class="text-reset notification-item d-block dropdown-item position-relative">
                                                     <div class="d-flex">
-                                                        <img src="assets/images/users/avatar-2.jpg" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
+                                                        <img src="{{asset('/assets/images/users/avatar-2.jpg')}}" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
                                                         <div class="flex-grow-1">
                                                             <a href="#!" class="stretched-link">
                                                                 <h6 class="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
@@ -168,7 +168,7 @@
                             <div class="dropdown ms-sm-3 header-item topbar-user">
                                 <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="d-flex align-items-center">
-                                        <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg" alt="Header Avatar">
+                                        <img class="rounded-circle header-profile-user" src="{{asset('/assets/images/users/avatar-1.jpg')}}" alt="Header Avatar">
                                         <span class="text-start ms-xl-2">
                                             <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Anna Adame</span>
                                             <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Founder</span>
@@ -221,19 +221,19 @@
                     <!-- Dark Logo-->
                     <a href="index.html" class="logo logo-dark">
                         <span class="logo-sm">
-                            <img src="assets/images/logo-sm.png" alt="" height="22">
+                            <img src="{{asset('/assets/images/logo-sm.png')}}" alt="" height="22">
                         </span>
                         <span class="logo-lg">
-                            <img src="assets/images/logo-dark.png" alt="" height="17">
+                            <img src="{{asset('/assets/images/logo-dark.png')}}" alt="" height="17">
                         </span>
                     </a>
                     <!-- Light Logo-->
                     <a href="index.html" class="logo logo-light">
                         <span class="logo-sm">
-                            <img src="assets/images/logo-sm.png" alt="" height="22">
+                            <img src="{{asset('/assets/images/logo-sm.png')}}" alt="" height="22">
                         </span>
                         <span class="logo-lg">
-                            <img src="assets/images/logo-light.png" alt="" height="17">
+                            <img src="{{asset('/assets/images/logo-light.png')}}" alt="" height="17">
                         </span>
                     </a>
                     <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
@@ -364,24 +364,24 @@
         </div>
 
         <!-- JAVASCRIPT -->
-        <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/libs/simplebar/simplebar.min.js"></script>
-        <script src="assets/libs/node-waves/waves.min.js"></script>
-        <script src="assets/libs/feather-icons/feather.min.js"></script>
-        <script src="assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
-        <script src="assets/js/plugins.js"></script>
+        <script src="{{asset('/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{asset('/assets/libs/simplebar/simplebar.min.js')}}"></script>
+        <script src="{{asset('/assets/libs/node-waves/waves.min.js')}}"></script>
+        <script src="{{asset('/assets/libs/feather-icons/feather.min.js')}}"></script>
+        <script src="{{asset('/assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
+        <script src="{{asset('/assets/js/plugins.js')}}"></script>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
         <!-- apexcharts -->
-        <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+        <script src="{{asset('/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
 
         <!-- Vector map-->
-        <script src="assets/libs/jsvectormap/jsvectormap.min.js"></script>
-        <script src="assets/libs/jsvectormap/maps/world-merc.js"></script>
+        <script src="{{asset('/assets/libs/jsvectormap/jsvectormap.min.js')}}"></script>
+        <script src="{{asset('/assets/libs/jsvectormap/maps/world-merc.js')}}"></script>
 
         <!-- gridjs js -->
-        <script src="assets/libs/gridjs/gridjs.umd.js"></script>
+        <script src="{{asset('/assets/libs/gridjs/gridjs.umd.js')}}"></script>
 
         <!-- Dashboard init -->
         {{-- <script src="assets/js/pages/dashboard-job.init.js"></script> --}}
@@ -398,7 +398,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
         <!-- App js -->
-        <script src="assets/js/app.js"></script>
+        <script src="{{asset('/assets/js/app.js')}}"></script>
 
         {{-- Custom Scripts --}}
         @stack('scripts')

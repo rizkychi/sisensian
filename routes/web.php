@@ -13,7 +13,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('office')->group(function () {
         Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('office.json');
     });
-    Route::resource('office', App\Http\Controllers\Dash\OfficeController::class)->except(['destroy']);
+    Route::resource('office', App\Http\Controllers\Dash\OfficeController::class);
 });
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');
