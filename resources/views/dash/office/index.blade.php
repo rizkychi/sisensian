@@ -1,5 +1,5 @@
 @extends('master.dashboard-master')
-@section('title', 'Kantor')
+@section('title', $title)
 
 @section('content')
     <div class="row">
@@ -23,6 +23,7 @@
                                         <th scope="col">Alamat</th>
                                         <th scope="col">Koordinat</th>
                                         <th scope="col">Radius (m)</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col" style="width: 0px;">Aksi</th>
                                     </tr>
                                 </thead>
@@ -69,6 +70,17 @@
                     {
                         data: 'radius',
                         name: 'radius'
+                    },
+                    {
+                        data: 'is_active',
+                        name: 'is_active',
+                        render: function(data, type, row) {
+                            if (data == 1) {
+                                return '<span class="badge badge-border bg-success-subtle text-success">Aktif</span>';
+                            } else {
+                                return '<span class="badge badge-border bg-danger-subtle text-danger">Tidak Aktif</span>';
+                            }
+                        }
                     },
                     {
                         data: 'action',

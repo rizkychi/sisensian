@@ -37,6 +37,11 @@
 
         {{-- additional Css --}}
         @stack('styles')
+        <style>
+            #back-to-top {
+                bottom: 50px;
+            }
+        </style>
     </head>
 
     <body>

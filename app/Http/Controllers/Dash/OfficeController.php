@@ -10,6 +10,14 @@ use Yajra\DataTables\Facades\DataTables;
 class OfficeController extends Controller
 {
     /**
+     * Display title
+     */
+    function __construct()
+    {
+        return view()->share('title', 'Kantor');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -23,7 +31,9 @@ class OfficeController extends Controller
      */
     public function create()
     {
-        return view('dash.office.form');
+        $route_name = route('office.store');
+        $route_label = 'Tambah';
+        return view('dash.office.form', compact('route_name', 'route_label'));
     }
 
     /**
@@ -33,11 +43,11 @@ class OfficeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'address' => 'string|max:255',
-            'description' => 'string|max:255',
+            'address' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:255',
             'lat' => 'required|string|max:255',
             'long' => 'required|string|max:255',
-            'radius' => 'required|string|max:255',
+            'radius' => 'required|int|min:1',
         ]);
 
         $office = new Office();
@@ -47,6 +57,7 @@ class OfficeController extends Controller
         $office->lat = $request->lat;
         $office->long = $request->long;
         $office->radius = $request->radius;
+        $office->is_active = $request->is_active == 'on' ? 1 : 0;
 
         if ($office->save()) {
             return redirect()->route('office.index')->with('success', 'Data berhasil disimpan.');
@@ -68,8 +79,10 @@ class OfficeController extends Controller
      */
     public function edit(string $id)
     {
+        $route_name = route('office.update', ['office' => $id]);
+        $route_label = 'Ubah';
         $data = Office::findOrFail($id);
-        return view('dash.office.form', compact('data'));
+        return view('dash.office.form', compact('data', 'route_name', 'route_label'));
     }
 
     /**
@@ -79,11 +92,11 @@ class OfficeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'address' => 'string|max:255',
-            'description' => 'string|max:255',
+            'address' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:255',
             'lat' => 'required|string|max:255',
             'long' => 'required|string|max:255',
-            'radius' => 'required|string|max:255',
+            'radius' => 'required|int|min:1',
         ]);
 
         $office = Office::findOrFail($id);
@@ -93,6 +106,7 @@ class OfficeController extends Controller
         $office->lat = $request->lat;
         $office->long = $request->long;
         $office->radius = $request->radius;
+        $office->is_active = $request->is_active == 'on' ? 1 : 0;
 
         if ($office->save()) {
             return redirect()->route('office.index')->with('success', 'Data berhasil diupdate.');
