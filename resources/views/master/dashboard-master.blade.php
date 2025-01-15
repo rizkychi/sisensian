@@ -41,6 +41,9 @@
             #back-to-top {
                 bottom: 50px;
             }
+            .navbar-menu .navbar-nav .nav-sm .nav-link::before {
+                content: none;
+            }
         </style>
     </head>
 
@@ -251,39 +254,10 @@
 
                         <div id="two-column-menu">
                         </div>
-                        <ul class="navbar-nav" id="navbar-nav">
-                            <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link active" href="{{ route('home') }}">
-                                    <i class="ri-honour-line"></i> <span data-key="t-widgets">Home</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('employee') }}">
-                                    <i class="ri-honour-line"></i> <span data-key="t-widgets">Karyawan</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('leave') }}">
-                                    <i class="ri-honour-line"></i> <span data-key="t-widgets">Cuti</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('attendance') }}">
-                                    <i class="ri-honour-line"></i> <span data-key="t-widgets">Presensi</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('report') }}">
-                                    <i class="ri-honour-line"></i> <span data-key="t-widgets">Laporan</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ route('office.index') }}">
-                                    <i class="ri-honour-line"></i> <span data-key="t-widgets">Setting</span>
-                                </a>
-                            </li>
-                        </ul>
+                        
+                        <!-- Menu Sidebar -->
+                        <x-menu view='menu-sidebar'/>
+                        
                     </div>
                     <!-- Sidebar -->
                 </div>
@@ -303,21 +277,7 @@
                     <div class="container-fluid">
 
                         <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
-                                    <h4 class="mb-sm-0">@yield('title')</h4>
-
-                                    <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
-                                            <li class="breadcrumb-item active">@yield('title')</li>
-                                        </ol>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+                        <x-menu view='menu-breadcrumb'/>
                         <!-- end page title -->
 
                         {{-- content --}}

@@ -3,11 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/', [App\Http\Controllers\Dash\HomeController::class, 'index'])->name('home');
-    Route::get('/employee', [App\Http\Controllers\Dash\EmployeeController::class, 'index'])->name('employee');
-    Route::get('/leave', [App\Http\Controllers\Dash\LeaveController::class, 'index'])->name('leave');
-    Route::get('/attendance', [App\Http\Controllers\Dash\AttendanceController::class, 'index'])->name('attendance');
-    Route::get('/report', [App\Http\Controllers\Dash\ReportController::class, 'index'])->name('report');
+    Route::get('/', [App\Http\Controllers\Dash\DashboardController::class, 'index'])->name('dashboard.index');
     
     // Office
     Route::prefix('office')->group(function () {
@@ -20,6 +16,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('json', [App\Http\Controllers\Dash\ShiftController::class, 'json'])->name('shift.json');
     });
     Route::resource('shift', App\Http\Controllers\Dash\ShiftController::class);
+
+    // Employee
+    Route::prefix('employee')->group(function () {
+        // Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('employee.json');
+    });
+    Route::resource('employee', App\Http\Controllers\Dash\EmployeeController::class);
+
+    // Attendance
+    Route::prefix('attendance')->group(function () {
+        // Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('attendance.json');
+    });
+    Route::resource('attendance', App\Http\Controllers\Dash\AttendanceController::class);
+
+    // Report
+    Route::prefix('report')->group(function () {
+        Route::get('/', [App\Http\Controllers\Dash\ReportController::class, 'index'])->name('report.index');
+    });
 });
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');

@@ -1,5 +1,5 @@
 @extends('master.dashboard-master')
-@section('title', 'Home')
+@section('title', $title)
 @section('content')
     
 <div class="row">
