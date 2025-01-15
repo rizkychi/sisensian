@@ -79,7 +79,6 @@
                             <label class="form-check-label" for="customSwitchsizemd">Aktif?</label>
                         </div>
                         <div>
-
                             <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
                                 <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
                             </button>

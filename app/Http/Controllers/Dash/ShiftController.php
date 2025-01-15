@@ -41,7 +41,26 @@ class ShiftController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'time_in' => 'required',
+            'time_out' => 'required',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $shift = new Shift();
+        $shift->name = $request->name;
+        $shift->time_in = $request->time_in;
+        $shift->time_out = $request->time_out;
+        $shift->description = $request->description;
+        $shift->is_fixed = $request->is_fixed == 'on' ? 1 : 0;
+        $shift->is_night_shift = $request->is_night_shift == 'on' ? 1 : 0;
+
+        if ($shift->save()) {
+            return redirect()->route('shift.index')->with('success', 'Data berhasil disimpan.');
+        } else {
+            return back()->with('error', 'Data gagal disimpan.')->withInput();
+        }
     }
 
     /**
@@ -68,7 +87,26 @@ class ShiftController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'time_in' => 'required',
+            'time_out' => 'required',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $shift = Shift::findOrFail($id);
+        $shift->name = $request->name;
+        $shift->time_in = $request->time_in;
+        $shift->time_out = $request->time_out;
+        $shift->description = $request->description;
+        $shift->is_fixed = $request->is_fixed == 'on' ? 1 : 0;
+        $shift->is_night_shift = $request->is_night_shift == 'on' ? 1 : 0;
+
+        if ($shift->save()) {
+            return redirect()->route('shift.index')->with('success', 'Data berhasil diubah.');
+        } else {
+            return back()->with('error', 'Data gagal diubah.')->withInput();
+        }
     }
 
     /**

@@ -8,8 +8,7 @@
         }
         if (@$menu->submenus) {
             foreach ((array) $menu->submenus as $sub) {
-                $sub_prefix = explode('.', $menu->route)[0];
-                $sub_prefix = explode('.', $menu->route)[0];
+                $sub_prefix = explode('.', $sub->route)[0];
                 if (strpos(Route::currentRouteName(), $sub_prefix) !== false && $sub->route != null) {
                     $currentMenu = $sub;
                     $currentParent = $menu;

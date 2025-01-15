@@ -15,15 +15,15 @@
                 <div class="card-body">
                     <div class="live-preview">
                         <div class="table-responsive">
-                            <table id="dtx" class="table table-nowrap align-middle w-100">
+                            <table id="dtx" class="table align-middle w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" style="width: 0px;">No</th>
                                         <th scope="col">Nama</th>
-                                        <th scope="col">Waktu Berangkat</th>
+                                        <th scope="col">Waktu Masuk</th>
                                         <th scope="col">Waktu Pulang</th>
-                                        <th scope="col">Shift Malam</th>
                                         <th scope="col">Shift Tetap</th>
+                                        <th scope="col">Shift Malam</th>
                                         <th scope="col">Deskripsi</th>
                                         <th scope="col" style="width: 0px;">Aksi</th>
                                     </tr>
@@ -62,8 +62,8 @@
                         name: 'time_out',
                     },
                     {
-                        data: 'is_night_shift',
-                        name: 'is_night_shift',
+                        data: 'is_fixed',
+                        name: 'is_fixed',
                         render: function(data, type, row) {
                             if (data == 1) {
                                 return '<span class="badge badge-border bg-success-subtle text-success">Y</span>';
@@ -73,8 +73,8 @@
                         }
                     },
                     {
-                        data: 'is_fixed',
-                        name: 'is_fixed',
+                        data: 'is_night_shift',
+                        name: 'is_night_shift',
                         render: function(data, type, row) {
                             if (data == 1) {
                                 return '<span class="badge badge-border bg-success-subtle text-success">Y</span>';

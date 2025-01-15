@@ -16,70 +16,50 @@
 
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Nama Kantor</label>
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Nama Kantor" value="{{ old('name', @$data->name) }}" required>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Nama Shift</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="Nama Shift" value="{{ old('name', @$data->name) }}" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Deskripsi</label>
-                                    <input type="text" class="form-control" id="description" name="description"
-                                        placeholder="Deskripsi" value="{{ old('description', @$data->description) }}">
-                                </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="time_in" class="form-label">Waktu Masuk</label>
+                                <input type="text" class="form-control" id="time_in" name="time_in"
+                                    data-provider="timepickr"
+                                    data-time-inline="{{ old('time_in', @$data->time_in) ?? '00:00' }}"
+                                    data-time-hrs="true" required>
                             </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label for="address" class="form-label">Alamat Kantor</label>
-                                    <input type="text" class="form-control" id="address" name="address"
-                                        placeholder="Alamat Kantor" value="{{ old('address', @$data->address) }}">
-                                </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="time_out" class="form-label">Waktu Pulang</label>
+                                <input type="text" class="form-control" id="time_out" name="time_out"
+                                    data-provider="timepickr"
+                                    data-time-inline="{{ old('time_out', @$data->time_out) ?? '00:00' }}"
+                                    data-time-hrs="true" required>
                             </div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="radius" class="form-label">Radius Kantor (m)</label>
-                                            <input type="text" class="form-control" placeholder="Radius Kantor" name="radius"
-                                                id="radius" value="{{ old('radius', @$data->radius) ?? 100 }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="lat" class="form-label">Latitude</label>
-                                            <input type="text" class="form-control" id="lat" name="lat"
-                                                placeholder="Latitude" value="{{ old('lat', @$data->lat) }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="long" class="form-label">Longitude</label>
-                                            <input type="text" class="form-control" id="long" name="long"
-                                                placeholder="Longitude" value="{{ old('long', @$data->long) }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div id="map" style="height: 400px; position: relative;">
-                                            <button id="locate-btn" type="button" class="btn btn-primary btn-label waves-effect waves-light rounded-pill" style="position: absolute; top: 10px; right: 10px; z-index: 1000;">
-                                                <i class="bx bxs-map label-icon align-middle rounded-pill fs-16 me-2"></i> Get Current Location
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="description" class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Deskripsi">{{ old('description', @$data->description) }}</textarea>
                             </div>
                         </div>
                     </div><!-- end card-body -->
 
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <div class="form-check form-switch form-switch-md" dir="ltr">
-                            <input type="checkbox" class="form-check-input" id="customSwitchsizemd" name="is_active"
-                            {{ old('is_active', @$data->is_active) ?? !isset($data) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="customSwitchsizemd">Aktif?</label>
+                        <div class="hstack gap-5">
+                            <div class="form-check form-switch form-switch-md" dir="ltr">
+                                <input type="checkbox" class="form-check-input" id="customSwitchsizemd" name="is_fixed"
+                                    {{ old('is_fixed', @$data->is_fixed) ?? !isset($data) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="customSwitchsizemd">Shift Tetap/Reguler?</label>
+                            </div>
+                            <div class="form-check form-switch form-switch-md" dir="ltr">
+                                <input type="checkbox" class="form-check-input" id="switchshiftnight" name="is_night_shift"
+                                    {{ old('is_night_shift', @$data->is_night_shift) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="switchshiftnight">Shift Malam/Melewati Hari?</label>
+                            </div>
                         </div>
-                        <div>
 
+                        <div>
                             <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
                                 <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
                             </button>
@@ -93,93 +73,12 @@
 @endsection
 
 @push('styles')
-    <!-- leaflet plugin -->
-    <link href="{{ asset('assets/libs/leaflet/leaflet.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .flatpickr-calendar.inline {
+            top: 0;
+        }
+    </style>
 @endpush
 
 @push('scripts')
-    <!-- cleave.js -->
-    <script src="{{ asset('assets/libs/cleave.js/cleave.min.js') }}"></script>
-    <script>
-        document.querySelector("#radius") && (cleaveNumeral = new Cleave("#radius", {
-            numeral: !0,
-            numeralThousandsGroupStyle: "thousand"
-        }))
-    </script>
-    <!-- leaflet plugin -->
-    <script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
-    <script>
-        var defaultLat = {{ env('DEFAULT_LAT', -7.79985) }};
-        var defaultLng = {{ env('DEFAULT_LONG', 110.39115) }};
-
-        var map = L.map('map').setView([{{ old('lat', @$data->lat) ?? 'null' }} ?? defaultLat, {{ old('long', @$data->long) ?? 'null' }} ?? defaultLng], 17);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-        }).addTo(map);
-
-        var marker = L.marker([{{ old('lat', @$data->lat) ?? 'null' }} ?? defaultLat, {{ old('long', @$data->long) ?? 'null' }} ?? defaultLng], {
-            draggable: true
-        }).addTo(map);
-
-        var circle = L.circle([{{ old('lat', @$data->lat) ?? 'null' }} ?? defaultLat, {{ old('long', @$data->long) ?? 'null' }} ?? defaultLng], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: {{ old('radius', @$data->radius) ?? 100 }}
-        }).addTo(map);
-
-        marker.on('dragend', function (e) {
-            var latlng = marker.getLatLng();
-            document.getElementById('lat').value = latlng.lat;
-            document.getElementById('long').value = latlng.lng;
-            circle.setLatLng(latlng);
-        });
-
-        map.on('click', function (e) {
-            var latlng = e.latlng;
-            marker.setLatLng(latlng);
-            document.getElementById('lat').value = latlng.lat;
-            document.getElementById('long').value = latlng.lng;
-            circle.setLatLng(latlng);
-        });
-
-        document.getElementById('radius').addEventListener('input', function (e) {
-            var radius = e.target.value.replace(/,/g, '');
-            circle.setRadius(radius);
-        });
-
-        document.getElementById('locate-btn').addEventListener('click', function (e) {
-            e.stopPropagation();
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var latlng = [position.coords.latitude, position.coords.longitude];
-                    map.setView(latlng, 17);
-                    marker.setLatLng(latlng);
-                    document.getElementById('lat').value = latlng[0];
-                    document.getElementById('long').value = latlng[1];
-                    circle.setLatLng(latlng);
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        });
-
-        document.getElementById('lat').addEventListener('input', function (e) {
-            var lat = e.target.value;
-            var lng = document.getElementById('long').value;
-            var latlng = [lat, lng];
-            marker.setLatLng(latlng);
-            circle.setLatLng(latlng);
-            map.setView(latlng, 17);
-        });
-
-        document.getElementById('long').addEventListener('input', function (e) {
-            var lng = e.target.value;
-            var lat = document.getElementById('lat').value;
-            var latlng = [lat, lng];
-            marker.setLatLng(latlng);
-            circle.setLatLng(latlng);
-            map.setView(latlng, 17);
-        });
-    </script>
 @endpush
