@@ -14,6 +14,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('office.json');
     });
     Route::resource('office', App\Http\Controllers\Dash\OfficeController::class);
+
+    // Shift
+    Route::prefix('shift')->group(function () {
+        Route::get('json', [App\Http\Controllers\Dash\ShiftController::class, 'json'])->name('shift.json');
+    });
+    Route::resource('shift', App\Http\Controllers\Dash\ShiftController::class);
 });
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');
