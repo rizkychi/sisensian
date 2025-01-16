@@ -29,6 +29,8 @@
                                     <th scope="col">Jabatan</th>
                                     <th scope="col">Kantor</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
                                     <th scope="col" style="width: 0px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -103,98 +105,46 @@
         $(function() {
             var table = $('#dtx').DataTable({
                 dom: "Bfrtip",
-                buttons: [
-                    {
-                        extend: 'copy',
-                        exportOptions: {
-                            columns: ':not(:last-child):not(:nth-last-child(2))',
-                            modifier: {
-                                search: 'none',
-                                order: 'applied'
-                            },
-                            format: {
-                                body: function (data, row, column, node) {
-                                    if (column === 0) {
-                                        return row + 1;
-                                    }
-                                    return data;
-                                }
-                            }
+                buttons: {
+                    dom: {
+                        button: {
+                            tag: 'button',
+                            className: ''
                         }
                     },
-                    {
-                        extend: 'csv',
-                        exportOptions: {
-                            columns: ':not(:last-child):not(:nth-last-child(2))',
-                            modifier: {
-                                search: 'none',
-                                order: 'applied'
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            className: 'btn btn-sm btn-soft-success',
+                            text: '<span class=""><i class="mdi mdi-file-excel"></i>  Excel</span>',
+                            titleAttr: 'Excel',
+                            action: newexportaction,
+                            exportOptions: {
+                                columns: ':not(:last-child)',
                             },
-                            format: {
-                                body: function (data, row, column, node) {
-                                    if (column === 0) {
-                                        return row + 1;
-                                    }
-                                    return data;
-                                }
-                            }
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        exportOptions: {
-                            columns: ':not(:last-child):not(:nth-last-child(2))',
-                            modifier: {
-                                search: 'none',
-                                order: 'applied'
+                        },
+                        {
+                            extend: 'pdf',
+                            className: 'btn btn-sm btn-soft-danger',
+                            text: '<span class=""><i class="mdi mdi-file-pdf-box"></i>  PDF</span>',
+                            titleAttr: 'PDF',
+                            action: newexportaction,
+                            exportOptions: {
+                                columns: ':not(:last-child)',
                             },
-                            format: {
-                                body: function (data, row, column, node) {
-                                    if (column === 0) {
-                                        return row + 1;
-                                    }
-                                    return data;
-                                }
-                            }
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        exportOptions: {
-                            columns: ':not(:last-child):not(:nth-last-child(2))',
-                            modifier: {
-                                search: 'none',
-                                order: 'applied'
+                        },
+                        {
+                            extend: 'print',
+                            className: 'btn btn-sm btn-soft-warning',
+                            text: '<span class=""><i class="mdi mdi-printer"></i>  Print</span>',
+                            titleAttr: 'Print',
+                            action: newexportaction,
+                            exportOptions: {
+                                columns: ':not(:last-child)',
                             },
-                            format: {
-                                body: function (data, row, column, node) {
-                                    if (column === 0) {
-                                        return row + 1;
-                                    }
-                                    return data;
-                                }
-                            }
                         }
-                    },
-                    {
-                        extend: 'pdf',
-                        exportOptions: {
-                            columns: ':not(:last-child):not(:nth-last-child(2))',
-                            modifier: {
-                                search: 'none',
-                                order: 'applied'
-                            },
-                            format: {
-                                body: function (data, row, column, node) {
-                                    if (column === 0) {
-                                        return row + 1;
-                                    }
-                                    return data;
-                                }
-                            }
-                        }
-                    }
-                ],
+                    ],
+                },
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('employee.json') }}",
@@ -236,6 +186,23 @@
                             } else {
                                 return '<span class="badge badge-border bg-danger-subtle text-danger">Tidak Aktif</span>';
                             }
+                        }
+                    },
+                    {
+                        data: 'user',
+                        name: 'user',
+                        visible: false,
+                        render: function (data, type, row) {
+                            console.log(data)
+                            return data ? data.username : '';
+                        }
+                    },
+                    {
+                        data: 'user',
+                        name: 'user',
+                        visible: false,
+                        render: function (data, type, row) {
+                            return data ? data.email : '';
                         }
                     },
                     {

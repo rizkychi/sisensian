@@ -196,6 +196,9 @@ class EmployeeController extends Controller
                 ->addColumn('office_name', function($row){
                     return $row->office->name;
                 })
+                ->addColumn('user', function($row){
+                    return json_decode($row->user);
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         }

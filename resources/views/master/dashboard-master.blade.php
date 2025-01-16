@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
 
         <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+        
 
         <!-- Layout config Js -->
         <script src="{{asset('/assets/js/layout.js')}}"></script>
@@ -370,6 +371,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="{{ asset('/assets/js/datatables-custom.js') }}"></script>
 
         <!-- App js -->
         <script src="{{asset('/assets/js/app.js')}}"></script>
