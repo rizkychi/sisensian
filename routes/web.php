@@ -19,7 +19,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Employee
     Route::prefix('employee')->group(function () {
-        // Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('employee.json');
+        Route::get('json', [App\Http\Controllers\Dash\EmployeeController::class, 'json'])->name('employee.json');
     });
     Route::resource('employee', App\Http\Controllers\Dash\EmployeeController::class);
 

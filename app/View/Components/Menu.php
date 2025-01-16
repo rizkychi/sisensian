@@ -27,7 +27,7 @@ class Menu extends Component
                 'route' => 'dashboard.index',
             ],
             (object) [
-                'name' => 'Pegawai',
+                'name' => 'Karyawan',
                 'icon' => 'ri-group-fill',
                 'route' => 'employee.index',
             ],

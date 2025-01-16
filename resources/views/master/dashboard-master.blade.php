@@ -44,6 +44,14 @@
             .navbar-menu .navbar-nav .nav-sm .nav-link::before {
                 content: none;
             }
+            .choices[data-type*="select-one"] select.choices__input {
+                display: block !important;
+                opacity: 0;
+                pointer-events: none;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+            }
         </style>
     </head>
 
