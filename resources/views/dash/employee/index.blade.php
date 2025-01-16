@@ -26,6 +26,7 @@
                                     <th scope="col">Nama</th>
                                     <th scope="col">Alamat</th>
                                     <th scope="col">No. HP</th>
+                                    <th scope="col">Jabatan</th>
                                     <th scope="col">Kantor</th>
                                     <th scope="col">Status</th>
                                     <th scope="col" style="width: 0px;">Aksi</th>
@@ -106,7 +107,7 @@
                     {
                         extend: 'copy',
                         exportOptions: {
-                            columns: ':not(:last-child)',
+                            columns: ':not(:last-child):not(:nth-last-child(2))',
                             modifier: {
                                 search: 'none',
                                 order: 'applied'
@@ -124,7 +125,7 @@
                     {
                         extend: 'csv',
                         exportOptions: {
-                            columns: ':not(:last-child)',
+                            columns: ':not(:last-child):not(:nth-last-child(2))',
                             modifier: {
                                 search: 'none',
                                 order: 'applied'
@@ -142,7 +143,7 @@
                     {
                         extend: 'excel',
                         exportOptions: {
-                            columns: ':not(:last-child)',
+                            columns: ':not(:last-child):not(:nth-last-child(2))',
                             modifier: {
                                 search: 'none',
                                 order: 'applied'
@@ -160,7 +161,7 @@
                     {
                         extend: 'print',
                         exportOptions: {
-                            columns: ':not(:last-child)',
+                            columns: ':not(:last-child):not(:nth-last-child(2))',
                             modifier: {
                                 search: 'none',
                                 order: 'applied'
@@ -178,7 +179,7 @@
                     {
                         extend: 'pdf',
                         exportOptions: {
-                            columns: ':not(:last-child)',
+                            columns: ':not(:last-child):not(:nth-last-child(2))',
                             modifier: {
                                 search: 'none',
                                 order: 'applied'
@@ -217,6 +218,10 @@
                     {
                         data: 'phone',
                         name: 'phone',
+                    },
+                    {
+                        data: 'position',
+                        name: 'position'
                     },
                     {
                         data: 'office_name',
