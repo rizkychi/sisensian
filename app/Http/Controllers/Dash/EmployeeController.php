@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Response;
 
 class EmployeeController extends Controller
 {
@@ -28,7 +29,8 @@ class EmployeeController extends Controller
     public function index()
     {
         confirmDelete('Hapus data ini?', 'Data yang dihapus tidak dapat dikembalikan.');
-        return view("dash.$this->slug.index");
+        $office = Office::where('is_active', true)->get();
+        return view("dash.$this->slug.index", compact('office'));
     }
 
     /**
@@ -77,7 +79,7 @@ class EmployeeController extends Controller
                 $data->phone = $request->phone;
                 $data->position = $request->position;
                 $data->office_id = $request->office_id;
-                $data->is_active = $request->is_active == 'on' ? true : false;
+                $data->is_active = $request->is_active == 'on' ? 1 : 0;
                 $data->save();
             });
 
@@ -116,7 +118,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username,' . $valid->user_id,
-            'password' => 'required|string|max:255',
+            'password' => 'nullable|string|max:255',
             'email' => 'required|string|max:255|unique:users,email,' . $valid->user_id,
             'id_number' => 'required|string|max:255|unique:employee,id_number,' . $valid->id,
             'name' => 'required|string|max:255',
@@ -138,7 +140,7 @@ class EmployeeController extends Controller
                 $data->phone = $request->phone;
                 $data->position = $request->position;
                 $data->office_id = $request->office_id;
-                $data->is_active = $request->is_active == 'on' ? true : false;
+                $data->is_active = $request->is_active == 'on' ? 1 : 0;
                 $data->save();
 
                 $user = User::findOrFail($data->user_id);
@@ -197,5 +199,128 @@ class EmployeeController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
+    }
+
+    /**
+     * Import data from excel
+     */
+    public function import(Request $request)
+    {
+        $office = Office::findorFail($request->office_id);
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048',
+        ]);
+
+        try {
+            \DB::transaction(function () use ($request) {
+                $path = $request->file('file')->getRealPath();
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+                $data = $spreadsheet->getActiveSheet()->toArray();
+
+                foreach ($data as $key => $value) {
+                    if ($key > 0) { // Skip header row
+                        if (empty($value[1]) || empty($value[2]) || empty($value[3]) || empty($value[4]) || empty($value[5])) {
+                            continue; // Skip row if any required column is empty
+                        }
+
+                        $existingUser = User::where('username', $value[1])->orWhere('email', $value[3])->first();
+                        $existingEmployee = Employee::where('id_number', $value[4])->first();
+
+                        if ($existingUser || $existingEmployee) {
+                            continue; // Skip row if user or employee already exists
+                        }
+
+                        $user = new User();
+                        $user->username = $value[1];
+                        $user->password = Hash::make($value[2]);
+                        $user->email = $value[3];
+                        $user->save();
+
+                        $employee = new Employee();
+                        $employee->user_id = $user->id;
+                        $employee->id_number = $value[4];
+                        $employee->name = $value[5];
+                        $employee->address = $value[6];
+                        $employee->phone = $value[7];
+                        $employee->position = $value[8];
+                        $employee->office_id = $request->office_id;
+                        $employee->is_active = true;
+                        $employee->save();
+                    }
+                }
+            });
+
+            return redirect()->route("$this->slug.index")->with('success', 'Data berhasil diimport.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Data gagal diimport: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Download template excel
+     */
+    public function template()
+    {
+        $headers = [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+
+        $callback = function() {
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Set header values
+            $sheet->setCellValue('A1', 'No');
+            $sheet->setCellValue('B1', 'Username');
+            $sheet->setCellValue('C1', 'Password');
+            $sheet->setCellValue('D1', 'Email');
+            $sheet->setCellValue('E1', 'ID Karyawan');
+            $sheet->setCellValue('F1', 'Nama Lengkap');
+            $sheet->setCellValue('G1', 'Alamat');
+            $sheet->setCellValue('H1', 'No. HP');
+            $sheet->setCellValue('I1', 'Jabatan');
+
+            // set number value
+            $sheet->setCellValue('A2', 1);
+            $sheet->setCellValue('A3', 2);
+            $sheet->setCellValue('A4', 3);
+
+            // Style the header
+            $headerStyle = [
+                'font' => [
+                    'bold' => true,
+                    'color' => ['argb' => 'FFFFFFFF'],
+                ],
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['argb' => 'FF4CAF50'],
+                ],
+            ];
+            $sheet->getStyle('A1:I1')->applyFromArray($headerStyle);
+
+            // Set phone number column to text format
+            $sheet->getStyle('H')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+
+            // Set column widths
+            $sheet->getColumnDimension('A')->setWidth(5);
+            $sheet->getColumnDimension('B')->setWidth(20);
+            $sheet->getColumnDimension('C')->setWidth(20);
+            $sheet->getColumnDimension('D')->setWidth(25);
+            $sheet->getColumnDimension('E')->setWidth(20);
+            $sheet->getColumnDimension('F')->setWidth(25);
+            $sheet->getColumnDimension('G')->setWidth(30);
+            $sheet->getColumnDimension('H')->setWidth(15);
+            $sheet->getColumnDimension('I')->setWidth(20);
+
+            // Add border to all cells
+            $sheet->getStyle('A1:I100')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            header('Content-Disposition: attachment; filename="karyawan_template.xlsx"');
+            $writer->save('php://output');
+        };
+
+        return Response::stream($callback, 200, $headers);
     }
 }

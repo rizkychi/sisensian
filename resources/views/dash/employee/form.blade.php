@@ -4,7 +4,7 @@
 @section('content')
     <div class="row">
         <div class="col-xl-12">
-            <form action="{{ $route_name }}" method="post">
+            <form id="fieldForm" action="{{ $route_name }}" method="post">
                 @csrf
                 @isset($data)
                     @method('PUT')
@@ -29,7 +29,7 @@
                                         <div class="col-md-4 mb-3">
                                             <label for="password" class="form-label">Password</label>
                                             <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Password" value="{{ old('password') }}" required>
+                                                placeholder="Password" value="{{ old('password') }}" {{ !isset($data) ? 'required' : '' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label for="email" class="form-label">Email</label>
@@ -121,5 +121,10 @@
             delimiters: ["(", ") ", "-"],
             blocks: [0, 4, 4, 5],
         }));
+
+        document.querySelector('#fieldForm').addEventListener('submit', function(e) {
+            var phoneField = document.getElementById('phone');
+            phoneField.value = phoneField.value.replace(/\D/g, '');
+        });
     </script>
 @endpush

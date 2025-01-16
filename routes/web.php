@@ -20,6 +20,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Employee
     Route::prefix('employee')->group(function () {
         Route::get('json', [App\Http\Controllers\Dash\EmployeeController::class, 'json'])->name('employee.json');
+        Route::get('template', [App\Http\Controllers\Dash\EmployeeController::class, 'template'])->name('employee.template');
+        Route::post('import', [App\Http\Controllers\Dash\EmployeeController::class, 'import'])->name('employee.import');
     });
     Route::resource('employee', App\Http\Controllers\Dash\EmployeeController::class);
 
