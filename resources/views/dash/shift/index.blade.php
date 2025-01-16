@@ -66,9 +66,9 @@
                         name: 'is_fixed',
                         render: function(data, type, row) {
                             if (data == 1) {
-                                return '<span class="badge badge-border bg-success-subtle text-success">Y</span>';
+                                return '<i class="bx bx-check fs-3 text-success"></i>';
                             } else {
-                                return '<span class="badge badge-border bg-danger-subtle text-danger">N</span>';
+                                return '<i class="bx bx-x fs-3 text-danger"></i>';
                             }
                         }
                     },
@@ -77,9 +77,9 @@
                         name: 'is_night_shift',
                         render: function(data, type, row) {
                             if (data == 1) {
-                                return '<span class="badge badge-border bg-success-subtle text-success">Y</span>';
+                                return '<i class="bx bx-check fs-3 text-success"></i>';
                             } else {
-                                return '<span class="badge badge-border bg-danger-subtle text-danger">N</span>';
+                                return '<i class="bx bx-x fs-3 text-danger"></i>';
                             }
                         }
                     },

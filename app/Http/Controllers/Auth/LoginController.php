@@ -12,7 +12,7 @@ class LoginController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            return redirect()->route('home');
+            return redirect()->route('dashboard.index');
         }
         return view('auth.login');
     }
@@ -28,7 +28,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->route('home')->with('toast_success', 'Welcome back, ' . Auth::user()->username . '!');
+            return redirect()->route('dashboard.index')->with('toast_success', 'Welcome back, ' . Auth::user()->username . '!');
         }
 
         return back()->with('error', 'Username/Password is incorrect.');
