@@ -37,6 +37,11 @@ class Menu extends Component
                 'route' => 'attendance.index',
             ],
             (object) [
+                'name' => 'Pengajuan Cuti',
+                'icon' => 'mdi mdi-exit-run',
+                'route' => 'leave.index',
+            ],
+            (object) [
                 'name' => 'Laporan',
                 'icon' => 'bx bxs-report',
                 'route' => 'report.index',

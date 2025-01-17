@@ -25,6 +25,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     Route::resource('employee', App\Http\Controllers\Dash\EmployeeController::class);
 
+    // Leave
+    Route::prefix('leave')->group(function () {
+        Route::get('json', [App\Http\Controllers\Dash\LeaveController::class, 'json'])->name('leave.json');
+    });
+    Route::resource('leave', App\Http\Controllers\Dash\LeaveController::class);
+
     // Attendance
     Route::prefix('attendance')->group(function () {
         // Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('attendance.json');

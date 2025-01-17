@@ -44,7 +44,7 @@
 
 @push('modals')
     <!-- Grids in modals -->
-    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-modal="true">
+    <div class="modal fade" id="importModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="importModalLabel" aria-modal="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -193,7 +193,6 @@
                         name: 'user',
                         visible: false,
                         render: function (data, type, row) {
-                            console.log(data)
                             return data ? data.username : '';
                         }
                     },

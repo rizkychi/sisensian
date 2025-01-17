@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\DateCast;
 use Illuminate\Database\Eloquent\Model;
 
 class Leave extends Model
@@ -21,9 +22,10 @@ class Leave extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'approved_at' => 'date',
+        'start_date' => DateCast::class,
+        'end_date' => DateCast::class,
+        'approved_at' => DateCast::class,
+        'created_at' => DateCast::class,
     ];
 
     public function employee()

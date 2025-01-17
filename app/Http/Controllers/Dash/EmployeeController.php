@@ -244,9 +244,9 @@ class EmployeeController extends Controller
                         $employee->user_id = $user->id;
                         $employee->id_number = $value[4];
                         $employee->name = $value[5];
-                        $employee->address = $value[6];
-                        $employee->phone = $value[7];
-                        $employee->position = $value[8];
+                        $employee->address = $value[6] ?? null;
+                        $employee->phone = $value[7] ?? null;
+                        $employee->position = $value[8] ?? null;
                         $employee->office_id = $request->office_id;
                         $employee->is_active = true;
                         $employee->save();
