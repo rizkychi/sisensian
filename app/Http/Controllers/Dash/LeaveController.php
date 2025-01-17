@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dash;
 use App\Http\Controllers\Controller;
 use App\Models\Leave;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class LeaveController extends Controller
@@ -70,15 +71,9 @@ class LeaveController extends Controller
         $data = Leave::findOrFail($id);
         $data->status = $request->status;
         $data->note = $request->note;
-
-        if ($request->status == 'approved') {
-            $data->approved_at = now();
-        }
-
-        $data->approved_by = auth()->user()->id;
-
-        $data->save();
-
+        $data->confirmed_at = now();
+        $data->confirmed_by = Auth::id();
+        
         if ($data->save()) {
             return redirect()->route("$this->slug.index")->with('success', 'Data berhasil diupdate.');
         } else {

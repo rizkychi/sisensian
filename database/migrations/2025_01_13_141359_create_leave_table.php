@@ -19,13 +19,13 @@ return new class extends Migration
             $table->string('leave_type');
             $table->text('reason')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->bigInteger('approved_by')->unsigned()->nullable();
-            $table->date('approved_at')->nullable();
+            $table->bigInteger('confirmed_by')->unsigned()->nullable();
+            $table->date('confirmed_at')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
 
             $table->foreign('employee_id')->references('id')->on('employee')->onDelete('cascade');
-            $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('confirmed_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

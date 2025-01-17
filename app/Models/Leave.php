@@ -16,15 +16,15 @@ class Leave extends Model
         'leave_type',
         'reason',
         'status',
-        'approved_by',
-        'approved_at',
+        'confirmed_by',
+        'confirmed_at',
         'note',
     ];
 
     protected $casts = [
         'start_date' => DateCast::class,
         'end_date' => DateCast::class,
-        'approved_at' => DateCast::class,
+        'confirmed_at' => DateCast::class,
         'created_at' => DateCast::class,
     ];
 
@@ -33,8 +33,8 @@ class Leave extends Model
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function approvedBy()
+    public function confirmedBy()
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $this->belongsTo(User::class, 'confirmed_by');
     }
 }

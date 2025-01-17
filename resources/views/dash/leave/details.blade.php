@@ -1,6 +1,29 @@
 @extends('master.dashboard-master')
 @section('title', $title)
 
+@php
+    $status = [
+        // 'pending' => 'Menunggu',
+        'approved' => 'Disetujui',
+        'rejected' => 'Ditolak',
+    ];
+
+    $readonly = false;
+    $disabled = '';
+    $labels = '';
+
+    if ($data->status == 'approved' || $data->status == 'rejected' || auth()->user()->role == 'user') {
+        $readonly = true;
+        $disabled = 'disabled';
+    }
+
+    if ($data->status == 'pending') {
+        $labels = "Menunggu persetujuan";
+    } else {
+        $labels = "{$status[$data->status]} oleh {$data->confirmedBy->username} pada tanggal $data->confirmed_at";
+    }
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-xl-12">
@@ -103,24 +126,11 @@
                                         {{-- <h5 class="fs-14 mb-3">Aksi :</h5> --}}
                                         <form action="{{ route('leave.update', ['leave' => $data->id]) }}" method="post">
                                             @csrf
-                                            @php
-                                                $status = [
-                                                    // 'pending' => 'Menunggu',
-                                                    'approved' => 'Disetujui',
-                                                    'rejected' => 'Ditolak',
-                                                ];
-
-                                                if ($data->status == 'pending') {
-                                                    $disabled = '';
-                                                } else {
-                                                    $disabled = 'disabled';
-                                                }
-                                            @endphp
                                             @method('PUT')
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Status</label>
                                                 <select class="form-select" name="status" id="status" data-choices required {{ $disabled }}>
-                                                    <option value="">Pilih Status</option>
+                                                    <option value="">Menunggu</option>
                                                     @foreach ($status as $key => $value)
                                                         <option value="{{ $key }}" {{ old('status', $data->status) == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                     @endforeach
@@ -131,7 +141,7 @@
                                                 <textarea class="form-control" name="note" id="note" rows="3" {{ $disabled }}>{{ old('note', @$data->note) }}</textarea>
                                             </div>
 
-                                            @if ($data->status == 'pending')
+                                            @if (!$readonly)
                                                 <div class="float-end">
                                                     <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
                                                         <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
@@ -140,7 +150,7 @@
                                                 </div>
                                             @else
                                                 <div class="float-end">
-                                                    <span class="text-muted fst-italic me-4">{{ $status[$data->status] }} oleh {{ $data->approvedBy->username }} pada tanggal {{ $data->approved_at ?? $data->updated_at }}</span>
+                                                    <span class="text-muted fst-italic me-4">{{ $labels }}</span>
                                                     <a href="{{ route('leave.index') }}" class="btn btn-light">Kembali</a>
                                                 </div>
                                             @endif
