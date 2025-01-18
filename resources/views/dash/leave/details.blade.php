@@ -22,6 +22,10 @@
     } else {
         $labels = "{$status[$data->status]} oleh {$data->confirmedBy->username} pada tanggal $data->confirmed_at";
     }
+
+    $start_date = \Carbon\Carbon::parse($data->start_date);
+    $end_date = \Carbon\Carbon::parse($data->end_date);
+    $duration = $start_date->diffInDays($end_date) + 1; // Including the start date
 @endphp
 
 @section('content')
@@ -82,7 +86,7 @@
                                             <div class="p-2 border border-dashed rounded text-center">
                                                 <div>
                                                     <p class="text-muted fw-medium mb-1">Lama Cuti</p>
-                                                    <h5 class="fs-17 text-success mb-0">1 hari</h5>
+                                                    <h5 class="fs-17 text-success mb-0">{{ $duration }} hari</h5>
                                                 </div>
                                             </div>
                                         </div>

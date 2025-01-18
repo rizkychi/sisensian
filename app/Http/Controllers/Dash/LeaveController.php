@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
 use App\Models\Leave;
+use App\Models\LeaveType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,8 +26,23 @@ class LeaveController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role != 'superadmin') {
+            return redirect()->route("$this->slug.request");
+        }
         $pending = Leave::where('status', 'pending')->count();
         return view('dash.leave.index', compact('pending'));
+    }
+
+    /**
+     * Display a listing of the request.
+     */
+    public function request()
+    {
+        if (Auth::user()->role == 'superadmin') {
+            return redirect()->route("$this->slug.index");
+        }
+        $data = Leave::where('employee_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        return view('dash.leave.request', compact('data'));
     }
 
     /**
@@ -34,7 +50,11 @@ class LeaveController extends Controller
      */
     public function create()
     {
-        //
+        $route_name = route("$this->slug.store");
+        $route_label = 'Tambah';
+        $data = Auth::user()->employee;
+        $leave_types = LeaveType::getAll();
+        return view("dash.$this->slug.form", compact('route_name', 'route_label', 'data', 'leave_types'));
     }
 
     /**
@@ -42,7 +62,29 @@ class LeaveController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (Auth::user()->role == 'superadmin') {
+            return redirect()->route("$this->slug.index");
+        }
+        $request->validate([
+            'leave_type' => 'required|string',
+            'start_date' => 'required|string',
+            'end_date' => 'required|string',
+            'reason' => 'nullable|string',
+        ]);
+
+        $data = new Leave();
+        $data->employee_id = Auth::user()->employee->id;
+        $data->leave_type = $request->leave_type;
+        $data->start_date = $request->start_date;
+        $data->end_date = $request->end_date;
+        $data->reason = $request->reason;
+        $data->status = 'pending';
+        
+        if ($data->save()) {
+            return redirect()->route("$this->slug.request")->with('success', 'Data berhasil disimpan.');
+        } else {
+            return back()->with('error', 'Data gagal disimpan')->withInput();
+        }
     }
 
     /**
@@ -96,6 +138,9 @@ class LeaveController extends Controller
     {
         if ($request->ajax()) {
             $query = Leave::query();
+            if (Auth::user()->role != 'superadmin') {
+                $query->where('employee_id', Auth::user()->employee->id);
+            }
             if (isset($request->status) && $request->status != '') {
                 $query->where('status', $request->status);
             }

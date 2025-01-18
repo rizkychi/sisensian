@@ -28,8 +28,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Leave
     Route::prefix('leave')->group(function () {
         Route::get('json', [App\Http\Controllers\Dash\LeaveController::class, 'json'])->name('leave.json');
+        Route::get('request', [App\Http\Controllers\Dash\LeaveController::class, 'request'])->name('leave.request');
     });
-    Route::resource('leave', App\Http\Controllers\Dash\LeaveController::class);
+    Route::resource('leave', App\Http\Controllers\Dash\LeaveController::class)->except(['edit', 'destroy']);
 
     // Attendance
     Route::prefix('attendance')->group(function () {
