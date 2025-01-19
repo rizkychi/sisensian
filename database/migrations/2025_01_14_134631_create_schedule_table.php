@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('employee_id')->unsigned();
             $table->bigInteger('shift_id')->unsigned();
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->boolean('is_recurring')->default(true);
             $table->string('day_of_week')->nullable();
             $table->timestamps();

@@ -54,7 +54,7 @@
                             <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
                                 <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
                             </button>
-                            <a href="{{ route('employee.index') }}" class="btn btn-light">Batal</a>
+                            <a href="{{ route('leave.index') }}" class="btn btn-light">Batal</a>
                         </div>
                     </div><!-- end card-footer -->
                 </div><!-- end card -->

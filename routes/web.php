@@ -32,6 +32,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     Route::resource('leave', App\Http\Controllers\Dash\LeaveController::class)->except(['edit', 'destroy']);
 
+    // Schedule
+    Route::prefix('schedule')->group(function () {
+        Route::get('json', [App\Http\Controllers\Dash\ScheduleController::class, 'json'])->name('schedule.json');
+        Route::get('regular', [App\Http\Controllers\Dash\ScheduleController::class, 'regular'])->name('regular');
+        Route::get('regular/create', [App\Http\Controllers\Dash\ScheduleController::class, 'regularCreate'])->name('regular.create');
+        Route::post('regular', [App\Http\Controllers\Dash\ScheduleController::class, 'regularStore'])->name('regular.store');
+        Route::get('regular/{regular}/edit', [App\Http\Controllers\Dash\ScheduleController::class, 'regularEdit'])->name('regular.edit');
+        Route::put('regular/{regular}', [App\Http\Controllers\Dash\ScheduleController::class, 'regularUpdate'])->name('regular.update');
+        
+        Route::get('shift', [App\Http\Controllers\Dash\ScheduleController::class, 'shift'])->name('shifts');
+    });
+    // Route::resource('schedule', App\Http\Controllers\Dash\ScheduleController::class)->except(['edit', 'destroy']);
+
     // Attendance
     Route::prefix('attendance')->group(function () {
         // Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('attendance.json');

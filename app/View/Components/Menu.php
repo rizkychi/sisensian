@@ -27,11 +27,6 @@ class Menu extends Component
                 'route' => 'dashboard.index',
             ],
             (object) [
-                'name' => 'Karyawan',
-                'icon' => 'ri-group-fill',
-                'route' => 'employee.index',
-            ],
-            (object) [
                 'name' => 'Presensi',
                 'icon' => 'ri-fingerprint-line',
                 'route' => 'attendance.index',
@@ -40,6 +35,24 @@ class Menu extends Component
                 'name' => 'Pengajuan Cuti',
                 'icon' => 'mdi mdi-exit-run',
                 'route' => 'leave.index',
+            ],
+            (object) [
+                'name' => 'Penjadwalan',
+                'icon' => 'mdi mdi-calendar-multiselect',
+                'route' => null,
+                'slug' => 'schedule',
+                'submenus' => [
+                    (object) [
+                        'name' => 'Jadwal Reguler',
+                        'icon' => 'ri-calendar-todo-line',
+                        'route' => 'regular',
+                    ],
+                    (object) [
+                        'name' => 'Jadwal Shift',
+                        'icon' => 'ri-calendar-2-fill ',
+                        'route' => 'shifts',
+                    ],
+                ],
             ],
             (object) [
                 'name' => 'Laporan',
@@ -52,6 +65,11 @@ class Menu extends Component
                 'route' => null,
                 'slug' => 'masterdata',
                 'submenus' => [
+                    (object) [
+                        'name' => 'Karyawan',
+                        'icon' => 'ri-group-fill',
+                        'route' => 'employee.index',
+                    ],
                     (object) [
                         'name' => 'Kantor',
                         'icon' => 'bx bxs-buildings ',

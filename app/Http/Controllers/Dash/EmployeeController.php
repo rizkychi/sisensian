@@ -326,4 +326,13 @@ class EmployeeController extends Controller
 
         return Response::stream($callback, 200, $headers);
     }
+
+    /**
+     * Get employees by office
+     */
+    public function getEmployeesByOffice(string $office_id)
+    {
+        $data = Employee::where('office_id', $office_id)->get();
+        return response()->json($data);
+    }
 }
