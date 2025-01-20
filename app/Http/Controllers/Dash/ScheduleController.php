@@ -52,6 +52,16 @@ class ScheduleController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function shift(Request $request)
+    {
+        $office = Office::where('is_active', true)->get();
+        $employee = Employee::where('office_id', $request->office_id)->get();
+        return view("dash.$this->slug.regular", compact('office', 'employee'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function regularCreate()
@@ -91,6 +101,9 @@ class ScheduleController extends Controller
                             $schedule->update([
                                 'shift_id' => $request->shift_id[$d],
                             ]);
+                        } else if ($schedule && @$request->shift_id[$d] == null) {
+                            // Delete existing schedule
+                            $schedule->delete();
                         } else if (@$request->shift_id[$d] != null) {
                             // Create new schedule
                             Schedule::create([
@@ -117,6 +130,9 @@ class ScheduleController extends Controller
                                 $schedule->update([
                                     'shift_id' => $request->shift_id[$d],
                                 ]);
+                            } else if ($schedule && @$request->shift_id[$d] == null) {
+                                // Delete existing schedule
+                                $schedule->delete();
                             } else if (@$request->shift_id[$d] != null) {
                                 // Create new schedule
                                 Schedule::create([

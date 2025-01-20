@@ -16,7 +16,7 @@
 
                     <div class="card-body">
                         <!-- warning Alert -->
-                        <div class="alert alert-info material-shadow" role="alert">
+                        <div class="alert alert-info material-shadow {{ @$data ? 'd-none':'' }}" role="alert">
                             <i class="ri-information-line fs-5 me-2 align-middle"></i>Hanya pilih <b>kantor</b> apabila ingin menambahkan jadwal ke <b>semua karyawan</b>.
                         </div>
 

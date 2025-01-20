@@ -50,7 +50,7 @@ class Menu extends Component
                     (object) [
                         'name' => 'Jadwal Shift',
                         'icon' => 'ri-calendar-2-fill ',
-                        'route' => 'shifts',
+                        'route' => 'sift',
                     ],
                 ],
             ],
