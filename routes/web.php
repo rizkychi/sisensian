@@ -42,6 +42,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('regular/{regular}', [App\Http\Controllers\Dash\ScheduleController::class, 'regularUpdate'])->name('regular.update');
         
         Route::get('shift', [App\Http\Controllers\Dash\ScheduleController::class, 'shift'])->name('sift');
+        Route::post('shift', [App\Http\Controllers\Dash\ScheduleController::class, 'shiftStore'])->name('sift.store');
+        
+        Route::get('employee/{office_id?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesByOffice'])->name('regular.get.employee');
+        Route::get('employee/{date?}/{shift_id?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesBySchedule'])->name('sift.get.employee');
     });
     // Route::resource('schedule', App\Http\Controllers\Dash\ScheduleController::class)->except(['edit', 'destroy']);
 

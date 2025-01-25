@@ -46,7 +46,7 @@
             .navbar-menu .navbar-nav .nav-sm .nav-link::before {
                 content: none;
             }
-            .choices[data-type*="select-one"] select.choices__input {
+            .choices[data-type*="select-one"] select.choices__input, .choices[data-type*="select-multiple"] select.choices__input {
                 display: block !important;
                 opacity: 0;
                 pointer-events: none;
@@ -378,6 +378,16 @@
         <script src="{{asset('/assets/js/app.js')}}"></script>
 
         {{-- Custom Scripts --}}
+        <script>
+            function dateFormat(date) {
+                var d = new Date(date);
+                var month = ('0' + (d.getMonth() + 1)).slice(-2);
+                var day = '' + d.getDate();
+                var year = d.getFullYear();
+
+                return [day, month, year].join('-');
+            }
+        </script>
         @stack('scripts')
     </body>
 

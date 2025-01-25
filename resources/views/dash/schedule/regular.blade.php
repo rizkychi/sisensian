@@ -19,7 +19,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3 mb-md-0 align-self-end justify-content-between d-flex">
+                            <div class="col-md-6 mb-md-0 align-self-end justify-content-between d-flex">
                                 <button type="submit" class="btn btn-info btn-label waves-effect waves-light">
                                     <i class="ri-filter-2-fill label-icon align-middle fs-4"></i> Filter
                                 </button>
@@ -33,7 +33,7 @@
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="dtx" class="table w-100">
+                        <table id="dtx" class="table table-sm w-100">
                             <thead class="table-light">
                                 <tr>
                                     <th scope="col" rowspan="2" class="text-center align-middle" style="width: 0px">No</th>
@@ -50,10 +50,10 @@
                             <tbody>
                                 @foreach ($employee as $key => $empl)
                                     <tr>
-                                        <td class="text-center">{{ $key + 1 }}</td>
-                                        <td>{{ $empl->name }}</td>
+                                        <td class="align-middle text-end">{{ $key + 1 }}</td>
+                                        <td class="align-middle">{{ $empl->name }}</td>
                                         @foreach ($days as $d => $day)
-                                            <td class="text-center">
+                                            <td class="text-center align-middle">
                                                 @php
                                                     $schedule = $empl->schedule->where('day_of_week', $d)->first();
                                                 @endphp

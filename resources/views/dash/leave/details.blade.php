@@ -20,7 +20,8 @@
     if ($data->status == 'pending') {
         $labels = "Menunggu persetujuan";
     } else {
-        $labels = "{$status[$data->status]} oleh {$data->confirmedBy->username} pada tanggal $data->confirmed_at";
+        $tgl = \Carbon\Carbon::parse($data->confirmed_at)->format('d-m-Y');
+        $labels = "{$status[$data->status]} oleh {$data->confirmedBy->username} pada tanggal $tgl";
     }
 
     $start_date = \Carbon\Carbon::parse($data->start_date);
@@ -95,7 +96,7 @@
                                             <div class="p-2 border border-dashed rounded text-center">
                                                 <div>
                                                     <p class="text-muted fw-medium mb-1">Mulai Cuti</p>
-                                                    <h5 class="fs-17 mb-0">{{ $data->start_date }}</h5>
+                                                    <h5 class="fs-17 mb-0">{{ \Carbon\Carbon::parse($data->start_date)->format('d-m-Y') }}</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -104,7 +105,7 @@
                                             <div class="p-2 border border-dashed rounded text-center">
                                                 <div>
                                                     <p class="text-muted fw-medium mb-1">Selesai Cuti</p>
-                                                    <h5 class="fs-17 mb-0">{{ $data->end_date }}</h5>
+                                                    <h5 class="fs-17 mb-0">{{ \Carbon\Carbon::parse($data->end_date)->format('d-m-Y') }}</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -113,7 +114,7 @@
                                             <div class="p-2 border border-dashed rounded text-center">
                                                 <div>
                                                     <p class="text-muted fw-medium mb-1">Tanggal Pengajuan</p>
-                                                    <h5 class="fs-17 mb-0">{{ $data->created_at }}</h5>
+                                                    <h5 class="fs-17 mb-0">{{ \Carbon\Carbon::parse($data->created_at)->format('d-m-Y') }}</h5>
                                                 </div>
                                             </div>
                                         </div><!-- end col -->

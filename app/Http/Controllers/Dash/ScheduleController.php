@@ -52,16 +52,6 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function shift(Request $request)
-    {
-        $office = Office::where('is_active', true)->get();
-        $employee = Employee::where('office_id', $request->office_id)->get();
-        return view("dash.$this->slug.regular", compact('office', 'employee'));
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function regularCreate()
@@ -154,14 +144,6 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function regularEdit(string $id)
@@ -216,11 +198,102 @@ class ScheduleController extends Controller
         }
     }
 
+    
+
     /**
-     * Remove the specified resource from storage.
+     * Display a listing of the resource.
      */
-    public function destroy(string $id)
+    public function shift(Request $request)
     {
-        //
+        $office = Office::where('is_active', true)->get();
+        $shifts = Shift::where('is_fixed', false)->get();
+        
+        $schedule = [];
+        $employee = [];
+        if ($request->office_id && $request->start_date && $request->end_date) {
+            $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
+                    $query->where('office_id', $request->office_id);
+                })
+                ->where('is_recurring', false)
+                ->whereBetween('date', [$request->start_date, $request->end_date])
+                ->orderBy('date', 'asc')
+                ->get();
+            
+            $employee = Employee::where('office_id', $request->office_id)->get();
+        }
+
+        return view("dash.$this->slug.shift", compact('office', 'shifts', 'schedule', 'employee'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function shiftStore(Request $request)
+    {
+        $office = Office::findOrfail($request->office_id);
+
+        $request->validate([
+            'shift_id' => 'required|string',
+            'date' => 'required|date',
+        ]);
+
+        try {
+            \DB::transaction(function () use ($request) {
+                foreach ($request->employee_id as $employee_id) {
+                    // Check if the schedule already exists
+                    $schedule = Schedule::where('employee_id', $employee_id)
+                        ->where('date', $request->date)
+                        ->where('shift_id', $request->shift_id)
+                        ->where('is_recurring', false)
+                        ->first();
+                    
+                    if (!$schedule) {
+                        // Create new schedule
+                        Schedule::create([
+                            'employee_id' => $employee_id,
+                            'shift_id' => $request->shift_id,
+                            'date' => $request->date,
+                            'is_recurring' => false,
+                        ]);
+                    }
+                }
+
+                // Delete existing schedule
+                $existing = Schedule::where('date', $request->date)
+                    ->where('shift_id', $request->shift_id)
+                    ->where('is_recurring', false)
+                    ->whereNotIn('employee_id', $request->employee_id)
+                    ->get();
+                foreach ($existing as $e) {
+                    $e->delete();
+                }
+            });
+
+            return back()->with('success', 'Jadwal berhasil disimpan.')->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan jadwal: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Get employees by office
+     */
+    public function getEmployeesByOffice(string $office_id = null)
+    {
+        $data = Employee::where('office_id', $office_id)->get();
+        return response()->json($data);
+    }
+
+    /**
+     * Get a list of employees based on date and shift.
+     */
+    public function getEmployeesBySchedule(string $date = null, string $shift_id = null)
+    {
+        $employees = Employee::whereHas('schedule', function ($query) use ($date, $shift_id) {
+            $query->where('date', $date)
+                  ->where('shift_id', $shift_id);
+        })->get();
+
+        return response()->json($employees);
     }
 }

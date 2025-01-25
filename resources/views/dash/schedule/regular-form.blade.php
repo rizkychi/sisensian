@@ -101,7 +101,7 @@
 
             $('#office_id').on('change', function() {
                 var office_id = $(this).val();
-                var url = "{{ route('employee.get') }}/"+office_id;
+                var url = "{{ route('regular.get.employee') }}/"+office_id;
 
                 $.get(url, function(response) {
                     $('#employee_id').empty();
