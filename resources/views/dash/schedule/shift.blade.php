@@ -61,8 +61,13 @@
                                     if (request('start_date') && request('end_date')) {
                                         for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
                                             echo '<tr>';
-                                            echo '<td class="text-end align-middle">' . $no++ . '</td>';
-                                            echo '<td class="align-middle date-label">' . $date->translatedFormat('l, d F Y') . '</td>';
+                                            echo '<td class="text-center pt-2"><span>' . $no++ . '</span></td>';
+                                            echo '<td><div class="d-flex justify-content-between align-items-center">';
+                                            echo '<span class="date-label">' . $date->translatedFormat('l, d F Y') . '</span>';
+                                            echo '<div class="col-auto">';
+                                            echo '<button data-date="'.$date->format('Y-m-d').'" class="btn btn-sm btn-soft-primary btn-icon waves-effect waves-light btn-clone-employee" title="Salin"><i class="bx bxs-copy-alt fs-6"></i></button>';
+                                            echo '</div>';
+                                            echo '</div></td>';
                                             
                                             foreach (@$shifts as $shift) {
                                                 $shiftSchedule = $schedule->where('date', $date->format('Y-m-d'))->where('shift_id', $shift->id);
@@ -122,11 +127,55 @@
                             </div>
                         </div>
                         
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-success">Submit</button>
+                        <div class="row justify-content-between">
+                            <div class="col-auto">
+                                <a href="{{ route('sift.delete') }}" class="btn btn-soft-danger btn-delete">Hapus</a>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
                         </div>
                     </form>
                     <div id="loading" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal with form -->
+
+    <!-- Grids in modals -->
+    <div class="modal fade" id="copyModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="copyModalLabel" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="copyModalLabel">Salin Shift Karyawan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data" id="copyForm">
+                        @csrf
+                        <input type="hidden" name="office_id" value="{{ old('office_id', @$_GET['office_id']) }}">
+                        <input type="hidden" name="date" value="">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="leave_date" class="form-label">Salin ke tanggal</label>
+                                <input type="text" class="form-control" name="to_date" placeholder="Pilih tanggal" data-provider="flatpickr" data-date-format="Y-m-d" data-altFormat="d-m-Y" data-allow-input="true" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row justify-content-end">
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="copyloading" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -222,6 +271,106 @@
                     error: function(xhr) {
                         console.log(xhr);
                         loading.hide();
+                    }
+                });
+            });
+
+            // Delete schedule
+            $(document).on('click', '.btn-delete', function(e) {
+                e.preventDefault();
+                var form = $('#shiftForm');
+                var url = $(this).attr('href');
+                var data = form.serialize();
+                var loading = $('#loading');
+
+                Swal.fire({
+                    title: "Apakah anda yakin?",
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya, hapus shift ini!",
+                    customClass: {
+                        confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+                        cancelButton: 'btn btn-danger w-xs mt-2'
+                    },
+                    buttonsStyling: false,
+                    showCloseButton: true
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: data,
+                            beforeSend: function() {
+                                loading.show();
+                            },
+                            success: function(response) {
+                                loading.hide();
+                                $('#shiftModal').modal('hide');
+                                location.reload();
+                            },
+                            error: function(xhr) {
+                                console.log(xhr);
+                                loading.hide();
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Show modal on button click
+            $(document).on('click', '.btn-clone-employee', function() {
+                $('#copyloading').hide();
+                var date = $(this).data('date');
+                var dateName = $(this).closest('tr').find('.date-label').text();
+                $('#copyForm').find('input[name="date"]').val(date);
+                $('#copyModalLabel').html('Salin Shift Karyawan (' + dateName + ')');
+
+                $('#copyModal').modal('show');
+            });
+
+            // Submit form
+            $('#copyForm').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = '{{ route('sift.copy') }}';
+                var data = form.serialize();
+                var loading = $('#copyloading');
+
+                // reset date
+                form.find('input[name="to_date"]').val('');
+
+                Swal.fire({
+                    title: "Apakah anda yakin?",
+                    text: "Data akan disalin ke tanggal tujuan!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya, salin shift ini!",
+                    customClass: {
+                        confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+                        cancelButton: 'btn btn-danger w-xs mt-2'
+                    },
+                    buttonsStyling: false,
+                    showCloseButton: true
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: data,
+                            beforeSend: function() {
+                                loading.show();
+                            },
+                            success: function(response) {
+                                loading.hide();
+                                $('#copyModal').modal('hide');
+                                location.reload();
+                            },
+                            error: function(xhr) {
+                                console.log(xhr);
+                                loading.hide();
+                            }
+                        });
                     }
                 });
             });

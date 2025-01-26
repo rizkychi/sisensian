@@ -43,6 +43,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         
         Route::get('shift', [App\Http\Controllers\Dash\ScheduleController::class, 'shift'])->name('sift');
         Route::post('shift', [App\Http\Controllers\Dash\ScheduleController::class, 'shiftStore'])->name('sift.store');
+        Route::post('shift/delete', [App\Http\Controllers\Dash\ScheduleController::class, 'shiftDelete'])->name('sift.delete');
+        Route::post('shift/copy', [App\Http\Controllers\Dash\ScheduleController::class, 'shiftCopy'])->name('sift.copy');
         
         Route::get('employee/{office_id?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesByOffice'])->name('regular.get.employee');
         Route::get('employee/{date?}/{shift_id?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesBySchedule'])->name('sift.get.employee');

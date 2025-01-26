@@ -198,8 +198,6 @@ class ScheduleController extends Controller
         }
     }
 
-    
-
     /**
      * Display a listing of the resource.
      */
@@ -272,6 +270,83 @@ class ScheduleController extends Controller
             return back()->with('success', 'Jadwal berhasil disimpan.')->withInput();
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan jadwal: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Delete a resource in storage.
+     */
+    public function shiftDelete(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'shift_id' => 'required|string',
+        ]);
+
+        try {
+            \DB::transaction(function () use ($request) {
+                $schedule = Schedule::where('date', $request->date)
+                    ->where('shift_id', $request->shift_id)
+                    ->where('is_recurring', false)
+                    ->get();
+
+                foreach ($schedule as $s) {
+                    $s->delete();
+                }
+            });
+
+            return back()->with('success', 'Jadwal berhasil dihapus.')->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghapus jadwal: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Copy a resource in storage.
+     */
+    public function shiftCopy(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'to_date' => 'required|date',
+            'office_id' => 'required|string',
+        ]);
+
+        try {
+            \DB::transaction(function () use ($request) {
+                // delete old schedule
+                $old_schedule = Schedule::whereHas('employee', function ($query) use ($request) {
+                        $query->where('office_id', $request->office_id);
+                    })
+                    ->where('is_recurring', false)
+                    ->where('date', $request->to_date)
+                    ->get();
+                
+                foreach ($old_schedule as $os) {
+                    $os->delete();
+                }
+
+                // copy new schedule
+                $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
+                        $query->where('office_id', $request->office_id);
+                    })
+                    ->where('is_recurring', false)
+                    ->where('date', $request->date)
+                    ->get();
+
+                foreach ($schedule as $s) {
+                    Schedule::create([
+                        'employee_id' => $s->employee_id,
+                        'shift_id' => $s->shift_id,
+                        'date' => $request->to_date,
+                        'is_recurring' => false,
+                    ]);
+                }
+            });
+
+            return back()->with('success', 'Jadwal berhasil disalin.')->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menyalin jadwal: ' . $e->getMessage());
         }
     }
 
