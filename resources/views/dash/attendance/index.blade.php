@@ -25,24 +25,24 @@
         </div>
         <!--end card-->
 
-        <div class="row mb-2">
-            <div class="col-12 text-center mb-3">
+        <div class="row">
+            <div class="col-12 text-center">
                 <h5 id="locationLabel" class="fs-6"></h5>
                 <p id="address" class="text-muted mb-0" style="font-size: 8pt"></p>
             </div>
-            @if ($label->is_visible)
-                <div class="col-12 justify-content-center d-flex mb-3">
-                    <div id="button-background" style="display: none;">
-                        <span class="slide-text">Geser untuk presensi</span>
-                        <div id="slider">
-                            <i id="locker" class="mdi mdi-fingerprint"></i>
-                        </div>
+            <div class="col-12 justify-content-center d-flex my-3">
+                @if ($label->is_visible)
+                <div id="button-background" style="display: none;">
+                    <span class="slide-text">Geser untuk presensi</span>
+                    <div id="slider">
+                        <i id="locker" class="mdi mdi-fingerprint"></i>
                     </div>
                 </div>
-            @endif
+                @endif
+            </div>
         </div>
 
-        <div class="card mt-2">
+        <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-column gap-3">
                     <div class="col p-1">

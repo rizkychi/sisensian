@@ -76,14 +76,14 @@ class AttendanceController extends Controller
         ];
 
         if ($schedule) {
-            // $now_time = $today;
-            // $time_in = $schedule->shift->time_in;
-            // $time_out = $schedule->shift->time_out;
+            $now_time = $today;
+            $time_in = $schedule->shift->time_in;
+            $time_out = $schedule->shift->time_out;
 
             // testing purpose
-            $now_time = Carbon::now()->setHours(17);
-            $time_in = '08:00';
-            $time_out = '18:00';
+            // $now_time = Carbon::now()->setHours(17);
+            // $time_in = '08:00';
+            // $time_out = '18:00';
 
             $time_in_time = Carbon::createFromFormat('H:i', $time_in);
             $time_out_time = Carbon::createFromFormat('H:i', $time_out);
