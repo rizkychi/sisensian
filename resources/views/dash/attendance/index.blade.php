@@ -19,28 +19,30 @@
                 <div class="text-center">
                     <h5 class="fs-2 mb-1"><span id="currentTime"></span> WIB</h5>
                     <p class="text-muted mb-0">{{ $today->translatedFormat('l, d F Y') }}</p>
-                    <span class="badge border border-success text-success mt-2">{{ $attendance_text }}</span>
+                    <span class="badge border border-{{ $label->color }} text-{{ $label->color }} mt-2">{{ $label->text }}</span>
                 </div>
             </div>
         </div>
         <!--end card-->
 
         <div class="row mb-2">
-            <div class="col-12 text-center">
+            <div class="col-12 text-center mb-3">
                 <h5 id="locationLabel" class="fs-6"></h5>
                 <p id="address" class="text-muted mb-0" style="font-size: 8pt"></p>
             </div>
-            <div class="col-12 justify-content-center d-flex p-3">
-                <div id="button-background" style="display: none;">
-                    <span class="slide-text">Geser untuk presensi</span>
-                    <div id="slider">
-                        <i id="locker" class="mdi mdi-fingerprint"></i>
+            @if ($label->is_visible)
+                <div class="col-12 justify-content-center d-flex mb-3">
+                    <div id="button-background" style="display: none;">
+                        <span class="slide-text">Geser untuk presensi</span>
+                        <div id="slider">
+                            <i id="locker" class="mdi mdi-fingerprint"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
 
-        <div class="card">
+        <div class="card mt-2">
             <div class="card-body">
                 <div class="d-flex flex-column gap-3">
                     <div class="col p-1">
@@ -51,7 +53,7 @@
                             <div class="col-auto">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <h5 class="{{ $login->text_color }} mb-0 fs-6 text-nowrap">00:00 | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
+                                        <h5 class="{{ $login->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_in ?? '00:00' }} | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
                                         <p class="{{ $login->text_color }} mb-0" style="font-size: 10px">Belum melakukan presensi</p>
                                     </div>
                                 </div>
@@ -70,7 +72,7 @@
                             <div class="col-auto">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <h5 class="{{ $logout->text_color }} mb-0 fs-6 text-nowrap">00:00 | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
+                                        <h5 class="{{ $logout->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_out ?? '00:00' }} | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
                                         <p class="{{ $logout->text_color }} mb-0" style="font-size: 10px">Belum melakukan presensi</p>
                                     </div>
                                 </div>
@@ -95,6 +97,15 @@
                 </a>
             </div>
         </div>
+
+        <form action="{{ route('attendance.store') }}" method="post">
+            @csrf
+            <input type="hidden" name="att_lat" id="att_lat" value="{{ old('att_lat') }}">
+            <input type="hidden" name="att_long" id="att_long" value="{{ old('att_long') }}">
+            <input type="hidden" name="att_address" id="att_address" value="{{ old('att_address') }}">
+            <input type="hidden" name="employee_id" id="employee_id" value="{{ old('employee_id', $employee->id) }}">
+            <input type="hidden" name="schedule_id" id="schedule_id" value="{{ old('schedule_id', $schedule->id) }}">
+        </form>
     </div>
     <!--end col-->
 </div>
@@ -241,6 +252,9 @@
                 function checkProximity(userLocation) {
                     var distance = map.distance(userLocation, officeLocation);
                     getAddress(userLocation[0], userLocation[1]);
+                    document.getElementById('att_lat').value = userLocation[0];
+                    document.getElementById('att_long').value = userLocation[1];
+
                     if (distance <= {{ $office->radius }}) {
                         document.getElementById('locationLabel').textContent = 'Anda berada DI DALAM AREA presensi';
                         document.getElementById('locationLabel').classList.add('text-success');
@@ -295,6 +309,7 @@
                             address.postcode
                         ].filter(Boolean);
                         document.getElementById('address').textContent = addressParts.join(', ');
+                        document.getElementById('att_address').value = addressParts.join(', ') ?? null;
                     })
                     .catch(error => {
                         console.error('Error fetching address:', error);
@@ -333,6 +348,9 @@
                 slider.addClass('unlocked');
                 $('#locker').css('font-size', 'inherit');
                 $('#locker').removeClass('mdi mdi-fingerprint').addClass('d-flex align-middle').html('<div class="spinner-border text-light" role="status"><span class="sr-only">Loading...</span></div>');
+
+                // ajax request to server
+                // attendanceStore();
             });
 
             $(document.body).on('mousemove touchmove', function(event){
@@ -355,7 +373,6 @@
                 }
                 slider.css({'left': relativeMouse - 10});
             });
-
         });
     </script>
 @endpush
