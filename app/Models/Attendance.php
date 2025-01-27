@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\TimeCast;
 use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
@@ -30,10 +31,8 @@ class Attendance extends Model
     protected $casts = [
         'is_on_leave' => 'boolean',
         'date' => 'date',
-        'time_in' => 'time',
-        'time_out' => 'time',
-        'check_in_time' => 'time',
-        'check_out_time' => 'time',
+        'time_in' => TimeCast::class,
+        'time_out' => TimeCast::class,
     ];
 
     public function employee()

@@ -54,7 +54,7 @@
                                 <div class="row">
                                     <div class="col text-center">
                                         <h5 class="{{ $login->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_in ?? '00:00' }} | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
-                                        <p class="{{ $login->text_color }} mb-0" style="font-size: 10px">Belum melakukan presensi</p>
+                                        <p class="{{ $login->text_color }} mb-0" style="font-size: 10px">{!! $login->text !!}</p>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
                                 <div class="row">
                                     <div class="col text-center">
                                         <h5 class="{{ $logout->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_out ?? '00:00' }} | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
-                                        <p class="{{ $logout->text_color }} mb-0" style="font-size: 10px">Belum melakukan presensi</p>
+                                        <p class="{{ $logout->text_color }} mb-0" style="font-size: 10px">{!! $logout->text !!}</p>
                                     </div>
                                 </div>
                             </div>
@@ -103,8 +103,8 @@
             <input type="hidden" name="att_lat" id="att_lat" value="{{ old('att_lat') }}">
             <input type="hidden" name="att_long" id="att_long" value="{{ old('att_long') }}">
             <input type="hidden" name="att_address" id="att_address" value="{{ old('att_address') }}">
-            <input type="hidden" name="employee_id" id="employee_id" value="{{ old('employee_id', $employee->id) }}">
             <input type="hidden" name="schedule_id" id="schedule_id" value="{{ old('schedule_id', $schedule->id) }}">
+            <input type="hidden" name="att_type" id="att_type" value="{{ old('att_type', $label->type) }}">
         </form>
     </div>
     <!--end col-->
@@ -350,7 +350,7 @@
                 $('#locker').removeClass('mdi mdi-fingerprint').addClass('d-flex align-middle').html('<div class="spinner-border text-light" role="status"><span class="sr-only">Loading...</span></div>');
 
                 // ajax request to server
-                // attendanceStore();
+                attendanceStore();
             });
 
             $(document.body).on('mousemove touchmove', function(event){
@@ -373,6 +373,11 @@
                 }
                 slider.css({'left': relativeMouse - 10});
             });
+
+            function attendanceStore() {
+                var form = $('form');
+                form.submit();
+            }
         });
     </script>
 @endpush
