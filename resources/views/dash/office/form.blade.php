@@ -121,30 +121,31 @@
         }).addTo(map);
 
         var circle = L.circle([{{ old('lat', @$data->lat) ?? 'null' }} ?? defaultLat, {{ old('long', @$data->long) ?? 'null' }} ?? defaultLng], {
-            color: 'red',
-            fillColor: '#f03',
+            color: '#4cd137',
+            fillColor: '#4cd137',
             fillOpacity: 0.5,
             radius: {{ old('radius', @$data->radius) ?? 100 }}
         }).addTo(map);
 
+        function setLatLng(lat, lng) {
+            lat = parseFloat(lat).toFixed(5);
+            lng = parseFloat(lng).toFixed(5);
+            document.getElementById('lat').value = lat;
+            document.getElementById('long').value = lng;
+            var latlng = [lat, lng];
+            marker.setLatLng(latlng);
+            circle.setLatLng(latlng);
+            map.setView(latlng, 17);
+        }
+
         marker.on('dragend', function (e) {
             var latlng = marker.getLatLng();
-            document.getElementById('lat').value = latlng.lat;
-            document.getElementById('long').value = latlng.lng;
-            circle.setLatLng(latlng);
+            setLatLng(latlng.lat, latlng.lng);
         });
 
         map.on('click', function (e) {
             var latlng = e.latlng;
-            marker.setLatLng(latlng);
-            document.getElementById('lat').value = latlng.lat;
-            document.getElementById('long').value = latlng.lng;
-            circle.setLatLng(latlng);
-        });
-
-        document.getElementById('radius').addEventListener('input', function (e) {
-            var radius = e.target.value.replace(/,/g, '');
-            circle.setRadius(radius);
+            setLatLng(latlng.lat, latlng.lng);
         });
 
         document.getElementById('locate-btn').addEventListener('click', function (e) {
@@ -152,11 +153,7 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     var latlng = [position.coords.latitude, position.coords.longitude];
-                    map.setView(latlng, 17);
-                    marker.setLatLng(latlng);
-                    document.getElementById('lat').value = latlng[0];
-                    document.getElementById('long').value = latlng[1];
-                    circle.setLatLng(latlng);
+                    setLatLng(latlng[0], latlng[1]);
                 });
             } else {
                 alert("Geolocation is not supported by this browser.");
@@ -166,19 +163,13 @@
         document.getElementById('lat').addEventListener('input', function (e) {
             var lat = e.target.value;
             var lng = document.getElementById('long').value;
-            var latlng = [lat, lng];
-            marker.setLatLng(latlng);
-            circle.setLatLng(latlng);
-            map.setView(latlng, 17);
+            setLatLng(lat, lng);
         });
 
         document.getElementById('long').addEventListener('input', function (e) {
             var lng = e.target.value;
             var lat = document.getElementById('lat').value;
-            var latlng = [lat, lng];
-            marker.setLatLng(latlng);
-            circle.setLatLng(latlng);
-            map.setView(latlng, 17);
+            setLatLng(lat, lng);
         });
     </script>
 @endpush

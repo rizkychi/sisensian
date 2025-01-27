@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
+use App\Models\Office;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -12,7 +13,19 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        return view('dash.attendance.index');
+        $today = \Carbon\Carbon::now();
+        $login = (object) [
+            'text_color' => 'text-muted text-opacity-75',
+            'icon' => 'ri-check-line'
+        ];
+        $logout = (object) [
+            'text_color' => 'text-muted text-opacity-75',
+            'icon' => 'la-hourglass-half'
+        ];
+        $attendace_text = 'Berangkat';
+        $employee = auth()->user()->employee;
+        $office = Office::where('id', $employee->office_id)->first();
+        return view('dash.attendance.index', compact('today', 'login', 'logout', 'employee', 'office'))->with('attendance_text', $attendace_text);
     }
 
     /**

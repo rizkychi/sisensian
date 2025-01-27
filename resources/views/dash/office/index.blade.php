@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <div class="live-preview">
                         <div class="table-responsive">
-                            <table id="dtx" class="table table-nowrap align-middle w-100">
+                            <table id="dtx" class="table align-middle w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" style="width: 0px;">No</th>
@@ -62,8 +62,8 @@
                         orderable: false,
                         render: function(data, type, row) {
                             link = 'https://www.google.com/maps/search/?api=1&query=' + row.lat + ',' + row.long;
-                            el = '<a href="' + link + '" target="_blank" class="btn btn-info btn-icon btn-sm waves-effect waves-light me-2"><i class="bx bxs-map fs-6"></i></a>'
-                            el += row.lat + ', ' + row.long;
+                            el = '<span class="text-nowrap"><a href="' + link + '" target="_blank" class="btn btn-info btn-icon btn-sm waves-effect waves-light me-2"><i class="bx bxs-map fs-6"></i></a>'
+                            el += row.lat + ', ' + row.long + '</span>';
                             return el
                         }
                     },
