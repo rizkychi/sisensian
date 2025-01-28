@@ -241,7 +241,7 @@ class ScheduleController extends Controller
                     // Check if the schedule already exists
                     $schedule = Schedule::where('employee_id', $employee_id)
                         ->where('date', $request->date)
-                        ->where('shift_id', $request->shift_id)
+                        // ->where('shift_id', $request->shift_id) // one employee can't have multiple shifts in a day
                         ->where('is_recurring', false)
                         ->first();
                     

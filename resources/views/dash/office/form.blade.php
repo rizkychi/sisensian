@@ -128,8 +128,8 @@
         }).addTo(map);
 
         function setLatLng(lat, lng) {
-            lat = parseFloat(lat).toFixed(5);
-            lng = parseFloat(lng).toFixed(5);
+            // lat = parseFloat(lat).toFixed(5);
+            // lng = parseFloat(lng).toFixed(5);
             document.getElementById('lat').value = lat;
             document.getElementById('long').value = lng;
             var latlng = [lat, lng];
@@ -146,6 +146,11 @@
         map.on('click', function (e) {
             var latlng = e.latlng;
             setLatLng(latlng.lat, latlng.lng);
+        });
+
+        document.getElementById('radius').addEventListener('input', function (e) {
+            var radius = e.target.value.replace(/,/g, '');
+            circle.setRadius(radius);
         });
 
         document.getElementById('locate-btn').addEventListener('click', function (e) {

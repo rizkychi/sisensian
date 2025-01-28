@@ -103,8 +103,8 @@
             <input type="hidden" name="att_lat" id="att_lat" value="{{ old('att_lat') }}">
             <input type="hidden" name="att_long" id="att_long" value="{{ old('att_long') }}">
             <input type="hidden" name="att_address" id="att_address" value="{{ old('att_address') }}">
-            <input type="hidden" name="schedule_id" id="schedule_id" value="{{ old('schedule_id', $schedule->id) }}">
-            <input type="hidden" name="att_type" id="att_type" value="{{ old('att_type', $label->type) }}">
+            <input type="hidden" name="schedule_id" id="schedule_id" value="{{ old('schedule_id', @$schedule->id) }}">
+            <input type="hidden" name="att_type" id="att_type" value="{{ old('att_type', @$label->type) }}">
         </form>
     </div>
     <!--end col-->
@@ -295,21 +295,15 @@
             }
 
             function getAddress(lat, long) {
-                const geocodeUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}&accept-language=id`;
+                const geocodeUrl = `https://nominatim.openstreetmap.org/reverse.php?zoom=16&format=jsonv2&accept-language=id&lat=${lat}&lon=${long}`;
                 fetch(geocodeUrl)
                     .then(response => response.json())
                     .then(data => {
                         const address = data.address;
-                        const addressParts = [
-                            address.road,
-                            address.suburb,
-                            address.city_district,
-                            address.city,
-                            address.state,
-                            address.postcode
-                        ].filter(Boolean);
-                        document.getElementById('address').textContent = addressParts.join(', ');
-                        document.getElementById('att_address').value = addressParts.join(', ') ?? null;
+                        const addressString = data.display_name.replace(', ' + address.region, '').replace(', ' + address.country, '');
+                        
+                        document.getElementById('address').textContent = addressString;
+                        document.getElementById('att_address').value = addressString ?? null;
                     })
                     .catch(error => {
                         console.error('Error fetching address:', error);

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\Leave;
 use App\Models\LeaveType;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Str;
 
 class LeaveController extends Controller
 {
@@ -111,15 +114,42 @@ class LeaveController extends Controller
     public function update(Request $request, string $id)
     {
         $data = Leave::findOrFail($id);
-        $data->status = $request->status;
-        $data->note = $request->note;
-        $data->confirmed_at = now();
-        $data->confirmed_by = Auth::id();
-        
-        if ($data->save()) {
+
+        try {
+            \DB::transaction(function () use ($request, $data) {
+                $data->status = $request->status;
+                $data->note = $request->note;
+                $data->confirmed_at = now();
+                $data->confirmed_by = Auth::id();
+                $data->save();
+                
+                if ($request->status == 'approved') {
+                    // save to attendance
+                    $start_date = \Carbon\Carbon::parse($data->start_date);
+                    $end_date = \Carbon\Carbon::parse($data->end_date);
+                    $period = \Carbon\CarbonPeriod::create($start_date, $end_date);
+
+                    foreach ($period as $date) {
+                        $schedule = Schedule::where('employee_id', $data->employee_id)->get();
+                        $regular = $schedule->where('is_recurring', true)->where('day_of_week', Str::lower($date->format('l')))->first();
+                        $shift = $schedule->where('is_recurring', false)->where('date', $date->format('Y-m-d'))->first();
+                        
+                        $attendace = Attendance::updateOrCreate([
+                            'employee_id' => $data->employee_id,
+                            'date' => $date->format('Y-m-d'),
+                        ], [
+                            'schedule_id' => (@$regular->id ?? @$shift->id ?? null),
+                            'office_id' => $data->employee->office_id,
+                            'is_on_leave' => true,
+                            'time_in' => (@$regular->shift->time_in ?? @$shift->shift->time_in ?? '00:00'),
+                            'time_out' => (@$regular->shift->time_out ?? @$shift->shift->time_out ?? '00:00'),
+                        ]);
+                    }
+                }
+            });
             return redirect()->route("$this->slug.index")->with('success', 'Data berhasil diupdate.');
-        } else {
-            return back()->with('error', 'Data gagal diupdate')->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Data gagal diupdate: ' . $e->getMessage())->withInput();
         }
     }
 

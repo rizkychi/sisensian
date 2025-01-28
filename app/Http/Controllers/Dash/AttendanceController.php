@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\Holiday;
 use App\Models\Office;
 use App\Models\Schedule;
 use Carbon\Carbon;
@@ -109,6 +110,22 @@ class AttendanceController extends Controller
                 $label->text = 'Di luar waktu presensi';
                 $label->color = 'danger';
             }
+
+            // on leave
+            if ($attendance && $attendance->is_on_leave) {
+                $label->text = 'Cuti';
+                $label->color = 'warning';
+                $label->is_visible = false;
+            }
+        }
+
+        // check holiday
+        $holiday = Holiday::where('date', $today->format('Y-m-d'))->first();
+        // if today is holiday and day off and schedule is regular
+        if ($holiday && $holiday->is_day_off && @$schedule->is_recurring) {
+            $label->text = 'Libur';
+            $label->color = 'danger';
+            $label->is_visible = false;
         }
 
         return view('dash.attendance.index', compact(
