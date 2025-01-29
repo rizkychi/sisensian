@@ -129,20 +129,23 @@ class LeaveController extends Controller
                     $end_date = \Carbon\Carbon::parse($data->end_date);
                     $period = \Carbon\CarbonPeriod::create($start_date, $end_date);
 
+                    $schedule = Schedule::where('employee_id', $data->employee_id)->get();
                     foreach ($period as $date) {
-                        $schedule = Schedule::where('employee_id', $data->employee_id)->get();
-                        $regular = $schedule->where('is_recurring', true)->where('day_of_week', Str::lower($date->format('l')))->first();
-                        $shift = $schedule->where('is_recurring', false)->where('date', $date->format('Y-m-d'))->first();
+                        if ($data->employee->category == 'shift') {
+                            $schedule = $schedule->where('is_recurring', false)->where('date', $date->format('Y-m-d'))->first();
+                        } else {
+                            $schedule = $schedule->where('is_recurring', true)->where('day_of_week', Str::lower($date->format('l')))->first();
+                        }
                         
                         $attendace = Attendance::updateOrCreate([
                             'employee_id' => $data->employee_id,
                             'date' => $date->format('Y-m-d'),
                         ], [
-                            'schedule_id' => (@$regular->id ?? @$shift->id ?? null),
-                            'office_id' => $data->employee->office_id,
+                            'schedule_id' => @$schedule->id ?? null,
+                            'office_id' => @$data->employee->office_id,
                             'is_on_leave' => true,
-                            'time_in' => (@$regular->shift->time_in ?? @$shift->shift->time_in ?? '00:00'),
-                            'time_out' => (@$regular->shift->time_out ?? @$shift->shift->time_out ?? '00:00'),
+                            'time_in' => (@$schedule->shift->time_in ?? '00:00'),
+                            'time_out' => (@$schedule->shift->time_out ?? '00:00'),
                         ]);
                     }
                 }

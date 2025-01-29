@@ -87,6 +87,18 @@
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                        <div class="col-md-12 mb-3">
+                                            <label for="category" class="form-label">Jenis Jadwal</label>
+                                            <select class="form-select" id="category" name="category" data-choices required>
+                                                <option value="">Pilih Jenis Jadwal</option>
+                                                @foreach ($category as $cat)
+                                                    <option value="{{ $cat->id }}"
+                                                        {{ old('category', @$data->category) == $cat->id ? 'selected' : '' }}>
+                                                        {{ $cat->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

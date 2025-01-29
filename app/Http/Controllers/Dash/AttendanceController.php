@@ -9,6 +9,7 @@ use App\Models\Office;
 use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Str;
 
 class AttendanceController extends Controller
@@ -19,7 +20,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $today = Carbon::now();
-        $employee = auth()->user()->employee;
+        $employee = Auth::user()->employee;
         $office = Office::where('id', $employee->office_id)->first();
 
         $login = (object) [
@@ -32,41 +33,21 @@ class AttendanceController extends Controller
             'text_color' => 'text-muted text-opacity-75',
             'icon' => 'la-hourglass-half'
         ];
-
-        // check attendance status
-        $attendance = Attendance::where('employee_id', $employee->id)
-            ->where('date', $today->format('Y-m-d'))
-            ->first();
-
-        if ($attendance) {
-            if ($attendance->check_in_time) {
-                $login->text = 'Berhasil presensi pada <b>'.$attendance->check_in_time.'</b>';
-                $login->text_color = 'text-success';
-                $login->icon = 'ri-check-line';
-            }
-            if ($attendance->check_out_time) {
-                $logout->text = 'Berhasil presensi pada <b>'.$attendance->check_out_time.'</b>';
-                $logout->text_color = 'text-success';
-                $logout->icon = 'ri-check-line';
-            }
-        }
         
+        // check schedule
         $schedule = null;
-        // check schedule (regular)
-        $regular = Schedule::where('employee_id', $employee->id)
-            ->where('is_recurring', true)
-            ->first();
-        if ($regular) {
-            $schedule = $regular->where('day_of_week', Str::lower($today->format('l')))->first();
+        if ($employee->category == 'regular') {
+            // schedule (regular)
+            $schedule = Schedule::where('employee_id', $employee->id)
+                ->where('is_recurring', true)
+                ->where('day_of_week', Str::lower($today->format('l')))
+                ->first();
         } else {
-            // check schedule (shift)
-            $shift = Schedule::where('employee_id', $employee->id)
+            // schedule (shift)
+            $schedule = Schedule::where('employee_id', $employee->id)
                 ->where('is_recurring', false)
                 ->where('date', $today->format('Y-m-d'))
                 ->first();
-            if ($shift) {
-                $schedule = $shift;
-            }
         }
         
         $label = (object) [
@@ -77,38 +58,22 @@ class AttendanceController extends Controller
         ];
 
         if ($schedule) {
-            $now_time = $today;
-            $time_in = $schedule->shift->time_in;
-            $time_out = $schedule->shift->time_out;
+            // check attendance status
+            $attendance = Attendance::where('employee_id', $employee->id)
+                ->where('date', $today->format('Y-m-d'))
+                ->first();
 
-            // testing purpose
-            // $now_time = Carbon::now()->setHours(17);
-            // $time_in = '08:00';
-            // $time_out = '18:00';
-
-            $time_in_time = Carbon::createFromFormat('H:i', $time_in);
-            $time_out_time = Carbon::createFromFormat('H:i', $time_out);
-
-            if ($time_in_time->gt($time_out_time)) {
-                $time_out_time->addDay();   
-            }
-
-            $diff_in = abs($now_time->diffInSeconds($time_in_time));
-            $diff_out = abs($now_time->diffInSeconds($time_out_time));
-
-            if ($now_time->between($time_in_time->subHours(2), $time_in_time) || ($now_time->between($time_in_time, $time_out_time) && $diff_in < $diff_out)) {
-                $label->text = 'Berangkat';
-                $label->color = 'success';
-                $label->type = 'in';
-                $label->is_visible = $attendance && $attendance->check_in_time ? false : true;
-            } elseif ($now_time->between($time_out_time, $time_out_time->addHours(6)) || ($now_time->between($time_in_time, $time_out_time) && $diff_in >= $diff_out)) {
-                $label->text = 'Pulang';
-                $label->color = 'success';
-                $label->type = 'out';
-                $label->is_visible = $attendance && $attendance->check_out_time ? false : true;
-            } else {
-                $label->text = 'Di luar waktu presensi';
-                $label->color = 'danger';
+            if ($attendance) {
+                if ($attendance->check_in_time) {
+                    $login->text = 'Berhasil presensi pada <b>'.$attendance->check_in_time.'</b>';
+                    $login->text_color = 'text-success';
+                    $login->icon = 'ri-check-line';
+                }
+                if ($attendance->check_out_time) {
+                    $logout->text = 'Berhasil presensi pada <b>'.$attendance->check_out_time.'</b>';
+                    $logout->text_color = 'text-success';
+                    $logout->icon = 'ri-check-line';
+                }
             }
 
             // on leave
@@ -116,6 +81,41 @@ class AttendanceController extends Controller
                 $label->text = 'Cuti';
                 $label->color = 'warning';
                 $label->is_visible = false;
+            } else {
+                // check time
+                $now_time = $today;
+                $time_in = $schedule->shift->time_in;
+                $time_out = $schedule->shift->time_out;
+
+                // testing purpose
+                // $now_time = Carbon::now()->setHours(22)->setMinutes(0);
+                // $time_in = '08:00';
+                // $time_out = '16:00';
+
+                $time_in_time = Carbon::createFromFormat('H:i', $time_in);
+                $time_out_time = Carbon::createFromFormat('H:i', $time_out);
+
+                if ($time_in_time->gt($time_out_time)) {
+                    $time_out_time->addDay();   
+                }
+
+                $diff_in = abs($now_time->diffInSeconds($time_in_time));
+                $diff_out = abs($now_time->diffInSeconds($time_out_time));
+
+                if ($now_time->between($time_in_time->subHours(2), $time_in_time) || ($now_time->between($time_in_time, $time_out_time) && $diff_in < $diff_out)) {
+                    $label->text = 'Berangkat';
+                    $label->color = 'success';
+                    $label->type = 'in';
+                    $label->is_visible = $attendance && $attendance->check_in_time ? false : true;
+                } elseif ($now_time->between($time_out_time, $time_out_time->addHours(6)) || ($now_time->between($time_in_time, $time_out_time) && $diff_in >= $diff_out)) {
+                    $label->text = 'Pulang';
+                    $label->color = 'success';
+                    $label->type = 'out';
+                    $label->is_visible = $attendance && $attendance->check_out_time ? false : true;
+                } else {
+                    $label->text = 'Di luar waktu presensi';
+                    $label->color = 'danger';
+                }
             }
         }
 
@@ -136,8 +136,7 @@ class AttendanceController extends Controller
             'office',
             'schedule',
             'label',
-            'attendance'
-        ));
+        ))->with('attendance', @$attendance);
     }
 
     /**
@@ -154,7 +153,7 @@ class AttendanceController extends Controller
             'schedule_id' => 'required|string|exists:schedule,id',
         ]);
 
-        $employee = auth()->user()->employee;
+        $employee = Auth::user()->employee;
         $schedule = Schedule::where('id', $request->schedule_id)->first();
 
         try {
@@ -198,8 +197,9 @@ class AttendanceController extends Controller
      */
     public function history()
     {
-        $employee = auth()->user()->employee;
+        $employee = Auth::user()->employee;
         $attendances = Attendance::where('employee_id', $employee->id)
+            ->where('is_on_leave', false)
             ->orderBy('date', 'desc')
             ->limit(10)
             ->get();

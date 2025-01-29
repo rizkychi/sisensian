@@ -54,7 +54,7 @@ class ShiftController extends Controller
         $shift->time_out = $request->time_out;
         $shift->description = $request->description;
         $shift->is_fixed = $request->is_fixed == 'on' ? 1 : 0;
-        $shift->is_night_shift = $request->is_night_shift == 'on' ? 1 : 0;
+        // $shift->is_night_shift = $request->is_night_shift == 'on' ? 1 : 0;
 
         if ($shift->save()) {
             return redirect()->route('shift.index')->with('success', 'Data berhasil disimpan.');
@@ -100,7 +100,7 @@ class ShiftController extends Controller
         $shift->time_out = $request->time_out;
         $shift->description = $request->description;
         $shift->is_fixed = $request->is_fixed == 'on' ? 1 : 0;
-        $shift->is_night_shift = $request->is_night_shift == 'on' ? 1 : 0;
+        // $shift->is_night_shift = $request->is_night_shift == 'on' ? 1 : 0;
 
         if ($shift->save()) {
             return redirect()->route('shift.index')->with('success', 'Data berhasil diubah.');

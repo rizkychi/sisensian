@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('position')->nullable();
             $table->bigInteger('office_id')->unsigned();
             $table->boolean('is_active')->default(true);
+            $table->string('photo')->nullable();
+            $table->enum('category', ['regular', 'shift'])->default('regular');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

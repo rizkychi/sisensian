@@ -389,7 +389,7 @@
                     type: 'GET',
                     success: function(response) {
                         historyLoading.hide();
-                        if (response.status === 'success') {
+                        if (response.status === 'success' && response.data.length > 0) {
                             response.data.forEach(el => {
                                 var card = historyCard.clone();
                                 card.find('.history-date').text(el.date_formatted);
@@ -409,7 +409,9 @@
 
                                 card.appendTo(historyContent);
                             });
-                        } 
+                        } else {
+                            historyContent.html('<p class="text-center text-muted">Tidak ada data riwayat presensi</p>');
+                        }
                     },
                     error: function(error) {
                         historyLoading.hide();

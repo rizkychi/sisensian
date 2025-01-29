@@ -21,12 +21,12 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('123'),
                 'role' => 'superadmin',
             ],
-            [
-                'username' => 'dummy',
-                'email' => 'dummy@sisensian.com',
-                'password' => Hash::make('123'),
-                'role' => 'user',
-            ],
+            // [
+            //     'username' => 'dummy',
+            //     'email' => 'dummy@sisensian.com',
+            //     'password' => Hash::make('123'),
+            //     'role' => 'user',
+            // ],
         ];
 
         foreach ($users as $user) {

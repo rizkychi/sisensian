@@ -13,7 +13,7 @@ class Shift extends Model
         'name',
         'time_in',
         'time_out',
-        'is_night_shift',
+        // 'is_night_shift',
         'is_fixed',
         'description',
     ];
@@ -21,7 +21,7 @@ class Shift extends Model
     protected $casts = [
         'time_in' => TimeCast::class,
         'time_out' => TimeCast::class,
-        'is_night_shift' => 'boolean',
+        // 'is_night_shift' => 'boolean',
         'is_fixed' => 'boolean',
     ];
 

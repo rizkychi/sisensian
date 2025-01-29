@@ -28,6 +28,7 @@
                                     <th scope="col">No. HP</th>
                                     <th scope="col">Jabatan</th>
                                     <th scope="col">Kantor</th>
+                                    <th scope="col">Jenis Jadwal</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Username</th>
                                     <th scope="col">Email</th>
@@ -174,8 +175,19 @@
                         name: 'position'
                     },
                     {
-                        data: 'office_name',
-                        name: 'office_name',
+                        data: 'office.name',
+                        name: 'office.name',
+                    },
+                    {
+                        data: 'category',
+                        name: 'category',
+                        render: function(data, type, row) {
+                            if (data == 'regular') {
+                                return '<span class="badge badge-border bg-primary-subtle text-primary">Reguler</span>';
+                            } else if (data == 'shift') {
+                                return '<span class="badge badge-border bg-secondary-subtle text-secondary">Shift</span>';
+                            } 
+                        }
                     },
                     {
                         data: 'is_active',
@@ -189,20 +201,20 @@
                         }
                     },
                     {
-                        data: 'user',
-                        name: 'user',
+                        data: 'user.username',
+                        name: 'user.username',
                         visible: false,
-                        render: function (data, type, row) {
-                            return data ? data.username : '';
-                        }
+                        // render: function (data, type, row) {
+                        //     return data ? data.username : '';
+                        // }
                     },
                     {
-                        data: 'user',
-                        name: 'user',
+                        data: 'user.email',
+                        name: 'user.email',
                         visible: false,
-                        render: function (data, type, row) {
-                            return data ? data.email : '';
-                        }
+                        // render: function (data, type, row) {
+                        //     return data ? data.email : '';
+                        // }
                     },
                     {
                         data: 'action',

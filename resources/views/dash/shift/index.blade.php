@@ -22,8 +22,8 @@
                                         <th scope="col">Nama</th>
                                         <th scope="col">Waktu Masuk</th>
                                         <th scope="col">Waktu Pulang</th>
-                                        <th scope="col">Shift Tetap</th>
-                                        <th scope="col">Shift Malam</th>
+                                        <th scope="col">Shift Tetap/Reguler</th>
+                                        {{-- <th scope="col">Shift Malam</th> --}}
                                         <th scope="col">Deskripsi</th>
                                         <th scope="col" style="width: 0px;">Aksi</th>
                                     </tr>
@@ -72,17 +72,17 @@
                             }
                         }
                     },
-                    {
-                        data: 'is_night_shift',
-                        name: 'is_night_shift',
-                        render: function(data, type, row) {
-                            if (data == 1) {
-                                return '<i class="bx bx-check fs-3 text-success"></i>';
-                            } else {
-                                return '<i class="bx bx-x fs-3 text-danger"></i>';
-                            }
-                        }
-                    },
+                    // {
+                    //     data: 'is_night_shift',
+                    //     name: 'is_night_shift',
+                    //     render: function(data, type, row) {
+                    //         if (data == 1) {
+                    //             return '<i class="bx bx-check fs-3 text-success"></i>';
+                    //         } else {
+                    //             return '<i class="bx bx-x fs-3 text-danger"></i>';
+                    //         }
+                    //     }
+                    // },
                     {
                         data: 'description',
                         name: 'description',

@@ -153,7 +153,7 @@
                         data: 'start_date',
                         name: 'start_date',
                         render: function(data, type, row) {
-                            return data + ' s/d ' + row.end_date;
+                            return dateFormat(data) + ' s/d ' + dateFormat(row.end_date);
                         }
                     },
                     {
@@ -167,6 +167,9 @@
                     {
                         data: 'created_at',
                         name: 'created_at',
+                        render: function(data, type, row) {
+                            return dateFormat(data);
+                        }
                     },
                     {
                         data: 'status',

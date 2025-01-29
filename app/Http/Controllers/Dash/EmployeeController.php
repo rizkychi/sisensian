@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Response;
+use Str;
 
 class EmployeeController extends Controller
 {
@@ -41,7 +42,11 @@ class EmployeeController extends Controller
         $route_name = route("$this->slug.store");
         $route_label = 'Tambah';
         $office = Office::where('is_active', true)->get();
-        return view("dash.$this->slug.form", compact('route_name', 'route_label', 'office'));
+        $category = [
+            (object) ['id' => 'regular', 'name' => 'Reguler'],
+            (object) ['id' => 'shift', 'name' => 'Shift'],
+        ];
+        return view("dash.$this->slug.form", compact('route_name', 'route_label', 'office', 'category'));
     }
 
     /**
@@ -59,6 +64,7 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:13',
             'position' => 'nullable|string|max:255',
             'office_id' => 'required',
+            'category' => 'required',
         ]);
 
         try {
@@ -80,6 +86,7 @@ class EmployeeController extends Controller
                 $data->position = $request->position;
                 $data->office_id = $request->office_id;
                 $data->is_active = $request->is_active == 'on' ? 1 : 0;
+                $data->category = $request->category;
                 $data->save();
             });
 
@@ -106,7 +113,11 @@ class EmployeeController extends Controller
         $route_label = 'Ubah';
         $data = Employee::findOrFail($id);
         $office = Office::where('is_active', true)->get();
-        return view("dash.$this->slug.form", compact('data', 'route_name', 'route_label', 'office'));
+        $category = [
+            (object) ['id' => 'regular', 'name' => 'Reguler'],
+            (object) ['id' => 'shift', 'name' => 'Shift'],
+        ];
+        return view("dash.$this->slug.form", compact('data', 'route_name', 'route_label', 'office', 'category'));
     }
 
     /**
@@ -126,6 +137,7 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:13',
             'position' => 'nullable|string|max:255',
             'office_id' => 'required',
+            'category' => 'required',
         ]);
 
         try {
@@ -141,6 +153,7 @@ class EmployeeController extends Controller
                 $data->position = $request->position;
                 $data->office_id = $request->office_id;
                 $data->is_active = $request->is_active == 'on' ? 1 : 0;
+                $data->category = $request->category;
                 $data->save();
 
                 $user = User::findOrFail($data->user_id);
@@ -183,7 +196,7 @@ class EmployeeController extends Controller
     public function json(Request $request)
     {
         if ($request->ajax()) {
-            $data = Employee::all();
+            $data = Employee::with('user')->with('office')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -192,12 +205,6 @@ class EmployeeController extends Controller
                     $cols .= '<a href="' . route("$this->slug.destroy", ["$this->slug" => $row->id]) . '" class="btn btn-sm btn-danger btn-icon waves-effect waves-light" title="Hapus" data-confirm-delete="true"><i class="bx bxs-trash fs-6"></i></a>';
                     $cols .= '</div>';
                     return $cols;
-                })
-                ->addColumn('office_name', function($row){
-                    return $row->office->name;
-                })
-                ->addColumn('user', function($row){
-                    return json_decode($row->user);
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -234,6 +241,11 @@ class EmployeeController extends Controller
                             continue; // Skip row if user or employee already exists
                         }
 
+                        $cat = 'regular';
+                        if (Str::lower(trim($value[9])) == 'shift') {
+                            $cat = 'shift';
+                        }
+
                         $user = new User();
                         $user->username = $value[1];
                         $user->password = Hash::make($value[2]);
@@ -249,6 +261,7 @@ class EmployeeController extends Controller
                         $employee->position = $value[8] ?? null;
                         $employee->office_id = $request->office_id;
                         $employee->is_active = true;
+                        $employee->category = $cat;
                         $employee->save();
                     }
                 }
@@ -283,6 +296,7 @@ class EmployeeController extends Controller
             $sheet->setCellValue('G1', 'Alamat');
             $sheet->setCellValue('H1', 'No. HP');
             $sheet->setCellValue('I1', 'Jabatan');
+            $sheet->setCellValue('J1', 'Jenis Jadwal (Reguler/Shift)');
 
             // set number value
             $sheet->setCellValue('A2', 1);
@@ -300,7 +314,7 @@ class EmployeeController extends Controller
                     'startColor' => ['argb' => 'FF4CAF50'],
                 ],
             ];
-            $sheet->getStyle('A1:I1')->applyFromArray($headerStyle);
+            $sheet->getStyle('A1:J1')->applyFromArray($headerStyle);
 
             // Set phone number column to text format
             $sheet->getStyle('H')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
@@ -315,9 +329,10 @@ class EmployeeController extends Controller
             $sheet->getColumnDimension('G')->setWidth(30);
             $sheet->getColumnDimension('H')->setWidth(15);
             $sheet->getColumnDimension('I')->setWidth(20);
+            $sheet->getColumnDimension('J')->setWidth(25);
 
             // Add border to all cells
-            $sheet->getStyle('A1:I100')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle('A1:J100')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             header('Content-Disposition: attachment; filename="karyawan_template.xlsx"');

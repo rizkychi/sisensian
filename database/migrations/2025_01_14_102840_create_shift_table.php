@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->time('time_in');
             $table->time('time_out');
-            $table->boolean('is_night_shift')->default(false);
+            // $table->boolean('is_night_shift')->default(false);
             $table->boolean('is_fixed')->default(true);
             $table->string('description')->nullable();
             $table->timestamps();

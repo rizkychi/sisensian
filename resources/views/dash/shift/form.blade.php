@@ -52,11 +52,11 @@
                                     {{ old('is_fixed', @$data->is_fixed) ?? !isset($data) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="customSwitchsizemd">Shift Tetap/Reguler?</label>
                             </div>
-                            <div class="form-check form-switch form-switch-md" dir="ltr">
+                            {{-- <div class="form-check form-switch form-switch-md" dir="ltr">
                                 <input type="checkbox" class="form-check-input" id="switchshiftnight" name="is_night_shift"
                                     {{ old('is_night_shift', @$data->is_night_shift) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="switchshiftnight">Shift Malam/Melewati Hari?</label>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div>

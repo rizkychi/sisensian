@@ -28,7 +28,6 @@ return new class extends Migration
             $table->string('check_out_long')->nullable();
             $table->string('check_out_address')->nullable();
             $table->string('note')->nullable();
-            $table->string('status')->nullable();
             $table->boolean('is_on_leave')->default(false);
             $table->timestamps();
 

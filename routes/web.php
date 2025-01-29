@@ -46,7 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('shift/delete', [App\Http\Controllers\Dash\ScheduleController::class, 'shiftDelete'])->name('sift.delete');
         Route::post('shift/copy', [App\Http\Controllers\Dash\ScheduleController::class, 'shiftCopy'])->name('sift.copy');
         
-        Route::get('employee/{office_id?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesByOffice'])->name('regular.get.employee');
+        Route::get('employee/{office_id?}/{category?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesByOffice'])->name('regular.get.employee');
         Route::get('employee/{date?}/{shift_id?}', [App\Http\Controllers\Dash\ScheduleController::class, 'getEmployeesBySchedule'])->name('sift.get.employee');
     });
     // Route::resource('schedule', App\Http\Controllers\Dash\ScheduleController::class)->except(['edit', 'destroy']);

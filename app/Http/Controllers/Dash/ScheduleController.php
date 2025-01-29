@@ -47,7 +47,7 @@ class ScheduleController extends Controller
     public function regular(Request $request)
     {
         $office = Office::where('is_active', true)->get();
-        $employee = Employee::where('office_id', $request->office_id)->get();
+        $employee = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'regular')->get();
         return view("dash.$this->slug.regular", compact('office', 'employee'));
     }
 
@@ -106,7 +106,7 @@ class ScheduleController extends Controller
                     }
                 } else {
                     // Schedule for all employees in the office
-                    $employees = Employee::where('office_id', $request->office_id)->get();
+                    $employees = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'regular')->get();
                     foreach ($employees as $employee) {
                         foreach ($this->days as $d => $day) {
                             // Check if the schedule already exists
@@ -217,7 +217,7 @@ class ScheduleController extends Controller
                 ->orderBy('date', 'asc')
                 ->get();
             
-            $employee = Employee::where('office_id', $request->office_id)->get();
+            $employee = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'shift')->get();
         }
 
         return view("dash.$this->slug.shift", compact('office', 'shifts', 'schedule', 'employee'));
@@ -353,9 +353,13 @@ class ScheduleController extends Controller
     /**
      * Get employees by office
      */
-    public function getEmployeesByOffice(string $office_id = null)
+    public function getEmployeesByOffice(string $office_id = null, string $category = null)
     {
-        $data = Employee::where('office_id', $office_id)->get();
+        $data = Employee::where('office_id', $office_id)->where('is_active', true);
+        if ($category) {
+            $data = $data->where('category', $category);
+        }
+        $data = $data->get();
         return response()->json($data);
     }
 
