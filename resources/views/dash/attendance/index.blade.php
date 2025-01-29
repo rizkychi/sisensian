@@ -89,9 +89,9 @@
 
         <div class="row mb-4 justify-content-center">
             <div class="col-auto hstack gap-4">
-                <a href="#" class="btn btn-soft-primary btn-label waves-effect waves-light rounded-pill">
+                <button id="historyBtn" class="btn btn-soft-primary btn-label waves-effect waves-light rounded-pill">
                     <i class="ri-history-line label-icon align-middle rounded-pill fs-4 me-2"></i> Riwayat
-                </a>
+                </button>
                 <a href="#" class="btn btn-soft-primary btn-label waves-effect waves-light rounded-pill">
                     <i class="ri-calendar-line label-icon align-middle rounded-pill fs-4 me-2"></i> Jadwal
                 </a>
@@ -372,6 +372,104 @@
                 var form = $('form');
                 form.submit();
             }
+
+            // Modals
+            $('#historyBtn').on('click', function() {
+                $('#historyModal').modal('show');
+            });
+
+            const historyContent = $('#historyContent');
+            const historyLoading = $('#historyLoading');
+            const historyCard = $('.history-card').clone();
+            $('#historyModal').on('show.bs.modal', function() {
+                historyContent.empty();
+                historyLoading.show();
+                $.ajax({
+                    url: '{{ route('attendance.history') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        historyLoading.hide();
+                        if (response.status === 'success') {
+                            response.data.forEach(el => {
+                                var card = historyCard.clone();
+                                card.find('.history-date').text(el.date_formatted);
+                                card.find('.history-schedule').text(el.shift_type);
+                                card.find('.time-in').text(el.check_in_time ?? '--:--');
+                                card.find('.status-in').text(el.check_in_status);
+                                card.find('.location-in').text(el.check_in_address ?? '-');
+                                card.find('.time-out').text(el.check_out_time ?? '--:--');
+                                card.find('.status-out').text(el.check_out_status);
+                                card.find('.location-out').text(el.check_out_address ?? '-');
+
+                                // set color
+                                card.find('.icon-in').addClass(el.check_in_color);
+                                card.find('.icon-out').addClass(el.check_out_color);
+                                card.find('.time-in').parent().addClass(el.check_in_color);
+                                card.find('.time-out').parent().addClass(el.check_out_color);
+
+                                card.appendTo(historyContent);
+                            });
+                        } 
+                    },
+                    error: function(error) {
+                        historyLoading.hide();
+                        console.error('Error fetching history:', error);
+                    }
+                });
+            });
         });
     </script>
+@endpush
+
+@push('modals')
+<!-- History Modals -->
+<div id="historyModal" class="modal fade" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historyModalLabel">Riwayat Presensi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+            </div>
+            <div class="modal-body">
+                <div id="historyContent">
+                    <div class="card border card-border-primary history-card">
+                        <div class="card-header p-3">
+                            <span class="float-end badge bg-primary history-schedule"></span>
+                            <h6 class="card-title mb-0 fs-6 history-date"></h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row flex-nowrap g-3">
+                                <div class="col-auto">
+                                    <i class="bx bx-log-in fs-1 icon-in"></i>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0 fs-6 fw-medium time-in"></p>
+                                    <p class="mb-0 status-in" style="font-size: 10px"></p>
+                                    <p class="mb-0 text-muted location-in" style="font-size: 10px"></p>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bx bx-log-out fs-1 icon-out"></i>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0 fs-6 fw-medium time-out"></p>
+                                    <p class="mb-0 status-out" style="font-size: 10px"></p>
+                                    <p class="mb-0 text-muted location-out" style="font-size: 10px"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="historyLoading" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light mx-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endpush

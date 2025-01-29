@@ -193,4 +193,20 @@ class AttendanceController extends Controller
         }
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function history()
+    {
+        $employee = auth()->user()->employee;
+        $attendances = Attendance::where('employee_id', $employee->id)
+            ->orderBy('date', 'desc')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'status' => $attendances->count() > 0 ? 'success' : 'not found',
+            'data' => $attendances
+        ]);
+    }
 }

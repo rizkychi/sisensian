@@ -53,9 +53,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Attendance
     Route::prefix('attendance')->group(function () {
-        // Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('attendance.json');
+        Route::get('history', [App\Http\Controllers\Dash\AttendanceController::class, 'history'])->name('attendance.history');
     });
-    Route::resource('attendance', App\Http\Controllers\Dash\AttendanceController::class);
+    Route::resource('attendance', App\Http\Controllers\Dash\AttendanceController::class)->only(['index', 'store']);
 
     // Report
     Route::prefix('report')->group(function () {

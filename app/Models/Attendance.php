@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\DateCast;
 use App\Casts\TimeCast;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,9 +30,18 @@ class Attendance extends Model
         'is_on_leave',
     ];
 
+    protected $appends = [
+        'date_formatted',
+        'shift_type',
+        'check_in_status',
+        'check_out_status',
+        'check_in_color',
+        'check_out_color',
+    ];
+
     protected $casts = [
         'is_on_leave' => 'boolean',
-        'date' => 'date',
+        'date' => DateCast::class,
         'time_in' => TimeCast::class,
         'time_out' => TimeCast::class,
     ];
@@ -44,5 +54,75 @@ class Attendance extends Model
     public function office()
     {
         return $this->belongsTo(Office::class, 'office_id');
-    }    
+    }
+
+    public function getDateFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->date)->translatedFormat('l, d F Y');
+    }
+
+    public function getCheckInStatusAttribute()
+    {
+        if (!$this->check_in_time) {
+            return 'Belum Presensi';
+        }
+
+        // tolerance 1 minute
+        if (\Carbon\Carbon::parse($this->check_in_time) <= \Carbon\Carbon::parse($this->time_in)->addMinutes(1)) {
+            return 'Tepat Waktu';
+        } elseif (\Carbon\Carbon::parse($this->check_in_time) > \Carbon\Carbon::parse($this->time_in)->addMinutes(1)) {
+            return 'Terlambat';
+        }
+    }
+
+    public function getCheckOutStatusAttribute()
+    {
+        if (!$this->check_out_time) {
+            return 'Belum Presensi';
+        }
+
+        // tolerance 1 minute
+        if (\Carbon\Carbon::parse($this->check_out_time) >= \Carbon\Carbon::parse($this->time_out)->subMinutes(1)) {
+            return 'Tepat Waktu';
+        } elseif (\Carbon\Carbon::parse($this->check_out_time) < \Carbon\Carbon::parse($this->time_out)->subMinutes(1)) {
+            return 'Pulang Sebelum Waktu';
+        }
+    }
+
+    public function getShiftTypeAttribute()
+    {
+        if ($this->schedule_id) {
+            $schedule = Schedule::findOrFail($this->schedule_id);
+            return $schedule->is_recurring ? 'Reguler' : 'Shift';
+        }
+        return null;
+    }
+
+    public function getCheckInColorAttribute()
+    {
+        if (!$this->check_in_time) {
+            return 'text-muted';
+        }
+
+        // tolerance 1 minute
+        if (\Carbon\Carbon::parse($this->check_in_time) <= \Carbon\Carbon::parse($this->time_in)->addMinutes(1)) {
+            return 'text-success';
+        } elseif (\Carbon\Carbon::parse($this->check_in_time) > \Carbon\Carbon::parse($this->time_in)->addMinutes(1)) {
+            return 'text-danger';
+        }
+    }
+
+    public function getCheckOutColorAttribute()
+    {
+        if (!$this->check_out_time) {
+            return 'text-muted';
+        }
+
+        // tolerance 1 minute
+        if (\Carbon\Carbon::parse($this->check_out_time) >= \Carbon\Carbon::parse($this->time_out)->subMinutes(1)) {
+            return 'text-success';
+        } elseif (\Carbon\Carbon::parse($this->check_out_time) < \Carbon\Carbon::parse($this->time_out)->subMinutes(1)) {
+            return 'text-danger';
+        }
+    }
 }
