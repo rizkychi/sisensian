@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/', [App\Http\Controllers\Dash\DashboardController::class, 'index'])->name('dashboard.index');
     
@@ -54,6 +59,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Attendance
     Route::prefix('attendance')->group(function () {
         Route::get('history', [App\Http\Controllers\Dash\AttendanceController::class, 'history'])->name('attendance.history');
+        Route::get('schedule', [App\Http\Controllers\Dash\AttendanceController::class, 'schedule'])->name('attendance.schedule');
     });
     Route::resource('attendance', App\Http\Controllers\Dash\AttendanceController::class)->only(['index', 'store']);
 
@@ -62,7 +68,3 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [App\Http\Controllers\Dash\ReportController::class, 'index'])->name('report.index');
     });
 });
-
-Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');
-Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');

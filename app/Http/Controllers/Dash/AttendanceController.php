@@ -121,8 +121,8 @@ class AttendanceController extends Controller
 
         // check holiday
         $holiday = Holiday::where('date', $today->format('Y-m-d'))->first();
-        // if today is holiday and day off and schedule is regular
-        if ($holiday && $holiday->is_day_off && @$schedule->is_recurring) {
+        // if today is holiday and day off
+        if ($holiday && $holiday->is_day_off) {
             $label->text = 'Libur';
             $label->color = 'danger';
             $label->is_visible = false;
@@ -201,12 +201,99 @@ class AttendanceController extends Controller
         $attendances = Attendance::where('employee_id', $employee->id)
             ->where('is_on_leave', false)
             ->orderBy('date', 'desc')
-            ->limit(10)
+            ->limit(7)
             ->get();
 
         return response()->json([
             'status' => $attendances->count() > 0 ? 'success' : 'not found',
             'data' => $attendances
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function schedule()
+    {
+        $employee = Auth::user()->employee;
+
+        $schedules = [];
+        if ($employee->category == 'regular') {
+            foreach (Carbon::now()->addDays(1)->daysUntil(Carbon::now()->addDays(7)) as $date) {
+                $schedules[$date->format('Y-m-d')] = Schedule::with('shift')->where('employee_id', $employee->id)
+                    ->where('is_recurring', true)
+                    ->where('day_of_week', Str::lower($date->format('l')))
+                    ->first();
+            }
+        }
+        if ($employee->category == 'shift') {
+            foreach (Carbon::now()->addDays(1)->daysUntil(Carbon::now()->addDays(7)) as $date) {
+                $schedules[$date->format('Y-m-d')] = Schedule::with('shift')->where('employee_id', $employee->id)
+                    ->where('is_recurring', false)
+                    ->where('date', $date->format('Y-m-d'))
+                    ->first();
+            }
+        }
+
+        // check holiday
+        $holidays = Holiday::where('date', '>=', Carbon::now()->addDays(1)->format('Y-m-d'))
+        ->where('date', '<=', Carbon::now()->addDays(7)->format('Y-m-d'))
+        ->where('is_day_off', true)
+        ->get();
+        
+        foreach ($holidays as $holiday) {
+            $schedules[$holiday->date] = $holiday;
+        }
+
+        // check leave
+        $leaves = Attendance::where('employee_id', $employee->id)
+            ->where('date', '>=', Carbon::now()->addDays(1)->format('Y-m-d'))
+            ->where('date', '<=', Carbon::now()->addDays(7)->format('Y-m-d'))
+            ->where('is_on_leave', true)
+            ->get();
+        foreach ($leaves as $leave) {
+            $schedules[$leave->date] = $leave;
+        }
+
+        // refomat data
+        $output = [];
+        foreach ($schedules as $key => $schedule) {
+            if ($schedule == null || $schedule->is_day_off) {
+                $output[] = (object) [
+                    'date' => $key,
+                    'date_formatted' => Carbon::parse($key)->translatedFormat('l, d F Y'),
+                    'title' => 'Tidak ada jadwal (Libur)',
+                    'time_in' => '--:--',
+                    'time_out' => '--:--',
+                    'shift_type' => 'Libur',
+                    'color' => 'primary-subtle text-primary'
+                ];
+            } else if ($schedule && $schedule->is_on_leave) {
+                $output[] = (object) [
+                    'date' => $key,
+                    'date_formatted' => Carbon::parse($key)->translatedFormat('l, d F Y'),
+                    'title' => 'Cuti',
+                    'time_in' => '--:--',
+                    'time_out' => '--:--',
+                    'shift_type' => 'Cuti',
+                    'color' => 'warning'
+                ];
+            } else if ($schedule) {
+                $output[] = (object) [
+                    'date' => $key,
+                    'date_formatted' => Carbon::parse($key)->translatedFormat('l, d F Y'),
+                    'title' => $schedule->shift->name,
+                    'time_in' => $schedule->shift->time_in,
+                    'time_out' => $schedule->shift->time_out,
+                    'shift_type' => $schedule->is_recurring ? 'Reguler' : 'Shift',
+                    'color' => 'primary'
+                ];
+            }
+        }
+
+        return response()->json([
+            'status' => count($output) > 0 ? 'success' : 'not found',
+            'data' => $output
         ]);
     }
 }

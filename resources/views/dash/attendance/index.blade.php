@@ -92,9 +92,9 @@
                 <button id="historyBtn" class="btn btn-soft-primary btn-label waves-effect waves-light rounded-pill">
                     <i class="ri-history-line label-icon align-middle rounded-pill fs-4 me-2"></i> Riwayat
                 </button>
-                <a href="#" class="btn btn-soft-primary btn-label waves-effect waves-light rounded-pill">
+                <button id="scheduleBtn" class="btn btn-soft-primary btn-label waves-effect waves-light rounded-pill">
                     <i class="ri-calendar-line label-icon align-middle rounded-pill fs-4 me-2"></i> Jadwal
-                </a>
+                </button>
             </div>
         </div>
 
@@ -373,7 +373,7 @@
                 form.submit();
             }
 
-            // Modals
+            // History Modals
             $('#historyBtn').on('click', function() {
                 $('#historyModal').modal('show');
             });
@@ -416,6 +416,57 @@
                     error: function(error) {
                         historyLoading.hide();
                         console.error('Error fetching history:', error);
+                    }
+                });
+            });
+
+            // Schedule Modals
+            $('#scheduleBtn').on('click', function() {
+                $('#scheduleModal').modal('show');
+            });
+
+            const scheduleContent = $('#scheduleContent');
+            const scheduleLoading = $('#scheduleLoading');
+            const scheduleCard = $('.schedule-card').clone();
+
+            $('#scheduleModal').on('show.bs.modal', function() {
+                scheduleContent.empty();
+                scheduleLoading.show();
+                $.ajax({
+                    url: '{{ route('attendance.schedule') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        scheduleLoading.hide();
+                        console.log(response.data.length);
+                        if (response.status === 'success' && response.data.length > 0) {
+                            response.data.forEach(el => {
+                                var card = scheduleCard.clone();
+                                card.find('.schedule-date').text(el.date_formatted);
+                                card.find('.schedule-schedule').text(el.shift_type);
+                                card.find('.time-in').text(el.time_in);
+                                card.find('.status-in').text('Waktu Berangkat');
+                                // card.find('.location-in').text(el.location_in ?? '-');
+                                card.find('.time-out').text(el.time_out);
+                                card.find('.status-out').text('Waktu Pulang');
+                                // card.find('.location-out').text(el.location_out ?? '-');
+
+                                // set color
+                                card.find('.icon-in').addClass('text-muted');
+                                card.find('.icon-out').addClass('text-muted');
+                                card.find('.time-in').parent().addClass('text-muted');
+                                card.find('.time-out').parent().addClass('text-muted');
+                                card.find('.schedule-schedule').removeClass('bg-primary').addClass('bg-'+el.color);
+                                card.removeClass('card-border-primary').addClass('card-border-'+el.color);
+
+                                card.appendTo(scheduleContent);
+                            });
+                        } else {
+                            scheduleContent.html('<p class="text-center text-muted">Tidak ada data jadwal presensi</p>');
+                        }
+                    },
+                    error: function(error) {
+                        scheduleLoading.hide();
+                        console.error('Error fetching schedule:', error);
                     }
                 });
             });
@@ -462,6 +513,57 @@
                     </div>
                 </div>
                 <div id="historyLoading" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light mx-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Schedule Modals -->
+<div id="scheduleModal" class="modal fade" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scheduleModalLabel">Jadwal Presensi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+            </div>
+            <div class="modal-body">
+                <div id="scheduleContent">
+                    <div class="card border card-border-primary schedule-card">
+                        <div class="card-header p-3">
+                            <span class="float-end badge bg-primary schedule-schedule"></span>
+                            <h6 class="card-title mb-0 fs-6 schedule-date"></h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row flex-nowrap g-3">
+                                <div class="col-auto">
+                                    <i class="bx bx-log-in fs-1 icon-in"></i>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0 fs-6 fw-medium time-in"></p>
+                                    <p class="mb-0 status-in" style="font-size: 10px"></p>
+                                    <p class="mb-0 text-muted location-in" style="font-size: 10px"></p>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bx bx-log-out fs-1 icon-out"></i>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0 fs-6 fw-medium time-out"></p>
+                                    <p class="mb-0 status-out" style="font-size: 10px"></p>
+                                    <p class="mb-0 text-muted location-out" style="font-size: 10px"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="scheduleLoading" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
