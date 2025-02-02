@@ -9,6 +9,7 @@ use App\Models\Office;
 use App\Models\Shift;
 use App\Models\Leave;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -25,6 +26,10 @@ class DashboardController extends Controller
      */
     public function index() 
     {
+        $user = Auth::user()->role;
+        if ($user == 'user') {
+            return redirect()->route('attendance.index');
+        }
         $c_employee = Employee::count();
         $c_office = Office::count();
         $c_shift = Shift::count();
