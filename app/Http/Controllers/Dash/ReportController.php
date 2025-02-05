@@ -3,10 +3,35 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Office;
 
 class ReportController extends Controller
 {
+    private $slug = 'report';
+    private $months = [
+        '01' => 'Januari',
+        '02' => 'Februari',
+        '03' => 'Maret',
+        '04' => 'April',
+        '05' => 'Mei',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'Agustus',
+        '09' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Desember',
+    ];
+    
+    /**
+     * Display title
+     */
+    function __construct()
+    {
+        view()->share('title', 'Laporan');
+        view()->share('months', $this->months);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -16,50 +41,34 @@ class ReportController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the request.
      */
-    public function create()
+    public function summary()
     {
-        //
+        return view('dash.report.summary');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the request.
      */
-    public function store(Request $request)
+    public function attendance()
     {
-        //
+        return view("dash.$this->slug.attendance");
     }
 
     /**
-     * Display the specified resource.
+     * Display a listing of the request.
      */
-    public function show(string $id)
+    public function leave()
     {
-        //
-    }
+        $office = Office::where('is_active', true)->get();
+        $show = false;
+        if (request()->query('office') && request()->query('month')) {
+            $show = true;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            // $date_start = request()->query('month') . '-01';
+        }
+        return view("dash.$this->slug.leave", compact('office'))
+            ->with('show', $show);
     }
 }

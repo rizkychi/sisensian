@@ -58,7 +58,25 @@ class Menu extends Component
             (object) [
                 'name' => 'Laporan',
                 'icon' => 'bx bxs-report',
-                'route' => 'report.index',
+                'route' => null,
+                'slug' => 'report',
+                'submenus' => [
+                    (object) [
+                        'name' => 'Rekap Presensi',
+                        'icon' => 'mdi mdi-file-table',
+                        'route' => 'reportsummary',
+                    ],
+                    (object) [
+                        'name' => 'Presensi Karyawan',
+                        'icon' => 'mdi mdi-file-account',
+                        'route' => 'reportattendance',
+                    ],
+                    (object) [
+                        'name' => 'Cuti',
+                        'icon' => 'mdi mdi-file-move',
+                        'route' => 'reportleave',
+                    ],
+                ],
             ],
             (object) [
                 'name' => 'Master Data',

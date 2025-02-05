@@ -134,8 +134,8 @@
                                             @method('PUT')
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Status</label>
-                                                <select class="form-select" name="status" id="status" data-choices required {{ $disabled }}>
-                                                    <option value="">Menunggu</option>
+                                                <select class="form-select" name="status" id="status" data-choices data-choices-sorting-false required {{ $disabled }}>
+                                                    <option value="pending" disabled selected>Menunggu</option>
                                                     @foreach ($status as $key => $value)
                                                         <option value="{{ $key }}" {{ old('status', $data->status) == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                     @endforeach

@@ -114,6 +114,10 @@ class LeaveController extends Controller
     public function update(Request $request, string $id)
     {
         $data = Leave::findOrFail($id);
+        
+        if ($request->status == null) {
+            return back()->with('error', 'Status harus diisi.')->withInput();
+        }
 
         try {
             \DB::transaction(function () use ($request, $data) {
