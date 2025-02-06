@@ -58,24 +58,7 @@
     </div>
 @endsection
 
-@push('styles')
-    <link href="{{ asset('assets/libs/flatpickr/plugins/monthSelect/style.css') }}" rel="stylesheet">
-    <style>
-        .flatpickr-monthSelect-months {
-            margin: 2px;
-        }
-        .flatpickr-month {
-            margin-bottom: 10px;
-        }
-        .flatpickr-current-month{
-            font-size: 135%;
-        }
-    </style>
-@endpush
-
 @push('scripts')
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/flatpickr/plugins/monthSelect/index.js') }}"></script>
     <script>
         $(function() {
             flatpickr(".tanggal", {

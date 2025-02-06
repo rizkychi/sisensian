@@ -24,7 +24,7 @@
 
                             <div class="col-md-3 mb-3">
                                 <label for="time_in" class="form-label">Waktu Masuk</label>
-                                <input type="text" class="form-control" id="time_in" name="time_in"
+                                <input type="text" class="form-control" id="time_ins" name="time_in"
                                     data-provider="timepickr"
                                     data-time-inline="{{ old('time_in', @$data->time_in) ?? '00:00' }}"
                                     data-time-hrs="true" required>
@@ -32,10 +32,20 @@
 
                             <div class="col-md-3 mb-3">
                                 <label for="time_out" class="form-label">Waktu Pulang</label>
-                                <input type="text" class="form-control" id="time_out" name="time_out"
+                                <input type="text" class="form-control" id="time_outs" name="time_out"
                                     data-provider="timepickr"
                                     data-time-inline="{{ old('time_out', @$data->time_out) ?? '00:00' }}"
                                     data-time-hrs="true" required>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="time_in" class="form-label">Waktu Masuk</label>
+                                <input type="text" class="form-control jam" id="time_in" name="time_in" required>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="time_out" class="form-label">Waktu Pulang</label>
+                                <input type="text" class="form-control jam" id="time_out" name="time_out" required>
                             </div>
 
                             <div class="col-md-12 mb-3">
@@ -81,4 +91,17 @@
 @endpush
 
 @push('scripts')
+    <script>
+        $(function() {
+            flatpickr(".jam", {
+                enableTime: true,
+                inline: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                disableMobile: "true",
+                defaultDate: "00:00",
+            });
+        });
+    </script>
 @endpush

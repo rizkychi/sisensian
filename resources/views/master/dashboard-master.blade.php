@@ -17,6 +17,9 @@
         <!-- gridjs css -->
         <link rel="stylesheet" href="{{asset('/assets/libs/gridjs/theme/mermaid.min.css')}}">
 
+        <!-- flatpickr css -->
+        <link rel="stylesheet" href="{{ asset('assets/libs/flatpickr/plugins/monthSelect/style.css') }}">
+
         <!--datatable css-->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
         <!--datatable responsive css-->
@@ -56,6 +59,15 @@
                 position: absolute;
                 left: 0;
                 bottom: 0;
+            }
+            .flatpickr-monthSelect-months {
+                margin: 2px;
+            }
+            .flatpickr-month {
+                margin-bottom: 10px;
+            }
+            .flatpickr-current-month{
+                font-size: 135%;
             }
         </style>
     </head>
@@ -699,6 +711,10 @@
 
         <!-- gridjs js -->
         <script src="{{asset('/assets/libs/gridjs/gridjs.umd.js')}}"></script>
+
+        <!-- flatpickr -->
+        <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/flatpickr/plugins/monthSelect/index.js') }}"></script>
 
         <!-- Dashboard init -->
         {{-- <script src="assets/js/pages/dashboard-job.init.js"></script> --}}
