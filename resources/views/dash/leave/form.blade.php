@@ -88,21 +88,21 @@
             // const startInput = document.getElementById('start_date');
             // const endInput = document.getElementById('end_date');
 
-            leaveDateInput.addEventListener('change', function () {
-                const dates = leaveDateInput.value.split(' to ');
-                if (dates.length === 2) {
-                    const startDate = flatpickr.parseDate(dates[0], "Y-m-d");
-                    const endDate = flatpickr.parseDate(dates[1], "Y-m-d");
-                    const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-                    leaveDurationInput.value = duration + ' hari';
-                    // startInput.value = dates[0];
-                    // endInput.value = dates[1];
-                } else {
-                    leaveDurationInput.value = '1 hari';
-                    // startInput.value = dates[0];
-                    // endInput.value = dates[0];
-                }
-            });
+            // leaveDateInput.addEventListener('change', function () {
+            //     const dates = leaveDateInput.value.split(' to ');
+            //     if (dates.length === 2) {
+            //         const startDate = flatpickr.parseDate(dates[0], "Y-m-d");
+            //         const endDate = flatpickr.parseDate(dates[1], "Y-m-d");
+            //         const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            //         leaveDurationInput.value = duration + ' hari';
+            //         // startInput.value = dates[0];
+            //         // endInput.value = dates[1];
+            //     } else {
+            //         leaveDurationInput.value = '1 hari';
+            //         // startInput.value = dates[0];
+            //         // endInput.value = dates[0];
+            //     }
+            // });
         });
     </script>
 @endpush
