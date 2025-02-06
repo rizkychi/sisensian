@@ -205,26 +205,32 @@ class ScheduleController extends Controller
     {
         $office = Office::where('is_active', true)->get();
         $shifts = Shift::where('is_fixed', false)->get();
-
-        $date_period = explode(' to ', $request->date_period);
-        $start_date = $date_period[0];
-        $end_date = $date_period[1];
-        
+            
         $schedule = [];
         $employee = [];
-        if ($request->office_id && $start_date && $end_date) {
-            $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
-                    $query->where('office_id', $request->office_id);
-                })
-                ->where('is_recurring', false)
-                ->whereBetween('date', [$start_date, $end_date])
-                ->orderBy('date', 'asc')
-                ->get();
-            
-            $employee = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'shift')->get();
+        $show = false;
+
+        if ($request->has('office_id') && $request->has('date_period')) {
+            $date_period = explode(' to ', $request->date_period);
+            $start_date = $date_period[0];
+            $end_date = $date_period[1];
+            $show = true;
+
+            if ($request->office_id && $start_date && $end_date) {
+                $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
+                        $query->where('office_id', $request->office_id);
+                    })
+                    ->where('is_recurring', false)
+                    ->whereBetween('date', [$start_date, $end_date])
+                    ->orderBy('date', 'asc')
+                    ->get();
+                
+                $employee = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'shift')->get();
+            }
         }
 
-        return view("dash.$this->slug.shift", compact('office', 'shifts', 'schedule', 'employee'));
+        return view("dash.$this->slug.shift", compact('office', 'shifts', 'schedule', 'employee'))
+            ->with('show', $show);
     }
 
     /**

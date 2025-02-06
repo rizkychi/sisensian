@@ -53,49 +53,53 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $no = 1;
-                                    // $start_date = \Carbon\Carbon::parse(request('start_date'));
-                                    // $end_date = \Carbon\Carbon::parse(request('end_date'));
-                                    $date_period = explode(' to ', request('date_period'));
-                                    $start_date = \Carbon\Carbon::parse($date_period[0]);
-                                    $end_date = \Carbon\Carbon::parse($date_period[1]);
+                                @if ($show)
+                                    @php
+                                        $no = 1;
+                                        // $start_date = \Carbon\Carbon::parse(request('start_date'));
+                                        // $end_date = \Carbon\Carbon::parse(request('end_date'));
+                                        $date_period = explode(' to ', request('date_period'));
+                                        $start_date = \Carbon\Carbon::parse(@$date_period[0]);
+                                        $end_date = \Carbon\Carbon::parse(@$date_period[1]);
 
-                                    if ($start_date && $end_date) {
-                                        for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
-                                            echo '<tr>';
-                                            echo '<td class="text-center pt-2"><span>' . $no++ . '</span></td>';
-                                            echo '<td><div class="d-flex justify-content-between align-items-center">';
-                                            echo '<span class="date-label">' . $date->translatedFormat('l, d F Y') . '</span>';
-                                            echo '<div class="col-auto">';
-                                            echo '<button data-date="'.$date->format('Y-m-d').'" class="btn btn-sm btn-soft-primary btn-icon waves-effect waves-light btn-clone-employee" title="Salin"><i class="bx bxs-copy-alt fs-6"></i></button>';
-                                            echo '</div>';
-                                            echo '</div></td>';
-                                            
-                                            foreach (@$shifts as $shift) {
-                                                $shiftSchedule = $schedule->where('date', $date->format('Y-m-d'))->where('shift_id', $shift->id);
+                                        if ($start_date && $end_date) {
+                                            for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
+                                                echo '<tr>';
+                                                echo '<td class="text-center pt-2"><span>' . $no++ . '</span></td>';
+                                                echo '<td><div class="d-flex justify-content-between align-items-center">';
+                                                echo '<span class="date-label">' . $date->translatedFormat('l, d F Y') . '</span>';
+                                                echo '<div class="col-auto">';
+                                                echo '<button data-date="'.$date->format('Y-m-d').'" class="btn btn-sm btn-soft-primary btn-icon waves-effect waves-light btn-clone-employee" title="Salin"><i class="bx bxs-copy-alt fs-6"></i></button>';
+                                                echo '</div>';
+                                                echo '</div></td>';
                                                 
-                                                echo '<td>';
-                                                echo '<div class="d-flex justify-content-between">';
-                                                echo '<div class="col-auto">';
-                                                if ($shiftSchedule->count() > 0) {
-                                                    foreach ($shiftSchedule as $sch) {
-                                                        echo '<span class="badge bg-info">' . $sch->employee->name . '</span><br />';
+                                                foreach (@$shifts as $shift) {
+                                                    $shiftSchedule = $schedule->where('date', $date->format('Y-m-d'))->where('shift_id', $shift->id);
+                                                    
+                                                    echo '<td>';
+                                                    echo '<div class="d-flex justify-content-between">';
+                                                    echo '<div class="col-auto">';
+                                                    if ($shiftSchedule->count() > 0) {
+                                                        foreach ($shiftSchedule as $sch) {
+                                                            echo '<span class="badge bg-info">' . $sch->employee->name . '</span><br />';
+                                                        }
                                                     }
+                                                    echo '</div>';
+                                                    echo '<div class="col-auto">';
+                                                    echo '<button data-shift-id="'.$shift->id.'" data-date="'.$date->format('Y-m-d').'" class="btn btn-sm btn-warning btn-icon waves-effect waves-light btn-add-employee" title="Edit"><i class="bx bxs-pencil fs-6"></i></button>';
+                                                    echo '</div>';
+                                                    echo '</div>';
+                                                    echo '</td>';
                                                 }
-                                                echo '</div>';
-                                                echo '<div class="col-auto">';
-                                                echo '<button data-shift-id="'.$shift->id.'" data-date="'.$date->format('Y-m-d').'" class="btn btn-sm btn-warning btn-icon waves-effect waves-light btn-add-employee" title="Edit"><i class="bx bxs-pencil fs-6"></i></button>';
-                                                echo '</div>';
-                                                echo '</div>';
-                                                echo '</td>';
+                                                echo '</tr>';
                                             }
-                                            echo '</tr>';
-                                        }
-                                    } else {
-                                        echo '<tr><td colspan="' . (count(@$shifts) + 2) . '" class="text-center">Pilih tanggal terlebih dahulu</td></tr>';
-                                    }
-                                @endphp
+                                        } 
+                                    @endphp
+                                @else
+                                    <tr>
+                                        <td colspan="{{ count(@$shifts) + 2 }}" class="text-center">-</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
