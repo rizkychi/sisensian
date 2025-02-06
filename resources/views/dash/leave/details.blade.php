@@ -134,8 +134,8 @@
                                             @method('PUT')
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Status</label>
-                                                <select class="form-select" name="status" id="status" data-choices data-choices-sorting-false required {{ $disabled }}>
-                                                    <option value="pending" disabled selected>Menunggu</option>
+                                                <select class="form-select" name="status" id="status" required {{ $disabled }}>
+                                                    <option value="" disabled selected>Menunggu</option>
                                                     @foreach ($status as $key => $value)
                                                         <option value="{{ $key }}" {{ old('status', $data->status) == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                     @endforeach
@@ -182,8 +182,10 @@
 
 @push('scripts')<!-- Sweet Alerts js -->
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(function() {
+            $('#status').select2();
             $('#fieldForm').on('submit', function(e) {
                 e.preventDefault();
                 Swal.fire({
