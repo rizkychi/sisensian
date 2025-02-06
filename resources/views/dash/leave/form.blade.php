@@ -31,7 +31,15 @@
                             <div class="col-md-4 mb-3">
                                 <label for="leave_date" class="form-label">Tanggal Cuti</label>
                                 {{-- <input type="date" class="form-control" id="leave_date" name="leave_date" value="{{ old('leave_date') }}" required> --}}
-                                <input type="text" class="form-control" name="leave_date" placeholder="Pilih tanggal" data-provider="flatpickr" data-date-format="Y-m-d" data-altFormat="d-m-Y" data-range-date="true" data-minDate="today" data-allow-input="true" data-default-date="{{ old('leave_date') }}" required>
+                                <input type="text" class="form-control" id="leave_date" name="leave_date" placeholder="Pilih tanggal"
+                                    data-provider="flatpickr"
+                                    data-date-format="Y-m-d"
+                                    data-altFormat="d-m-Y"
+                                    data-range-date="true"
+                                    data-minDate="today"
+                                    data-allow-input="true"
+                                    data-default-date="{{ old('leave_date') }}"
+                                    required>
                                 <input type="hidden" name="start_date" id="start_date" value="{{ old('start_date') }}">
                                 <input type="hidden" name="end_date" id="end_date" value="{{ old('end_date') }}">
                             </div>

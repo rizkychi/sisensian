@@ -38,16 +38,6 @@
                                     data-time-hrs="true" required>
                             </div>
 
-                            <div class="col-md-3 mb-3">
-                                <label for="time_in" class="form-label">Waktu Masuk</label>
-                                <input type="text" class="form-control jam" id="time_in" name="time_in" required>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="time_out" class="form-label">Waktu Pulang</label>
-                                <input type="text" class="form-control jam" id="time_out" name="time_out" required>
-                            </div>
-
                             <div class="col-md-12 mb-3">
                                 <label for="description" class="form-label">Deskripsi</label>
                                 <textarea class="form-control" id="description" name="description" rows="3" placeholder="Deskripsi">{{ old('description', @$data->description) }}</textarea>
@@ -88,20 +78,4 @@
             top: 0;
         }
     </style>
-@endpush
-
-@push('scripts')
-    <script>
-        $(function() {
-            flatpickr(".jam", {
-                enableTime: true,
-                inline: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                disableMobile: "true",
-                defaultDate: "00:00",
-            });
-        });
-    </script>
 @endpush
