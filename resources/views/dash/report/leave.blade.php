@@ -79,6 +79,7 @@
     <script>
         $(function() {
             flatpickr(".tanggal", {
+                disableMobile: "true",
                 defaultDate: "{{ old('date_period', @$_GET['date_period']) }}",
                 altInput: true, // Enable altInput to show the altFormat
                 plugins: [
