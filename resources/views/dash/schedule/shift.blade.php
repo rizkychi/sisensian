@@ -58,9 +58,8 @@
                                         $no = 1;
                                         // $start_date = \Carbon\Carbon::parse(request('start_date'));
                                         // $end_date = \Carbon\Carbon::parse(request('end_date'));
-                                        $date_period = explode(' to ', request('date_period'));
-                                        $start_date = \Carbon\Carbon::parse(@$date_period[0]);
-                                        $end_date = \Carbon\Carbon::parse(@$date_period[1]);
+                                        $start_date = \Carbon\Carbon::parse($start_date);
+                                        $end_date = \Carbon\Carbon::parse($end_date);
 
                                         if ($start_date && $end_date) {
                                             for ($date = $start_date; $date->lte($end_date); $date->addDay()) {

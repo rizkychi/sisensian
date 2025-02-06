@@ -209,12 +209,18 @@ class ScheduleController extends Controller
         $schedule = [];
         $employee = [];
         $show = false;
+        $start_date = null;
+        $end_date = null;
 
         if ($request->has('office_id') && $request->has('date_period')) {
-            $date_period = explode(' to ', $request->date_period);
-            $start_date = $date_period[0];
-            $end_date = $date_period[1];
-            $show = true;
+            if (strpos($request->date_period, ' to ') !== false) {
+                $date_period = explode(' to ', $request->date_period);
+                $start_date = $date_period[0];
+                $end_date = $date_period[1];
+            } else {
+                $start_date = $request->date_period;
+                $end_date = $request->date_period;
+            }
 
             if ($request->office_id && $start_date && $end_date) {
                 $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
@@ -227,10 +233,14 @@ class ScheduleController extends Controller
                 
                 $employee = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'shift')->get();
             }
+            
+            $show = true;
         }
 
         return view("dash.$this->slug.shift", compact('office', 'shifts', 'schedule', 'employee'))
-            ->with('show', $show);
+            ->with('show', $show)
+            ->with('start_date', $start_date)
+            ->with('end_date', $end_date);
     }
 
     /**
