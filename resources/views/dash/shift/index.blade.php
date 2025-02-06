@@ -24,7 +24,7 @@
                                         <th scope="col">Nama</th>
                                         <th scope="col">Waktu Masuk</th>
                                         <th scope="col">Waktu Pulang</th>
-                                        <th scope="col">Shift Tetap/Reguler</th>
+                                        <th scope="col">Shift Reguler</th>
                                         {{-- <th scope="col">Shift Malam</th> --}}
                                         <th scope="col">Deskripsi</th>
                                         <th scope="col" style="width: 0px;">Aksi</th>

@@ -205,15 +205,19 @@ class ScheduleController extends Controller
     {
         $office = Office::where('is_active', true)->get();
         $shifts = Shift::where('is_fixed', false)->get();
+
+        $date_period = explode(' to ', $request->date_period);
+        $start_date = $date_period[0];
+        $end_date = $date_period[1];
         
         $schedule = [];
         $employee = [];
-        if ($request->office_id && $request->start_date && $request->end_date) {
+        if ($request->office_id && $start_date && $end_date) {
             $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
                     $query->where('office_id', $request->office_id);
                 })
                 ->where('is_recurring', false)
-                ->whereBetween('date', [$request->start_date, $request->end_date])
+                ->whereBetween('date', [$start_date, $end_date])
                 ->orderBy('date', 'asc')
                 ->get();
             

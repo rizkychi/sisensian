@@ -20,10 +20,10 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
-                                {{-- <label for="rdate" class="form-label">Tanggal Cuti</label> --}}
-                                <input type="text" class="form-control" name="rdate" placeholder="Pilih tanggal" data-provider="flatpickr" data-date-format="Y-m-d" data-altFormat="d-m-Y" data-range-date="true" data-allow-input="true" data-default-date="{{ old('rdate', @$_GET['rdate']) }}" required>
-                                <input type="hidden" name="start_date" id="start_date" value="{{ old('start_date', @$_GET['start_date']) }}">
-                                <input type="hidden" name="end_date" id="end_date" value="{{ old('end_date', @$_GET['end_date']) }}">
+                                {{-- <label for="date_period" class="form-label">Tanggal Cuti</label> --}}
+                                <input type="text" class="form-control" name="date_period" placeholder="Pilih tanggal" data-provider="flatpickr" data-date-format="Y-m-d" data-altFormat="d-m-Y" data-range-date="true" data-allow-input="true" data-default-date="{{ old('date_period', @$_GET['date_period']) }}" required>
+                                {{-- <input type="hidden" name="start_date" id="start_date" value="{{ old('start_date', @$_GET['start_date']) }}">
+                                <input type="hidden" name="end_date" id="end_date" value="{{ old('end_date', @$_GET['end_date']) }}"> --}}
                             </div>
                             <div class="col-auto mb-md-0 align-self-end justify-content-between d-flex">
                                 <button type="submit" class="btn btn-info btn-label waves-effect waves-light">
@@ -55,10 +55,13 @@
                             <tbody>
                                 @php
                                     $no = 1;
-                                    $start_date = \Carbon\Carbon::parse(request('start_date'));
-                                    $end_date = \Carbon\Carbon::parse(request('end_date'));
+                                    // $start_date = \Carbon\Carbon::parse(request('start_date'));
+                                    // $end_date = \Carbon\Carbon::parse(request('end_date'));
+                                    $date_period = explode(' to ', request('date_period'));
+                                    $start_date = \Carbon\Carbon::parse($date_period[0]);
+                                    $end_date = \Carbon\Carbon::parse($date_period[1]);
 
-                                    if (request('start_date') && request('end_date')) {
+                                    if ($start_date && $end_date) {
                                         for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
                                             echo '<tr>';
                                             echo '<td class="text-center pt-2"><span>' . $no++ . '</span></td>';
@@ -199,23 +202,23 @@
             });
 
             // schedule date
-            const dateInput = document.querySelector('input[name="rdate"]');
-            const startInput = document.getElementById('start_date');
-            const endInput = document.getElementById('end_date');
+            // const dateInput = document.querySelector('input[name="date_period"]');
+            // const startInput = document.getElementById('start_date');
+            // const endInput = document.getElementById('end_date');
 
-            dateInput.addEventListener('change', function () {
-                const dates = dateInput.value.split(' to ');
-                if (dates.length === 2) {
-                    const startDate = flatpickr.parseDate(dates[0], "Y-m-d");
-                    const endDate = flatpickr.parseDate(dates[1], "Y-m-d");
-                    const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-                    startInput.value = dates[0];
-                    endInput.value = dates[1];
-                } else {
-                    startInput.value = dates[0];
-                    endInput.value = dates[0];
-                }
-            });
+            // dateInput.addEventListener('change', function () {
+            //     const dates = dateInput.value.split(' to ');
+            //     if (dates.length === 2) {
+            //         const startDate = flatpickr.parseDate(dates[0], "Y-m-d");
+            //         const endDate = flatpickr.parseDate(dates[1], "Y-m-d");
+            //         const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            //         startInput.value = dates[0];
+            //         endInput.value = dates[1];
+            //     } else {
+            //         startInput.value = dates[0];
+            //         endInput.value = dates[0];
+            //     }
+            // });
 
             // Show modal on button click
             $(document).on('click', '.btn-add-employee', function() {
