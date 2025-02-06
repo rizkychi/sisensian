@@ -3,11 +3,11 @@
 
 @section('content')
     <div class="card">
-        <div class="card-header align-items-center d-flex">
+        <div class="card-header align-items-center d-flex flex-column flex-md-row">
             <div class="flex-grow-1 oveflow-hidden">
                 <h4 class="card-title mb-0 flex-grow-1">Daftar Pengajuan Cuti Karyawan</h4>
             </div>
-            <div class="flex-shrink-0 ms-2">
+            <div class="flex-shrink-0 mt-3 mt-md-0">
                 <ul class="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#req" role="tab">

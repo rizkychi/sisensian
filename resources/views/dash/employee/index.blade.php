@@ -5,15 +5,17 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header align-items-center d-flex">
+                <div class="card-header align-items-center d-flex flex-column flex-md-row">
                     <h5 class="card-title mb-0 flex-grow-1">Data Karyawan</h5>
-                    <button class="btn btn-info btn-label waves-effect waves-light me-3" data-bs-toggle="modal"
-                        data-bs-target="#importModal">
-                        <i class="bx bx-import label-icon align-middle fs-5"></i> Import
-                    </button>
-                    <a href="{{ route('employee.create') }}" class="btn btn-primary btn-label waves-effect waves-light">
-                        <i class="ri-add-fill label-icon align-middle fs-4"></i> Tambah
-                    </a>
+                    <div class="d-flex mt-3 mt-md-0">
+                        <button class="btn btn-info btn-label waves-effect waves-light me-3" data-bs-toggle="modal"
+                            data-bs-target="#importModal">
+                            <i class="bx bx-import label-icon align-middle fs-5"></i> Import
+                        </button>
+                        <a href="{{ route('employee.create') }}" class="btn btn-primary btn-label waves-effect waves-light">
+                            <i class="ri-add-fill label-icon align-middle fs-4"></i> Tambah
+                        </a>
+                    </div>
                 </div><!-- end card header -->
 
                 <div class="card-body">

@@ -5,11 +5,13 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
-                <div class="card-header align-items-center d-flex">
+                <div class="card-header align-items-center d-flex flex-column flex-md-row">
                     <h4 class="card-title mb-0 flex-grow-1">Daftar Pengajuan Cuti Karyawan</h4>
-                    <a href="{{ route('leave.create') }}" class="btn btn-primary btn-label waves-effect waves-light">
-                        <i class="ri-add-fill label-icon align-middle fs-4"></i> Tambah
-                    </a>
+                    <div class="d-flex mt-3 mt-md-0">
+                        <a href="{{ route('leave.create') }}" class="btn btn-primary btn-label waves-effect waves-light">
+                            <i class="ri-add-fill label-icon align-middle fs-4"></i> Tambah
+                        </a>
+                    </div>
                 </div><!-- end card header -->
 
                 <div class="card-body">

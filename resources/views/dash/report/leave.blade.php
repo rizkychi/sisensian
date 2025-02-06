@@ -61,15 +61,15 @@
 @push('scripts')
     <script>
         $(function() {
-            flatpickr(".tanggal", {
-                disableMobile: "true",
+            $(".tanggal").flatpickr({
                 defaultDate: "{{ old('date_period', @$_GET['date_period']) }}",
-                altInput: true, // Enable altInput to show the altFormat
+                disableMobile: true,
+                altInput: true,
                 plugins: [
                     new monthSelectPlugin({
                         shorthand: true, //defaults to false
-                        altFormat: "F Y", // Format for the displayed value
-                        dateFormat: "Y-m", // Format for the actual value
+                        dateFormat: "Y-m", //defaults to "F Y"
+                        altFormat: "F Y", //defaults to "F Y"
                     })
                 ]
             });
