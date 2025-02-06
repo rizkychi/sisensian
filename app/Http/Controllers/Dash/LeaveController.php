@@ -70,16 +70,23 @@ class LeaveController extends Controller
         }
         $request->validate([
             'leave_type' => 'required|string',
-            'start_date' => 'required|string',
-            'end_date' => 'required|string',
+            // 'start_date' => 'required|string',
+            // 'end_date' => 'required|string',
+            'leave_date' => 'required|string',
             'reason' => 'nullable|string',
         ]);
+
+        if (strpos($request->leave_date, ' to ') !== false) {
+            list($start_date, $end_date) = explode(' to ', $request->leave_date);
+        } else {
+            $start_date = $end_date = $request->leave_date;
+        }
 
         $data = new Leave();
         $data->employee_id = Auth::user()->employee->id;
         $data->leave_type = $request->leave_type;
-        $data->start_date = $request->start_date;
-        $data->end_date = $request->end_date;
+        $data->start_date = $start_date;
+        $data->end_date = $end_date;
         $data->reason = $request->reason;
         $data->status = 'pending';
         

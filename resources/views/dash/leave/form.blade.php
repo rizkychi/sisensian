@@ -31,7 +31,7 @@
                             <div class="col-md-4 mb-3">
                                 <label for="leave_date" class="form-label">Tanggal Cuti</label>
                                 {{-- <input type="date" class="form-control" id="leave_date" name="leave_date" value="{{ old('leave_date') }}" required> --}}
-                                <input type="text" class="form-control" id="leave_date" name="leave_date" placeholder="Pilih tanggal"
+                                {{-- <input type="text" class="form-control" id="leave_date" name="leave_date" placeholder="Pilih tanggal"
                                     data-provider="flatpickr"
                                     data-date-format="Y-m-d"
                                     data-altFormat="d-m-Y"
@@ -39,9 +39,18 @@
                                     data-minDate="today"
                                     data-allow-input="true"
                                     data-default-date="{{ old('leave_date') }}"
+                                    required> --}}
+                                <input type="text" class="form-control" name="leave_date" placeholder="Pilih tanggal"
+                                    data-provider="flatpickr"
+                                    data-date-format="Y-m-d"
+                                    data-altFormat="d-m-Y"
+                                    data-range-date="true"
+                                    data-allow-input="true"
+                                    data-minDate="today"
+                                    data-default-date="{{ old('leave_date') }}"
                                     required>
-                                <input type="hidden" name="start_date" id="start_date" value="{{ old('start_date') }}">
-                                <input type="hidden" name="end_date" id="end_date" value="{{ old('end_date') }}">
+                                {{-- <input type="hidden" name="start_date" id="start_date" value="{{ old('start_date') }}">
+                                <input type="hidden" name="end_date" id="end_date" value="{{ old('end_date') }}"> --}}
                             </div>
 
                             <div class="col-md-4 mb-3">
@@ -76,8 +85,8 @@
         document.addEventListener('DOMContentLoaded', function () {
             const leaveDateInput = document.querySelector('input[name="leave_date"]');
             const leaveDurationInput = document.getElementById('leave_duration');
-            const startInput = document.getElementById('start_date');
-            const endInput = document.getElementById('end_date');
+            // const startInput = document.getElementById('start_date');
+            // const endInput = document.getElementById('end_date');
 
             leaveDateInput.addEventListener('change', function () {
                 const dates = leaveDateInput.value.split(' to ');
@@ -86,12 +95,12 @@
                     const endDate = flatpickr.parseDate(dates[1], "Y-m-d");
                     const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
                     leaveDurationInput.value = duration + ' hari';
-                    startInput.value = dates[0];
-                    endInput.value = dates[1];
+                    // startInput.value = dates[0];
+                    // endInput.value = dates[1];
                 } else {
                     leaveDurationInput.value = '1 hari';
-                    startInput.value = dates[0];
-                    endInput.value = dates[0];
+                    // startInput.value = dates[0];
+                    // endInput.value = dates[0];
                 }
             });
         });
