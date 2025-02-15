@@ -120,6 +120,10 @@ class LeaveController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Auth::user()->role != 'superadmin') {
+            return redirect()->route("$this->slug.index");
+        }
+        
         $data = Leave::findOrFail($id);
         
         if ($request->status == null) {
