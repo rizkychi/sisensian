@@ -114,6 +114,9 @@
                     } else {
                         $('#leave_duration').val('1 hari');
                     }
+                    if (dateStr == '') {
+                        $('#leave_duration').val('0 hari');
+                    }
                 }
             });
         });

@@ -47,7 +47,7 @@ class User extends Authenticatable
     }
 
     // get user role
-    public function isRole($role): bool
+    public function hasRole($role): bool
     {
         return $role === $this->role;
     }
