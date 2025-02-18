@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', [App\Http\Controllers\Dash\ReportController::class, 'index'])->name('report.index');
             Route::get('summary', [App\Http\Controllers\Dash\ReportController::class, 'attendance'])->name('reportsummary');
             Route::get('attendance', [App\Http\Controllers\Dash\ReportController::class, 'attendance'])->name('reportattendance');
-            Route::get('leave', [App\Http\Controllers\Dash\ReportController::class, 'leave'])->name('reportleave');
+            Route::get('leave', [App\Http\Controllers\Dash\ReportController::class, 'leave'])->name('reportleav');
         });
     });
 

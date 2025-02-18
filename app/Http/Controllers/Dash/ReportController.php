@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
+use App\Models\Leave;
 use App\Models\Office;
+use App\Models\Employee;
+use App\Models\LeaveType;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class ReportController extends Controller
 {
@@ -63,12 +68,40 @@ class ReportController extends Controller
     {
         $office = Office::where('is_active', true)->get();
         $show = false;
-        if (request()->query('office') && request()->query('month')) {
+        $leaves = [];
+        $employees = [];
+        $leave_type = LeaveType::getAll();
+
+        if (request()->query('office_id') && request()->query('date_period')) {
             $show = true;
 
-            // $date_start = request()->query('month') . '-01';
+            $office_id = request()->query('office_id');
+            $date_period = request()->query('date_period');
+            list($year, $month) = explode('-', $date_period);
+
+            $leaves = Leave::whereHas('employee', function ($query) use ($office_id) {
+                $query->where('office_id', $office_id);
+            })
+            ->whereYear('start_date', $year)
+            ->whereMonth('start_date', $month)
+            ->orWhere(function ($query) use ($year, $month) {
+                $query->whereYear('end_date', $year)
+                      ->whereMonth('end_date', $month);
+            })
+            ->get();
+            $leaves = $leaves->where('status', 'approved');
+
+            $employees = Employee::where('office_id', $office_id)->where('is_active', true)->get();
+
+            $start_date = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $end_date = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $date_range = CarbonPeriod::create($start_date, $end_date);
         }
-        return view("dash.$this->slug.leave", compact('office'))
-            ->with('show', $show);
+
+        return view("dash.$this->slug.leave", compact('office', 'leaves', 'employees', 'leave_type'))
+            ->with('show', $show)
+            ->with('start_date', $start_date ?? null)
+            ->with('end_date', $end_date ?? null)
+            ->with('date_range', $date_range ?? null);
     }
 }

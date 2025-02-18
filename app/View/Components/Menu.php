@@ -72,9 +72,9 @@ class Menu extends Component
                         'route' => 'reportattendance',
                     ],
                     (object) [
-                        'name' => 'Cuti',
+                        'name' => 'Cuti Karyawan',
                         'icon' => 'mdi mdi-file-move',
-                        'route' => 'reportleave',
+                        'route' => 'reportleav',
                     ],
                 ],
             ],
