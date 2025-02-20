@@ -11,7 +11,6 @@ class LeaveType extends Model
         'CT' => 'Cuti Tahunan',
         'CN' => 'Cuti Menikah',
         'CM' => 'Cuti Melahirkan',
-        'LN' => 'Lainnya',
     ];
 
     /**

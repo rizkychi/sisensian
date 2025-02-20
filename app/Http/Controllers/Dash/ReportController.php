@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
+use App\Models\AttendanceType;
 use App\Models\Leave;
 use App\Models\Office;
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\LeaveType;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Str;
 
 class ReportController extends Controller
 {
@@ -58,7 +61,88 @@ class ReportController extends Controller
      */
     public function attendance()
     {
-        return view("dash.$this->slug.attendance");
+        $offices = Office::where('is_active', true)->orderBy('name', 'asc')->get();
+        $show = false;
+        $date_range = [];
+        $attendances = [];
+        $attendances_data = [];
+        $employees = [];
+        $leave_type = LeaveType::getAll();
+        $late_type = AttendanceType::getLate();
+        $early_type = AttendanceType::getEarly();
+
+        if (request()->query('office_id') && request()->query('date_period')) {
+            $show = true;
+
+            $office_id = request()->query('office_id');
+            $date_period = request()->query('date_period');
+            list($year, $month) = explode('-', $date_period);
+
+            $start_date = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $end_date = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $date_range = CarbonPeriod::create($start_date, $end_date);
+
+            // Get all employees
+            if ($office_id == 'all') {
+                $employees = Employee::where('is_active', true)
+                    ->orderBy(Office::select('name')->whereColumn('office.id', 'employee.office_id'))
+                    ->orderBy('name', 'asc')
+                    ->get();
+            } else {
+                $employees = Employee::where('office_id', $office_id)->where('is_active', true)->orderBy('name', 'asc')->get();
+            }
+
+            // Get current month holidays
+            $holidays = Holiday::whereYear('date', $year)->whereMonth('date', $month)->get();
+
+            // Get all attendances
+            foreach ($employees as $employee) {
+                foreach ($date_range as $date) {
+                    // Check Holiday
+                    if ($holidays->contains('date', $date->format('Y-m-d'))) {
+                        $attendances[$employee->id][$date->format('Y-m-d')] = 'LN'; // Save holiday
+                        continue;
+                    }
+
+                    // Check Leave
+                    $leave = $employee->leave->where('start_date', '<=', $date->format('Y-m-d'))
+                        ->where('end_date', '>=', $date->format('Y-m-d'))
+                        ->where('status', 'approved')
+                        ->first();
+                    if ($leave) {
+                        $attendances[$employee->id][$date->format('Y-m-d')] = $leave->leave_type; // Save leave
+                        continue;
+                    }
+
+                    // Check Schedule
+                    if ($employee->category == 'regular') {
+                        $schedule = $employee->schedule->where('day_of_week', Str::lower($date->format('l')))->first();
+                        if (!$schedule) {
+                            $attendances[$employee->id][$date->format('Y-m-d')] = 'L'; // Save weekend
+                            continue;
+                        }
+                    } else if ($employee->category == 'shift') {
+                        $schedule = $employee->schedule->where('date', $date->format('Y-m-d'))->first();
+                        if (!$schedule) {
+                            $attendances[$employee->id][$date->format('Y-m-d')] = 'L'; // Save weekend
+                            continue;
+                        }
+                    }
+
+                    // Check Attendance
+                    $att = $employee->attendance->where('date', $date->format('Y-m-d'))->first();
+                    if ($att) {
+                        $attendances[$employee->id][$date->format('Y-m-d')] = 'V'; // Save attendance
+                        $attendances_data[$employee->id][$date->format('Y-m-d')] = $att;
+                    } else {
+                        $attendances[$employee->id][$date->format('Y-m-d')] = 'TK'; // Save absent
+                    }
+                }
+            }
+        }
+
+        return view("dash.$this->slug.attendance", compact('offices', 'date_range', 'attendances', 'attendances_data', 'employees', 'leave_type', 'late_type', 'early_type'))
+            ->with('show', $show);
     }
 
     /**
