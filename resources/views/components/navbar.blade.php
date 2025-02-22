@@ -64,7 +64,7 @@
         <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
             <button type="button" class="btn btn-icon btn-topbar material-shadow-none btn-ghost-secondary rounded-circle" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                 <i class='bx bx-bell fs-22'></i>
-                <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">3<span class="visually-hidden">unread messages</span></span>
+                <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">{{ $c_notif }}<span class="visually-hidden">belum dibaca</span></span>
             </button>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
 
@@ -75,7 +75,7 @@
                                 <h6 class="m-0 fs-16 fw-semibold text-white"> Pemberitahuan </h6>
                             </div>
                             <div class="col-auto dropdown-tabs">
-                                <span class="badge bg-light text-body fs-13">4 Baru</span>
+                                <span class="badge bg-light text-body fs-13">{{ $c_notif }} Baru</span>
                             </div>
                         </div>
                     </div>
@@ -86,23 +86,24 @@
                         <div data-simplebar style="max-height: 300px;" class="pe-2">
                             
                             {{-- Notification --}}
-                            <div class="text-reset notification-item d-block dropdown-item position-relative">
-                                <div class="d-flex">
-                                    <img src="{{asset('/assets/images/users/avatar-2.jpg')}}" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
-                                    <div class="flex-grow-1">
-                                        <a href="#!" class="stretched-link">
-                                            <h6 class="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
-                                        </a>
-                                        <div class="fs-13 text-muted">
-                                            <p class="mb-1">Answered to your comment on the cash flow forecast's
-                                                graph 🔔.</p>
+                            @foreach ($notification as $notif)
+                                <div class="text-reset notification-item d-block dropdown-item position-relative">
+                                    <div class="d-flex">
+                                        <img src="{{ $notif->from->avatar ? \Storage::url($notif->from->avatar) : asset('assets/images/users/user-dummy-img.jpg') }}" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
+                                        <div class="flex-grow-1">
+                                            <a href="{{ $notif->url ?? '#!' }}" class="stretched-link">
+                                                <h6 class="mt-0 mb-1 fs-13 fw-semibold">{{ @$notif->from->employee->name ?? $notif->from->username }}</h6>
+                                            </a>
+                                            <div class="fs-13 text-muted">
+                                                <p class="mb-1">{{ @$notif->message }}</p>
+                                            </div>
+                                            <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                                                <span><i class="mdi mdi-clock-outline"></i> {{ $notif->time_ago }}</span>
+                                            </p>
                                         </div>
-                                        <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                            <span><i class="mdi mdi-clock-outline"></i> 48 min ago</span>
-                                        </p>
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
                             {{-- End Notification --}}
 
                             <div class="my-3 text-center view-all">
