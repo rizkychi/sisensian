@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Office;
 use App\Models\Shift;
 use App\Models\Leave;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -53,7 +54,25 @@ class DashboardController extends Controller
      */
     public function profile()
     {
-        echo 'ok';
+        $user = Auth::user();
+        if ($user->employee != null) {
+            $data = $user->employee;
+        } else {
+            $data = (object) [
+                'name' => $user->username,
+                'user' => (object) [
+                    'username' => $user->username,
+                    'email' => $user->email,
+                ],
+                'address' => null,
+                'phone' => null,
+                'id' => $user->id,
+                'is_admin' => $user->role == 'superadmin' ? true : false,
+            ];
+        }
+        $profilepic = $user->avatar ? \Storage::url($user->avatar) : 'assets/images/users/user-dummy-img.jpg';
+        return view('dash.profile', compact('data'))
+            ->with('profilepic', $profilepic);
     }
 
     /**
@@ -61,7 +80,54 @@ class DashboardController extends Controller
      */
     public function profileUpdate(Request $request)
     {
-        echo 'ok';
+        $user = Auth::user();
+        if ($user->employee != null) {
+            $without_employee = false;
+        } else {
+            $without_employee = true;
+        }
+        $id = $user->id;
+
+        if ($without_employee) {
+            $request->validate([
+                'username' => 'required|string|alpha_num|max:255|unique:users,username,' . $id,
+                'email' => 'required|string|max:255|unique:users,email,' . $id,
+                // 'name' => 'required|string|max:255',
+                // 'address' => 'nullable|string|max:255',
+                // 'phone' => 'nullable|string|max:13',
+            ]);
+        } else {
+            $request->validate([
+                'username' => 'required|string|alpha_num|max:255|unique:users,username,' . $id,
+                'email' => 'required|string|max:255|unique:users,email,' . $id,
+                'name' => 'required|string|max:255',
+                'address' => 'nullable|string|max:255',
+                'phone' => 'nullable|string|max:13',
+            ]);
+        }
+
+        try {
+            \DB::transaction(function () use ($request, $id, $without_employee) {
+                $user = User::findOrFail($id);
+
+                $user->username = $request->username;
+                $user->email = $request->email;
+                $user->save();
+
+                if (!$without_employee) {
+                    $data = Employee::findOrFail($user->employee->id);
+
+                    $data->name = $request->name;
+                    $data->address = $request->address;
+                    $data->phone = $request->phone;
+                    $data->save();
+                }
+            });
+
+            return redirect()->route("profile.index")->with('success', 'Data berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Data gagal diperbarui: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -83,7 +149,7 @@ class DashboardController extends Controller
             'confirm_password' => 'required|string|min:8',
         ]);
 
-        $user = Auth::user();
+        $user = User::findOrFail(Auth::user()->id);
 
         if (Hash::check($request->password, $user->password)) {
             return back()->withErrors(['password' => 'Password baru tidak boleh sama dengan password lama.']);
@@ -97,5 +163,32 @@ class DashboardController extends Controller
         }
 
         return redirect()->route('password.index')->with('success', 'Password berhasil diubah.');
+    }
+
+    /**
+     * Upload avatar
+     */
+    public function uploadAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = User::findOrFail(Auth::user()->id);
+        try {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+
+            // Optionally, delete the old avatar if exists
+            if ($user->avatar) {
+                \Storage::disk('public')->delete($user->avatar);
+            }
+
+            $user->avatar = 'avatars/' . basename($avatarPath);
+            $user->save();
+
+            return response()->json(['success' => true, 'avatar_url' => \Storage::url($user->avatar)]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => 'Terjadi kesalahan saat mengunggah foto: ' . $e->getMessage()]);
+        }
     }
 }

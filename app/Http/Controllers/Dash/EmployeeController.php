@@ -55,7 +55,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|alpha_num|max:255|unique:users',
             'password' => 'required|string|min:8|max:255',
             'email' => 'required|string|max:255|unique:users',
             'id_number' => 'required|string|max:255|unique:employee',
@@ -128,7 +128,7 @@ class EmployeeController extends Controller
         $valid = Employee::findOrFail($id);
 
         $request->validate([
-            'username' => 'required|string|max:255|unique:users,username,' . $valid->user_id,
+            'username' => 'required|string|alpha_num|max:255|unique:users,username,' . $valid->user_id,
             'password' => 'nullable|string|min:8|max:255',
             'email' => 'required|string|max:255|unique:users,email,' . $valid->user_id,
             'id_number' => 'required|string|max:255|unique:employee,id_number,' . $valid->id,

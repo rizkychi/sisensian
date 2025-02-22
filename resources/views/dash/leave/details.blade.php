@@ -27,6 +27,8 @@
     $start_date = \Carbon\Carbon::parse($data->start_date);
     $end_date = \Carbon\Carbon::parse($data->end_date);
     $duration = $start_date->diffInDays($end_date) + 1; // Including the start date
+
+    $profilepic = $data->employee->user->avatar ? \Storage::url($data->employee->user->avatar) : asset('assets/images/users/user-dummy-img.jpg');
 @endphp
 
 @section('content')
@@ -51,7 +53,7 @@
                             <div class="col-lg-4">
                                 <div class="sticky-side-div">
                                     <div class="p-3 text-center">
-                                        <img src="https://themesbrand.com/velzon/html/master/assets/images/users/avatar-2.jpg" alt="" class="avatar-lg img-thumbnail rounded-circle mx-auto profile-img">
+                                        <img src="{{ $profilepic }}" alt="" class="avatar-lg img-thumbnail rounded-circle mx-auto profile-img">
                                         <div class="mt-3">
                                             <h5 class="fs-15 profile-name">{{ @$data->employee->name }}</h5>
                                             <p class="text-muted profile-designation">{{ @$data->employee->position }}</p>

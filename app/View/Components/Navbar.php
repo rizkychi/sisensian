@@ -32,9 +32,13 @@ class Navbar extends Component
             $surname = explode(' ', trim($username))[0];
             $role = ucfirst($user->employee->position ?? 'Karyawan');
         }
+
+        // Profile picture
+        $profilepic = $user->avatar ? \Storage::url($user->avatar) : asset('assets/images/users/user-dummy-img.jpg');
         return view('components.navbar')
             ->with('username', $username)
             ->with('surname', $surname)
-            ->with('role', $role);
+            ->with('role', $role)
+            ->with('profilepic', $profilepic);
     }
 }

@@ -34,6 +34,12 @@ class Menu extends Component
                 'route' => 'password.index',
                 'show' => false,
             ],
+            (object) [
+                'name' => 'Profile',
+                'icon' => 'mdi mdi-account-circle',
+                'route' => 'profile.index',
+                'show' => false,
+            ],
             // (object) [
             //     'name' => 'Presensi',
             //     'icon' => 'ri-fingerprint-line',
@@ -137,6 +143,12 @@ class Menu extends Component
                 'name' => 'Pengaturan',
                 'icon' => 'mdi mdi-cog-outline',
                 'route' => 'password.index',
+                'show' => false,
+            ],
+            (object) [
+                'name' => 'Profile',
+                'icon' => 'mdi mdi-account-circle',
+                'route' => 'profile.index',
                 'show' => false,
             ],
             (object) [
