@@ -25,11 +25,11 @@
     @endphp
     <li class="nav-item">
         @if (!@$menu->submenus)
-            <a class="nav-link menu-link {{ $active }}" href="{{ $route }}">
+            <a class="nav-link menu-link {{ $active }} {{ $menu->show ? '':'d-none' }}" href="{{ $route }}">
                 <i class="{{ $menu->icon }}"></i> <span data-key="t-widgets">{{ $menu->name }}</span>
             </a>
         @else
-            <a class="nav-link menu-link {{ $submenuActive ? 'active' : '' }}" href="#sidebar{{$menu->slug}}" data-bs-toggle="collapse" role="button" aria-expanded="{{ $submenuActive ? 'true' : 'false' }}" aria-controls="sidebar{{$menu->slug}}">
+            <a class="nav-link menu-link {{ $submenuActive ? 'active' : '' }} {{ $menu->show ? '':'d-none' }}" href="#sidebar{{$menu->slug}}" data-bs-toggle="collapse" role="button" aria-expanded="{{ $submenuActive ? 'true' : 'false' }}" aria-controls="sidebar{{$menu->slug}}">
                 <i class="{{ $menu->icon }}"></i> <span data-key="t-widgets">{{ $menu->name }}</span>
             </a>
             <div class="collapse menu-dropdown {{ $submenuActive ? 'show' : '' }}" id="sidebar{{$menu->slug}}">
@@ -43,7 +43,7 @@
                         }
                     @endphp
                     <li class="nav-item">
-                        <a class="nav-link {{ $sub_active }}" href="{{ $sub->route ? route($sub->route) : '#' }}">
+                        <a class="nav-link {{ $sub_active }} {{ $sub->show ? '':'d-none' }}" href="{{ $sub->route ? route($sub->route) : '#' }}">
                             <i class="{{ $sub->icon }}"></i> <span data-key="t-widgets">{{ $sub->name }}</span>
                         </a>
                     </li>

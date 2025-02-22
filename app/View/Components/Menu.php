@@ -26,6 +26,13 @@ class Menu extends Component
                 'name' => 'Dashboard',
                 'icon' => 'ri-dashboard-2-line',
                 'route' => 'dashboard.index',
+                'show' => true,
+            ],
+            (object) [
+                'name' => 'Pengaturan',
+                'icon' => 'mdi mdi-cog-outline',
+                'route' => 'password.index',
+                'show' => false,
             ],
             // (object) [
             //     'name' => 'Presensi',
@@ -36,22 +43,26 @@ class Menu extends Component
                 'name' => 'Pengajuan Cuti',
                 'icon' => 'mdi mdi-exit-run',
                 'route' => 'leave.index',
+                'show' => true,
             ],
             (object) [
                 'name' => 'Penjadwalan',
                 'icon' => 'mdi mdi-calendar-multiselect',
                 'route' => null,
+                'show' => true,
                 'slug' => 'schedule',
                 'submenus' => [
                     (object) [
                         'name' => 'Jadwal Reguler',
                         'icon' => 'ri-calendar-todo-line',
                         'route' => 'regular',
+                        'show' => true,
                     ],
                     (object) [
                         'name' => 'Jadwal Shift',
                         'icon' => 'ri-calendar-2-fill ',
                         'route' => 'sift',
+                        'show' => true,
                     ],
                 ],
             ],
@@ -59,22 +70,26 @@ class Menu extends Component
                 'name' => 'Laporan',
                 'icon' => 'bx bxs-report',
                 'route' => null,
+                'show' => true,
                 'slug' => 'report',
                 'submenus' => [
                     (object) [
                         'name' => 'Rekap Presensi',
                         'icon' => 'mdi mdi-file-table',
                         'route' => 'reportsummary',
+                        'show' => true,
                     ],
                     (object) [
                         'name' => 'Presensi Karyawan',
                         'icon' => 'mdi mdi-file-account',
                         'route' => 'reportattendance',
+                        'show' => true,
                     ],
                     (object) [
                         'name' => 'Cuti Karyawan',
                         'icon' => 'mdi mdi-file-move',
                         'route' => 'reportleav',
+                        'show' => true,
                     ],
                 ],
             ],
@@ -82,22 +97,26 @@ class Menu extends Component
                 'name' => 'Master Data',
                 'icon' => 'bx bxs-data',
                 'route' => null,
+                'show' => true,
                 'slug' => 'masterdata',
                 'submenus' => [
                     (object) [
                         'name' => 'Karyawan',
                         'icon' => 'ri-group-fill',
                         'route' => 'employee.index',
+                        'show' => true,
                     ],
                     (object) [
                         'name' => 'Kantor',
                         'icon' => 'bx bxs-buildings ',
                         'route' => 'office.index',
+                        'show' => true,
                     ],
                     (object) [
                         'name' => 'Shift',
                         'icon' => 'ri-time-line',
                         'route' => 'shift.index',
+                        'show' => true,
                     ],
                 ],
             ],
@@ -115,14 +134,22 @@ class Menu extends Component
             //     'route' => 'dashboard.index',
             // ],
             (object) [
+                'name' => 'Pengaturan',
+                'icon' => 'mdi mdi-cog-outline',
+                'route' => 'password.index',
+                'show' => false,
+            ],
+            (object) [
                 'name' => 'Presensi',
                 'icon' => 'ri-fingerprint-line',
                 'route' => 'attendance.index',
+                'show' => true,
             ],
             (object) [
                 'name' => 'Pengajuan Cuti',
                 'icon' => 'mdi mdi-exit-run',
                 'route' => 'leave.index',
+                'show' => true,
             ],
             // (object) [
             //     'name' => 'Penjadwalan',

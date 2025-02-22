@@ -10,6 +10,7 @@ use App\Models\Shift;
 use App\Models\Leave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -45,5 +46,56 @@ class DashboardController extends Controller
             'c_leave',
             'c_attendance'
         ));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function profile()
+    {
+        echo 'ok';
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function profileUpdate(Request $request)
+    {
+        echo 'ok';
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function password()
+    {
+        return view('dash.password');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function passwordUpdate(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed:confirm_password',
+            'confirm_password' => 'required|string|min:8',
+        ]);
+
+        $user = Auth::user();
+
+        if (Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Password baru tidak boleh sama dengan password lama.']);
+        }
+
+        try {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat mengubah password.' . $e->getMessage()]);
+        }
+
+        return redirect()->route('password.index')->with('success', 'Password berhasil diubah.');
     }
 }
