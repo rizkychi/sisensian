@@ -80,6 +80,10 @@
                                         <td>L/LN</td>
                                         <td>: Libur/Libur Nasional</td>
                                     </tr>
+                                    <tr>
+                                        <td>TK</td>
+                                        <td>: Tanpa Keterangan</td>
+                                    </tr>
                                     @foreach ($leave_type as $key => $leave)
                                         <tr>
                                             <td>{{ $key }}</td>

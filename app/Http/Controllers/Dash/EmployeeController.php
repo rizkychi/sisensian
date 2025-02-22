@@ -56,7 +56,7 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|max:255',
+            'password' => 'required|string|min:8|max:255',
             'email' => 'required|string|max:255|unique:users',
             'id_number' => 'required|string|max:255|unique:employee',
             'name' => 'required|string|max:255',
@@ -129,7 +129,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username,' . $valid->user_id,
-            'password' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:8|max:255',
             'email' => 'required|string|max:255|unique:users,email,' . $valid->user_id,
             'id_number' => 'required|string|max:255|unique:employee,id_number,' . $valid->id,
             'name' => 'required|string|max:255',
@@ -201,6 +201,7 @@ class EmployeeController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $cols = '<div class="hstack gap-1">';
+                    $cols .= '<a href="" class="btn btn-sm btn-info btn-icon waves-effect waves-light modalPassword" title="Password"><i class="bx bxs-key fs-6"></i></a>';
                     $cols .= '<a href="' . route("$this->slug.edit", ["$this->slug" => $row->id]) . '" class="btn btn-sm btn-warning btn-icon waves-effect waves-light" title="Edit"><i class="bx bxs-pencil fs-6"></i></a>';
                     $cols .= '<a href="' . route("$this->slug.destroy", ["$this->slug" => $row->id]) . '" class="btn btn-sm btn-danger btn-icon waves-effect waves-light" title="Hapus" data-confirm-delete="true"><i class="bx bxs-trash fs-6"></i></a>';
                     $cols .= '</div>';
@@ -340,5 +341,27 @@ class EmployeeController extends Controller
         };
 
         return Response::stream($callback, 200, $headers);
+    }
+
+    /**
+     * Change password
+     */
+    public function password(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required',
+            'password' => 'required|string|min:8|max:255',
+        ]);
+
+        try {
+            $employee = Employee::findOrFail($request->employee_id);
+            $user = User::findOrFail($employee->user_id);
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return redirect()->route("$this->slug.index")->with('success', 'Password berhasil diubah.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Password gagal diubah: ' . $e->getMessage());
+        }
     }
 }

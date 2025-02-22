@@ -101,6 +101,95 @@
         </div>
     </div>
     <!-- Modal with form -->
+
+    <!-- Password modals -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="passwordModalLabel" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Ganti Password Karyawan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('employee.password') }}" method="post" enctype="multipart/form-data" id="passwordForm" class="needs-validation" novalidate>
+                        @csrf
+                        <input type="hidden" name="employee_id" id="employee_id">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <p>ID</p>
+                            </div>
+                            <div class="col-9">
+                                <p id="employeeId"></p>
+                            </div>
+                            <div class="col-3">
+                                <p>Nama</p>
+                            </div>
+                            <div class="col-9">
+                                <p id="employeeName"></p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12 mb-3">
+                                <label for="password" class="form-label">Password baru</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Password" required>
+                                <div class="invalid-feedback">
+                                    Password is required.
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="retypepassword" class="form-label">Ketik Ulang Password</label>
+                                <input type="password" class="form-control" id="retypepassword" name="retypepassword"
+                                    placeholder="Password" required>
+                                <div class="invalid-feedback">
+                                    Please retype the password.
+                                </div>
+                                <div class="invalid-feedback" id="passwordMismatch" style="display: none;">
+                                    Passwords do not match.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+
+                    <script>
+                        (function () {
+                            'use strict'
+
+                            var forms = document.querySelectorAll('.needs-validation')
+
+                            Array.prototype.slice.call(forms)
+                                .forEach(function (form) {
+                                    form.addEventListener('submit', function (event) {
+                                        if (!form.checkValidity()) {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                        }
+
+                                        var password = document.getElementById('password').value;
+                                        var retypepassword = document.getElementById('retypepassword').value;
+
+                                        if (password !== retypepassword) {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                            document.getElementById('passwordMismatch').style.display = 'block';
+                                        } else {
+                                            document.getElementById('passwordMismatch').style.display = 'none';
+                                        }
+
+                                        form.classList.add('was-validated')
+                                    }, false)
+                                })
+                        })()
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal with form -->
 @endpush
 
 @push('scripts')
@@ -235,6 +324,17 @@
             $(document).ajaxStop(function() {
                 $('#loading').hide();
                 $('#importModal').modal('hide');
+            });
+
+            // Password Modal
+            $('#dtx').on('click', '.modalPassword', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var data = table.row($(this).parents('tr')).data();
+                $('#employeeId').text(': ' + data.id_number);
+                $('#employeeName').text(': ' + data.name);
+                $('#employee_id').val(data.id);
+                $('#passwordModal').modal('show');
             });
         });
     </script>
