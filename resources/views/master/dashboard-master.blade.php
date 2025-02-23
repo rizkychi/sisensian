@@ -609,6 +609,12 @@
 
                 return [day, month, year].join('-');
             }
+
+            if (document.querySelector('.empty-notification-elem')) {
+                $('.empty-notification-elem').find('img').attr('src', "{{ asset('assets/images/svg/bell.svg') }}");
+                $('.empty-notification-elem').find('h6').text('Hey! Kamu tidak memiliki pemberitahuan baru');
+                $('.empty-notification-elem').find('h6').parents('div').removeClass('pb-5');
+            }
         </script>
         @stack('scripts')
     </body>

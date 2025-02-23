@@ -15,6 +15,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/password', [App\Http\Controllers\Dash\DashboardController::class, 'password'])->name('password.index')->middleware('role:superadmin,user');
     Route::put('/password', [App\Http\Controllers\Dash\DashboardController::class, 'passwordUpdate'])->name('password.update')->middleware('role:superadmin,user');
 
+    // Notification
+    Route::get('/notification', [App\Http\Controllers\Dash\NotificationController::class, 'index'])->name('notification.index')->middleware('role:superadmin,user');
+    Route::get('/notification/read/{id}', [App\Http\Controllers\Dash\NotificationController::class, 'read'])->name('notification.read')->middleware('role:superadmin,user');
+    Route::get('/notification/read-all', [App\Http\Controllers\Dash\NotificationController::class, 'readAll'])->name('notification.readAll')->middleware('role:superadmin,user');
+    // Route::get('/notification/json', [App\Http\Controllers\Dash\NotificationController::class, 'json'])->name('notification.json')->middleware('role:superadmin,user');
+
     Route::middleware(['role:superadmin'])->group(function () {
         // Office
         Route::prefix('office')->group(function () {

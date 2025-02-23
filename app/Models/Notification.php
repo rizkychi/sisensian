@@ -51,9 +51,18 @@ class Notification extends Model
 
     public function readNotification($id)
     {
-        $data = Notification::find($id);
-        $data->status = 'read';
-        $data->save();
+        $data = Notification::where('id', $id)
+            ->where('to_id', Auth::user()->id)
+            ->update(['status' => 'read']);
+
+        return $data;
+    }
+
+    public function readAllNotification()
+    {
+        $data = Notification::where('to_id', Auth::user()->id)
+            ->where('status', 'unread')
+            ->update(['status' => 'read']);
 
         return $data;
     }

@@ -40,6 +40,12 @@ class Menu extends Component
                 'route' => 'profile.index',
                 'show' => false,
             ],
+            (object) [
+                'name' => 'Pemberitahuan',
+                'icon' => 'bx bx-bell',
+                'route' => 'notification.index',
+                'show' => false,
+            ],
             // (object) [
             //     'name' => 'Presensi',
             //     'icon' => 'ri-fingerprint-line',
@@ -149,6 +155,12 @@ class Menu extends Component
                 'name' => 'Profile',
                 'icon' => 'mdi mdi-account-circle',
                 'route' => 'profile.index',
+                'show' => false,
+            ],
+            (object) [
+                'name' => 'Pemberitahuan',
+                'icon' => 'bx bx-bell',
+                'route' => 'notification.index',
                 'show' => false,
             ],
             (object) [

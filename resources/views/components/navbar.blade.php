@@ -64,7 +64,9 @@
         <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
             <button type="button" class="btn btn-icon btn-topbar material-shadow-none btn-ghost-secondary rounded-circle" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                 <i class='bx bx-bell fs-22'></i>
-                <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">{{ $c_notif }}<span class="visually-hidden">belum dibaca</span></span>
+                @if ($c_notif > 0)
+                    <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">{{ $c_notif }}<span class="visually-hidden">belum dibaca</span></span>
+                @endif
             </button>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
 
@@ -91,8 +93,8 @@
                                     <div class="d-flex">
                                         <img src="{{ $notif->from->avatar ? \Storage::url($notif->from->avatar) : asset('assets/images/users/user-dummy-img.jpg') }}" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
                                         <div class="flex-grow-1">
-                                            <a href="{{ $notif->url ?? '#!' }}" class="stretched-link">
-                                                <h6 class="mt-0 mb-1 fs-13 fw-semibold">{{ @$notif->from->employee->name ?? $notif->from->username }}</h6>
+                                            <a href="{{ route('notification.read', ['id' => $notif->id] ) }}" class="stretched-link">
+                                                <h6 class="mt-0 mb-1 fs-13 fw-semibold">{{ @$notif->from->employee->name ?? Str::ucfirst($notif->from->username) }}</h6>
                                             </a>
                                             <div class="fs-13 text-muted">
                                                 <p class="mb-1">{{ @$notif->message }}</p>
@@ -105,13 +107,12 @@
                                 </div>
                             @endforeach
                             {{-- End Notification --}}
-
-                            <div class="my-3 text-center view-all">
-                                <button type="button" class="btn btn-soft-success waves-effect waves-light">Lihat Semua Pemberitahuan <i class="ri-arrow-right-line align-middle"></i></button>
-                            </div>
+                            
                         </div>
                     </div>
-
+                    <div class="mb-3 mt-1 text-center view-all">
+                        <a href="{{ route('notification.index') }}" class="btn btn-soft-success waves-effect waves-light">Lihat Semua Pemberitahuan <i class="ri-arrow-right-line align-middle"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
