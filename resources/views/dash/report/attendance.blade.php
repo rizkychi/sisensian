@@ -56,12 +56,7 @@
                                             <td>{{ $employee->name }}</td>
                                             <td>{{ $employee->office->name }}</td>
                                             @foreach ($date_range as $date)
-                                                {{-- <td>{{ $attendances[$employee->id][$date->format('Y-m-d')] }}</td> --}}
-                                                {{-- @if ($attendances[$employee->id][$date->format('Y-m-d')] == 'V' && $attendances_data[$employee->id][$date->format('Y-m-d')]->note != null)
-                                                    <td class="text-center">{{ implode(', ', unserialize($attendances_data[$employee->id][$date->format('Y-m-d')]->note)) }}</td>                                                    
-                                                @else --}}
-                                                    <td class="text-center">{{ $attendances[$employee->id][$date->format('Y-m-d')] }}</td>
-                                                {{-- @endif --}}
+                                                <td class="text-center">{{ $attendances[$employee->id][$date->format('Y-m-d')] }}</td>
                                             @endforeach
                                         </tr>
                                     @endforeach
@@ -100,6 +95,10 @@
                                             <td>: {{ $late }}</td>
                                         </tr>
                                     @endforeach
+                                    <tr>
+                                        <td>TPM</td>
+                                        <td>: Tidak Presensi Masuk</td>
+                                    </tr>
                                 </table>
                             </div>
                             <div class="col-auto">
@@ -110,6 +109,10 @@
                                             <td class="text-nowrap">: {{ $early }}</td>
                                         </tr>
                                     @endforeach
+                                    <tr>
+                                        <td>TPP</td>
+                                        <td>: Tidak Presensi Pulang</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -154,15 +157,18 @@
                                 var footer = '<row><c t="inlineStr"><is><t>Keterangan:</t></is></c></row>';
                                 footer += '<row><c t="inlineStr"><is><t>V: Hadir Tepat Waktu</t></is></c></row>';
                                 footer += '<row><c t="inlineStr"><is><t>L/LN: Libur/Libur Nasional</t></is></c></row>';
+                                footer += '<row><c t="inlineStr"><is><t>TK: Tanpa Keterangan</t></is></c></row>';
                                 @foreach ($leave_type as $key => $leave)
                                     footer += '<row><c t="inlineStr"><is><t>{{ $key }}: {{ $leave }}</t></is></c></row>';
                                 @endforeach
                                 @foreach ($late_type as $key => $late)
                                     footer += '<row><c t="inlineStr"><is><t>{{ $key }}: {{ $late }}</t></is></c></row>';
                                 @endforeach
+                                footer += '<row><c t="inlineStr"><is><t>TPM: Tidak Presensi Masuk</t></is></c></row>';
                                 @foreach ($early_type as $key => $early)
                                     footer += '<row><c t="inlineStr"><is><t>{{ $key }}: {{ $early }}</t></is></c></row>';
                                 @endforeach
+                                footer += '<row><c t="inlineStr"><is><t>TPP: Tidak Presensi Pulang</t></is></c></row>';
                                 lastRow.after(footer);
                             }
                         },
@@ -175,30 +181,39 @@
                             customize: function (doc) {
                                 doc.content.push({
                                     text: 'Keterangan:',
-                                    margin: [0, 10, 0, 0]
+                                    margin: [0, 10, 0, 5]
                                 });
                                 doc.content.push({
-                                    text: 'V: Hadir Tepat Waktu\nL/LN: Libur/Libur Nasional',
-                                    margin: [0, 0, 0, 10]
+                                    text: 'V: Hadir Tepat Waktu\nL/LN: Libur/Libur Nasional\nTK: Tanpa Keterangan',
+                                    margin: [0, 0, 0, 0]
                                 });
                                 @foreach ($leave_type as $key => $leave)
                                     doc.content.push({
                                         text: '{{ $key }}: {{ $leave }}',
-                                        margin: [0, 0, 0, 10]
+                                        margin: [0, 0, 0, 0]
                                     });
                                 @endforeach
                                 @foreach ($late_type as $key => $late)
                                     doc.content.push({
                                         text: '{{ $key }}: {{ $late }}',
-                                        margin: [0, 0, 0, 10]
+                                        margin: [0, 0, 0, 0]
                                     });
                                 @endforeach
+                                doc.content.push({
+                                    text: 'TPM: Tidak Presensi Masuk',
+                                    margin: [0, 0, 0, 0]
+                                });
                                 @foreach ($early_type as $key => $early)
                                     doc.content.push({
                                         text: '{{ $key }}: {{ $early }}',
-                                        margin: [0, 0, 0, 10]
+                                        margin: [0, 0, 0, 0]
                                     });
                                 @endforeach
+                                
+                                doc.content.push({
+                                    text: 'TPP: Tidak Presensi Pulang',
+                                    margin: [0, 0, 0, 0]
+                                });
                             }
                         },
                         {
@@ -210,15 +225,18 @@
                                 $(win.document.body).append('<div><b>Keterangan:</b></div>');
                                 $(win.document.body).append('<div>V: Hadir Tepat Waktu</div>');
                                 $(win.document.body).append('<div>L/LN: Libur/Libur Nasional</div>');
+                                $(win.document.body).append('<div>TK: Tanpa Keterangan</div>');
                                 @foreach ($leave_type as $key => $leave)
                                     $(win.document.body).append('<div>{{ $key }}: {{ $leave }}</div>');
                                 @endforeach
                                 @foreach ($late_type as $key => $late)
                                     $(win.document.body).append('<div>{{ $key }}: {{ $late }}</div>');
                                 @endforeach
+                                $(win.document.body).append('<div>TPM: Tidak Presensi Masuk</div>');
                                 @foreach ($early_type as $key => $early)
                                     $(win.document.body).append('<div>{{ $key }}: {{ $early }}</div>');
                                 @endforeach
+                                $(win.document.body).append('<div>TPP: Tidak Presensi Pulang</div>');
                             }
                         }
                     ],

@@ -187,9 +187,10 @@ class ReportController extends Controller
                 // Check Attendance
                 $att = $employee->attendance->where('date', $date->format('Y-m-d'))->first();
                 if ($att) {
-                    $attendances[$employee->id][$date->format('Y-m-d')] = 'V'; // Save attendance
-                    if ($att->note != '') {
-                        $attendances[$employee->id][$date->format('Y-m-d')] = implode(',', unserialize($att->note)); // Save note
+                    if (!empty($att->status) && in_array('TPM', $att->status) && in_array('TPP', $att->status)) {
+                        $attendances[$employee->id][$date->format('Y-m-d')] = 'TK'; // Save absent
+                    } else {
+                        $attendances[$employee->id][$date->format('Y-m-d')] = !empty($att->status) ? implode(', ', $att->status) : 'V'; // Save attendance status or attendance
                     }
                 } else {
                     $attendances[$employee->id][$date->format('Y-m-d')] = 'TK'; // Save absent

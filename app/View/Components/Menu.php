@@ -86,15 +86,15 @@ class Menu extends Component
                 'slug' => 'report',
                 'submenus' => [
                     (object) [
-                        'name' => 'Rekap Presensi',
-                        'icon' => 'mdi mdi-file-table',
-                        'route' => 'reportsummary',
-                        'show' => true,
-                    ],
-                    (object) [
                         'name' => 'Presensi Karyawan',
                         'icon' => 'mdi mdi-file-account',
                         'route' => 'reportattendance',
+                        'show' => true,
+                    ],
+                    (object) [
+                        'name' => 'Rekap Presensi',
+                        'icon' => 'mdi mdi-file-table',
+                        'route' => 'reportsummary',
                         'show' => true,
                     ],
                     (object) [

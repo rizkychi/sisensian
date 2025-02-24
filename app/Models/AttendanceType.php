@@ -23,12 +23,18 @@ class AttendanceType extends Model
         'PSW5' => 'Pulang sebelum waktu lebih dari 120 menit',
     ];
 
+    static $absent = [
+        'AB' => 'Tidak Hadir',
+        'TPM' => 'Tidak Presensi Masuk',
+        'TPP' => 'Tidak Presensi Pulang',
+    ];
+
     /**
      * Get all attendance types.
      */
     public static function getAll()
     {
-        $types = array_merge(self::$late, self::$early);
+        $types = array_merge(self::$late, self::$early, self::$absent);
         return $types;
     }
 
@@ -49,11 +55,19 @@ class AttendanceType extends Model
     }
 
     /**
+     * Get absent attendance.
+     */
+    public static function getAbsent()
+    {
+        return self::$absent;
+    }
+
+    /**
      * Get a attendance type by slug.
      */
     public static function getName(string $slug)
     {
-        $types = array_merge(self::$late, self::$early);
+        $types = array_merge(self::$late, self::$early, self::$absent);
         return $types[$slug] ?? null;
     }
 

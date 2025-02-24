@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\DateCast;
 use App\Casts\TimeCast;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
@@ -26,7 +27,6 @@ class Attendance extends Model
         'check_out_long',
         'check_out_address',
         'note',
-        'status',
         'is_on_leave',
     ];
 
@@ -37,6 +37,7 @@ class Attendance extends Model
         'check_out_status',
         'check_in_color',
         'check_out_color',
+        'status',
     ];
 
     protected $casts = [
@@ -64,29 +65,63 @@ class Attendance extends Model
     public function getCheckInStatusAttribute()
     {
         if (!$this->check_in_time) {
-            return 'Belum Presensi';
+            return 'TPM';
         }
 
+        $time = Carbon::parse($this->time_in);
+        $time_check = Carbon::parse($this->check_in_time);
+
+        $diffInMinutes = $time->diffInMinutes($time_check, false);
+
         // tolerance 1 minute
-        if (\Carbon\Carbon::parse($this->check_in_time) <= \Carbon\Carbon::parse($this->time_in)->addMinutes(1)) {
-            return 'Tepat Waktu';
-        } elseif (\Carbon\Carbon::parse($this->check_in_time) > \Carbon\Carbon::parse($this->time_in)->addMinutes(1)) {
-            return 'Terlambat';
+        if ($time_check <= $time->addMinutes(1)) {
+            return null;
+        } elseif ($time_check > $time->addMinutes(1)) {
+            $diffInMinutes = abs($diffInMinutes);
+            if ($diffInMinutes <= 30) return 'TL1';
+            if ($diffInMinutes <= 60) return 'TL2';
+            if ($diffInMinutes <= 90) return 'TL3';
+            if ($diffInMinutes <= 120) return 'TL4';
+            if ($diffInMinutes > 120) return 'TL5';
         }
     }
 
     public function getCheckOutStatusAttribute()
     {
         if (!$this->check_out_time) {
-            return 'Belum Presensi';
+            return 'TPP';
         }
 
+        $time = Carbon::parse($this->time_out);
+        $time_check = Carbon::parse($this->check_out_time);
+
+        $diffInMinutes = $time->diffInMinutes($time_check, false);
+
         // tolerance 1 minute
-        if (\Carbon\Carbon::parse($this->check_out_time) >= \Carbon\Carbon::parse($this->time_out)->subMinutes(1)) {
-            return 'Tepat Waktu';
-        } elseif (\Carbon\Carbon::parse($this->check_out_time) < \Carbon\Carbon::parse($this->time_out)->subMinutes(1)) {
-            return 'Pulang Sebelum Waktu';
+        if ($time_check >= $time->subMinutes(1)) {
+            return null;
+        } elseif ($time_check < $time->subMinutes(1)) {
+            $diffInMinutes = abs($diffInMinutes);
+            if ($diffInMinutes <= 30) return 'PSW1';
+            if ($diffInMinutes <= 60) return 'PSW2';
+            if ($diffInMinutes <= 90) return 'PSW3';
+            if ($diffInMinutes <= 120) return 'PSW4';
+            if ($diffInMinutes > 120) return 'PSW5';
         }
+    }
+
+    public function getStatusAttribute()
+    {
+        $status = [];
+
+        if ($this->check_in_status != null) {
+            $status[] = $this->check_in_status;
+        }
+        if ($this->check_out_status != null) {
+            $status[] = $this->check_out_status;
+        }
+
+        return $status;
     }
 
     public function getShiftTypeAttribute()
