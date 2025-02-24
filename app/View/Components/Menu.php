@@ -94,7 +94,7 @@ class Menu extends Component
                     (object) [
                         'name' => 'Rekap Presensi',
                         'icon' => 'mdi mdi-file-table',
-                        'route' => 'reportsummary',
+                        'route' => 'summaryattendance',
                         'show' => true,
                     ],
                     (object) [

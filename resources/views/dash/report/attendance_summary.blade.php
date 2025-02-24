@@ -38,7 +38,7 @@
                 @if ($show)
                     <div class="card-body">
                         <div class="table-responsive">
-                            <h5 class="text-center">Laporan Presensi Karyawan</h5>
+                            <h5 class="text-center">Rekap Presensi Karyawan</h5>
                             <p class="text-center">Periode: {{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}</p>
                             <table id="dtx" class="table table-sm table-bordered w-100">
                                 <thead class="table-light">
@@ -46,8 +46,20 @@
                                         <th scope="col" class="text-center align-middle" style="width: 0px">No</th>
                                         <th scope="col" class="text-center align-middle">Nama</th>
                                         <th scope="col" class="text-center align-middle">Kantor</th>
-                                        @foreach ($date_range as $range)
-                                            <th scope="col" class="text-center">{{ $range->format('d') }}</th>
+                                        <th scope="col" class="text-center align-middle">JHK</th>
+                                        <th scope="col" class="text-center align-middle">JHL</th>
+                                        <th scope="col" class="text-center align-middle">V</th>
+                                        <th scope="col" class="text-center align-middle">TK</th>
+                                        <th scope="col" class="text-center align-middle">TPM</th>
+                                        <th scope="col" class="text-center align-middle">TPP</th>
+                                        @foreach ($late_type as $key => $late)
+                                            <th scope="col" class="text-center align-middle">{{ $key }}</th>
+                                        @endforeach
+                                        @foreach ($early_type as $key => $early)
+                                            <th scope="col" class="text-center align-middle">{{ $key }}</th>
+                                        @endforeach
+                                        @foreach ($leave_type as $key => $leave)
+                                            <th scope="col" class="text-center align-middle">{{ $key }}</th>
                                         @endforeach
                                     </tr>
                                 </thead>
@@ -57,8 +69,20 @@
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td>{{ $employee->name }}</td>
                                             <td>{{ $employee->office->name }}</td>
-                                            @foreach ($date_range as $date)
-                                                <td class="text-center">{{ $attendances[$employee->id][$date->format('Y-m-d')] }}</td>
+                                            <td>{{ count($date_range) - $attendance_summary[$employee->id]['L'] }}</td>
+                                            <td>{{ $attendance_summary[$employee->id]['L'] }}</td>
+                                            <td>{{ $attendance_summary[$employee->id]['V'] }}</td>
+                                            <td>{{ $attendance_summary[$employee->id]['TK'] }}</td>
+                                            <td>{{ $attendance_summary[$employee->id]['TPM'] }}</td>
+                                            <td>{{ $attendance_summary[$employee->id]['TPP'] }}</td>
+                                            @foreach ($late_type as $key => $late)
+                                                <td>{{ $attendance_summary[$employee->id][$key] }}</td>
+                                            @endforeach
+                                            @foreach ($early_type as $key => $early)
+                                                <td>{{ $attendance_summary[$employee->id][$key] }}</td>
+                                            @endforeach
+                                            @foreach ($leave_type as $key => $leave)
+                                                <td>{{ $attendance_summary[$employee->id][$key] }}</td>
                                             @endforeach
                                         </tr>
                                     @endforeach
@@ -70,13 +94,21 @@
                             <div class="col-auto">
                                 <table>
                                     <tr>
+                                        <td>JHK</td>
+                                        <td>: Jumlah Hari Kerja</td>
+                                    </tr>
+                                    <tr>
+                                        <td>JHL</td>
+                                        <td>: Jumlah Hari Libur</td>
+                                    </tr>
+                                    <tr>
                                         <td style="width: 50px">V</td>
                                         <td>: Hadir Tepat Waktu</td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <td>L/LN</td>
                                         <td>: Libur/Libur Nasional</td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr>
                                         <td>TK</td>
                                         <td>: Tanpa Keterangan</td>
@@ -154,17 +186,19 @@
                             className: 'btn btn-sm btn-soft-success',
                             text: '<span class=""><i class="mdi mdi-file-excel"></i>  Excel</span>',
                             titleAttr: 'Excel',
-                            title: 'Laporan Presensi Karyawan',
+                            title: 'Rekap Presensi Karyawan',
                             messageTop: 'Periode: {{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}',
                             filename: function() {
-                                return 'Laporan Presensi Karyawan Periode ' + '{{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}';
+                                return 'Rekap Presensi Karyawan Periode ' + '{{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}';
                             },
                             customize: function (xlsx) {
                                 var sheet = xlsx.xl.worksheets['sheet1.xml'];
                                 var lastRow = $('row', sheet).last();
                                 var footer = '<row><c t="inlineStr"><is><t>Keterangan:</t></is></c></row>';
+                                footer += '<row><c t="inlineStr"><is><t>JHK: Jumlah Hari Kerja</t></is></c></row>';
+                                footer += '<row><c t="inlineStr"><is><t>JHL: Jumlah Hari Libur</t></is></c></row>';
                                 footer += '<row><c t="inlineStr"><is><t>V: Hadir Tepat Waktu</t></is></c></row>';
-                                footer += '<row><c t="inlineStr"><is><t>L/LN: Libur/Libur Nasional</t></is></c></row>';
+                                // footer += '<row><c t="inlineStr"><is><t>L/LN: Libur/Libur Nasional</t></is></c></row>';
                                 footer += '<row><c t="inlineStr"><is><t>TK: Tanpa Keterangan</t></is></c></row>';
                                 @foreach ($leave_type as $key => $leave)
                                     footer += '<row><c t="inlineStr"><is><t>{{ $key }}: {{ $leave }}</t></is></c></row>';
@@ -185,11 +219,11 @@
                             className: 'btn btn-sm btn-soft-danger',
                             text: '<span class=""><i class="mdi mdi-file-pdf-box"></i>  PDF</span>',
                             titleAttr: 'PDF',
-                            title: 'Laporan Presensi Karyawan',
+                            title: 'Rekap Presensi Karyawan',
                             orientation: 'landscape',
                             messageTop: 'Periode: {{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}',
                             filename: function() {
-                                return 'Laporan Presensi Karyawan Periode ' + '{{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}';
+                                return 'Rekap Presensi Karyawan Periode ' + '{{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}';
                             },
                             customize: function (doc) {
                                 doc.pageMargins = [10, 10, 10, 10]; // Set smaller margins
@@ -201,7 +235,7 @@
                                     margin: [0, 10, 0, 5]
                                 });
                                 doc.content.push({
-                                    text: 'V: Hadir Tepat Waktu\nL/LN: Libur/Libur Nasional\nTK: Tanpa Keterangan',
+                                    text: 'JHK: Jumlah Hari Kerja\nJHL: Jumlah Hari Libur\nV: Hadir Tepat Waktu\nTK: Tanpa Keterangan',
                                     margin: [0, 0, 0, 0]
                                 });
                                 @foreach ($leave_type as $key => $leave)
@@ -238,15 +272,17 @@
                             className: 'btn btn-sm btn-soft-warning',
                             text: '<span class=""><i class="mdi mdi-printer"></i>  Print</span>',
                             titleAttr: 'Print',
-                            title: 'Laporan Presensi Karyawan',
+                            title: 'Rekap Presensi Karyawan',
                             messageTop: 'Periode: {{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}',
                             filename: function() {
-                                return 'Laporan Presensi Karyawan Periode ' + '{{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}';
+                                return 'Rekap Presensi Karyawan Periode ' + '{{ $date_range->first()->translatedFormat('d F Y') }} - {{ $date_range->last()->translatedFormat('d F Y') }}';
                             },
                             customize: function (win) {
                                 $(win.document.body).append('<div><b>Keterangan:</b></div>');
+                                $(win.document.body).append('<div>JHK: Jumlah Hari Kerja</div>');
+                                $(win.document.body).append('<div>JHL: Jumlah Hari Libur</div>');
                                 $(win.document.body).append('<div>V: Hadir Tepat Waktu</div>');
-                                $(win.document.body).append('<div>L/LN: Libur/Libur Nasional</div>');
+                                // $(win.document.body).append('<div>L/LN: Libur/Libur Nasional</div>');
                                 $(win.document.body).append('<div>TK: Tanpa Keterangan</div>');
                                 @foreach ($leave_type as $key => $leave)
                                     $(win.document.body).append('<div>{{ $key }}: {{ $leave }}</div>');

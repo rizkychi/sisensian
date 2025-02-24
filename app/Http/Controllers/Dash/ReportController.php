@@ -99,6 +99,63 @@ class ReportController extends Controller
     }
 
     /**
+     * Display summary of the request.
+     */
+    public function attendanceSummary()
+    {
+        $offices = Office::where('is_active', true)->orderBy('name', 'asc')->get();
+        $show = false;
+        $date_range = [];
+        $attendances = [];
+        $employees = [];
+        $leave_type = LeaveType::getAll();
+        $late_type = AttendanceType::getLate();
+        $early_type = AttendanceType::getEarly();
+
+        if (request()->query('office_id') && request()->query('date_period')) {
+            $show = true;
+
+            $office_id = request()->query('office_id');
+            $date_period = request()->query('date_period');
+            list($year, $month) = explode('-', $date_period);
+
+            $start_date = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $end_date = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $date_range = CarbonPeriod::create($start_date, $end_date);
+
+            // Get all employees
+            if ($office_id == 'all') {
+                $employees = Employee::where('is_active', true)
+                    ->orderBy(Office::select('name')->whereColumn('office.id', 'employee.office_id'))
+                    ->orderBy('name', 'asc')
+                    ->get();
+            } else {
+                $employees = Employee::where('office_id', $office_id)->where('is_active', true)->orderBy('name', 'asc')->get();
+            }
+
+            $attendances = $this->getAttendance($employees, $date_range);
+
+            // Counting attendance summary
+            $attendance_summary = [];
+            $tag = array_merge(['V', 'TK', 'TPM', 'TPP'], array_keys($late_type), array_keys($early_type), array_keys($leave_type));
+
+            foreach ($attendances as $employee_id => $attend) {
+                foreach ($tag as $t) {
+                    $attendance_summary[$employee_id][$t] = count(array_filter($attend, function ($a) use ($t) {
+                        return strpos($a, $t) !== false;
+                    }));  
+                }
+                $attendance_summary[$employee_id]['L'] = count(array_filter($attend, function ($a) {
+                    return $a == 'L' || $a == 'LN';
+                }));
+            }
+        }
+
+        return view("dash.$this->slug.attendance_summary", compact('offices', 'date_range', 'attendance_summary', 'employees', 'leave_type', 'late_type', 'early_type'))
+            ->with('show', $show);
+    }
+
+    /**
      * Display a listing of the request.
      */
     public function leave()
