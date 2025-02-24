@@ -38,9 +38,8 @@ class Navbar extends Component
         $profilepic = $user->avatar ? \Storage::url($user->avatar) : asset('assets/images/users/user-dummy-img.jpg');
         
         // Notification
-        $notif = new Notification();
-        $notification = $notif->getNotification();
-        $c_notif = $notif->countNotification();
+        $notification = Notification::getNotification();
+        $c_notif = Notification::countNotification();
 
         return view('components.navbar')
             ->with('username', $username)

@@ -23,8 +23,8 @@
                                 <thead class="table-light d-none">
                                     <tr>
                                         {{-- <th scope="col" style="width: 0px;">No</th> --}}
-                                        <th scope="col">Dari</th>
                                         <th scope="col">Judul</th>
+                                        <th scope="col">Dari</th>
                                         <th scope="col">Pesan</th>
                                         <th scope="col">Waktu</th>
                                         <th scope="col">Status</th>
@@ -35,8 +35,8 @@
                                         @foreach ($notifications as $notification)
                                             <tr class="position-relative {{ $notification->status == 'unread' ? 'fw-medium' : 'text-muted' }}">
                                                 {{-- <td>{{ $loop->iteration }}</td> --}}
-                                                <td><a href="{{ route('notification.read', ['id' => $notification->id]) }}" class="stretched-link text-reset">{{ @$notification->from->employee->name ?: Str::ucfirst($notification->from->username) }}</a></td>
                                                 <td>{{ $notification->title }}</td>
+                                                <td><a href="{{ route('notification.read', ['id' => $notification->id]) }}" class="stretched-link text-reset">{{ @$notification->from->employee->name ?: Str::ucfirst($notification->from->username) }}</a></td>
                                                 <td>{{ $notification->message }}</td>
                                                 <td>
                                                     <span class="text-muted">{{ $notification->time_ago }}</span>

@@ -38,7 +38,7 @@ class Notification extends Model
         return $this->created_at->diffForHumans();
     }
 
-    public function getNotification($limit = 5)
+    public static function getNotification($limit = 5)
     {
         $data = Notification::where('to_id', Auth::user()->id)
             ->where('status', 'unread')
@@ -49,7 +49,7 @@ class Notification extends Model
         return $data;
     }
 
-    public function readNotification($id)
+    public static function readNotification($id)
     {
         $data = Notification::where('id', $id)
             ->where('to_id', Auth::user()->id)
@@ -58,7 +58,7 @@ class Notification extends Model
         return $data;
     }
 
-    public function readAllNotification()
+    public static function readAllNotification()
     {
         $data = Notification::where('to_id', Auth::user()->id)
             ->where('status', 'unread')
@@ -67,8 +67,25 @@ class Notification extends Model
         return $data;
     }
 
-    public function insertNotification($to, $title, $message, $type = 'info', $url = null)
+    public static function insertNotification($to, $title, $message, $url = null, $type = 'info')
     {
+        if ($to == 'admin') {
+            $to = User::where('role', 'superadmin')->pluck('id');
+            
+            foreach ($to as $id) {
+                $data = new Notification();
+                $data->from_id = Auth::user()->id;
+                $data->to_id = $id;
+                $data->title = $title;
+                $data->message = $message;
+                $data->type = $type;
+                $data->url = $url;
+                $data->save();
+            }
+
+            return $data;
+        }
+
         $data = new Notification();
         $data->from_id = Auth::user()->id;
         $data->to_id = $to;
@@ -81,7 +98,7 @@ class Notification extends Model
         return $data;
     }
 
-    public function countNotification()
+    public static function countNotification()
     {
         $data = Notification::where('to_id', Auth::user()->id)
             ->where('status', 'unread')

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Leave;
 use App\Models\LeaveType;
+use App\Models\Notification;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +92,13 @@ class LeaveController extends Controller
         $data->status = 'pending';
         
         if ($data->save()) {
+            Notification::insertNotification(
+                'admin',
+                'Pengajuan Cuti',
+                'Mengajukan '.LeaveType::getName($data->leave_type).' pada '.$start_date.' s/d '.$end_date,
+                route("$this->slug.show", $data->id)
+            );
+
             return redirect()->route("$this->slug.request")->with('success', 'Data berhasil disimpan.');
         } else {
             return back()->with('error', 'Data gagal disimpan')->withInput();
@@ -102,7 +110,6 @@ class LeaveController extends Controller
      */
     public function show(string $id)
     {
-        // Json Request
         $data = Leave::findOrFail($id);
         return view('dash.leave.details', compact('data'));
     }
@@ -163,7 +170,22 @@ class LeaveController extends Controller
                             'time_out' => (@$schedule->shift->time_out ?? '00:00'),
                         ]);
                     }
+
+                    $stat = 'Disetujui';
+                    $stat_type = 'success';
+                } else {
+                    $stat = 'Ditolak';
+                    $stat_type = 'danger';
                 }
+
+
+                Notification::insertNotification(
+                    $data->employee->user->id,
+                    'Pengajuan Cuti',
+                    'Pengajuan '.LeaveType::getName($data->leave_type).' pada '.$data->start_date.' s/d '.$data->end_date.' telah '.$stat,
+                    route("$this->slug.show", $data->id),
+                    $stat_type
+                );
             });
             return redirect()->route("$this->slug.index")->with('success', 'Data berhasil diupdate.');
         } catch (\Exception $e) {

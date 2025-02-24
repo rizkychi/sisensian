@@ -81,7 +81,7 @@
                                     <h4>Detail Pengajuan Cuti</h4>
                                     <div class="hstack flex-wrap">
                                         <div class="text-muted">Kantor : <span class="text-body fw-medium">{{ $data->employee->office->name }}</span></div>
-                                        <div class="vr"></div>
+                                        <div class="vr me-3"></div>
                                         <div class="text-muted">Alamat Kantor : <span class="text-body fw-medium">{{ @$data->employee->office->address ?? '-' }}</span></div>
                                     </div>
                                     <div class="row mt-4">

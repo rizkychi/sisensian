@@ -36,7 +36,7 @@ class NotificationController extends Controller
     {
         $notification = Notification::find($id);
         if ($notification && $notification->to_id == Auth::id()) {
-            $notification->readNotification($id);
+            Notification::readNotification($id);
             return redirect($notification->url ?? '/index');
         } else {
             return redirect()->route('dashboard.index');
@@ -48,8 +48,7 @@ class NotificationController extends Controller
      */
     public function readAll()
     {
-        $notification = new Notification();
-        $notification->readAllNotification();
+        Notification::readAllNotification();
         return redirect()->route('notification.index');
     }
 }
