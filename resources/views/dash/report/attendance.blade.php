@@ -57,11 +57,11 @@
                                             <td>{{ $employee->office->name }}</td>
                                             @foreach ($date_range as $date)
                                                 {{-- <td>{{ $attendances[$employee->id][$date->format('Y-m-d')] }}</td> --}}
-                                                @if ($attendances[$employee->id][$date->format('Y-m-d')] == 'V' && $attendances_data[$employee->id][$date->format('Y-m-d')]->note != null)
+                                                {{-- @if ($attendances[$employee->id][$date->format('Y-m-d')] == 'V' && $attendances_data[$employee->id][$date->format('Y-m-d')]->note != null)
                                                     <td class="text-center">{{ implode(', ', unserialize($attendances_data[$employee->id][$date->format('Y-m-d')]->note)) }}</td>                                                    
-                                                @else
+                                                @else --}}
                                                     <td class="text-center">{{ $attendances[$employee->id][$date->format('Y-m-d')] }}</td>
-                                                @endif
+                                                {{-- @endif --}}
                                             @endforeach
                                         </tr>
                                     @endforeach
