@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\AttendanceType;
-use App\Models\Leave;
 use App\Models\Office;
 use App\Models\Employee;
 use App\Models\Holiday;
 use App\Models\LeaveType;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\Request;
 use Str;
 
 class ReportController extends Controller
@@ -107,6 +108,7 @@ class ReportController extends Controller
         $show = false;
         $date_range = [];
         $attendances = [];
+        $attendance_summary = [];
         $employees = [];
         $leave_type = LeaveType::getAll();
         $late_type = AttendanceType::getLate();
@@ -136,7 +138,6 @@ class ReportController extends Controller
             $attendances = $this->getAttendance($employees, $date_range);
 
             // Counting attendance summary
-            $attendance_summary = [];
             $tag = array_merge(['V', 'TK', 'TPM', 'TPP'], array_keys($late_type), array_keys($early_type), array_keys($leave_type));
 
             foreach ($attendances as $employee_id => $attend) {
@@ -158,45 +159,45 @@ class ReportController extends Controller
     /**
      * Display a listing of the request.
      */
-    public function leave()
+    public function detail()
     {
-        $office = Office::where('is_active', true)->get();
+        $offices = Office::where('is_active', true)->orderBy('name', 'asc')->get();
         $show = false;
-        $leaves = [];
-        $employees = [];
-        $leave_type = LeaveType::getAll();
+        $employees = null;
+        $attendances = null;
+        $date_range = [];
 
-        if (request()->query('office_id') && request()->query('date_period')) {
-            $show = true;
-
+        if (request()->query('office_id') && request()->query('date_period') && request()->query('employee_id')) {
+            $employee_id = request()->query('employee_id');
             $office_id = request()->query('office_id');
             $date_period = request()->query('date_period');
+
+            $show = true;
+            $employees = Employee::where('office_id', $office_id)->where('is_active', true)->orderBy('name', 'asc')->get();
+
             list($year, $month) = explode('-', $date_period);
-
-            $leaves = Leave::whereHas('employee', function ($query) use ($office_id) {
-                $query->where('office_id', $office_id);
-            })
-            ->whereYear('start_date', $year)
-            ->whereMonth('start_date', $month)
-            ->orWhere(function ($query) use ($year, $month) {
-                $query->whereYear('end_date', $year)
-                      ->whereMonth('end_date', $month);
-            })
-            ->get();
-            $leaves = $leaves->where('status', 'approved');
-
-            $employees = Employee::where('office_id', $office_id)->where('is_active', true)->get();
-
             $start_date = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $end_date = Carbon::createFromDate($year, $month, 1)->endOfMonth();
             $date_range = CarbonPeriod::create($start_date, $end_date);
+            $attendances = Attendance::where('employee_id', $employee_id)
+                ->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->orderBy('date', 'asc')
+                ->get();
         }
 
-        return view("dash.$this->slug.leave", compact('office', 'leaves', 'employees', 'leave_type'))
-            ->with('show', $show)
-            ->with('start_date', $start_date ?? null)
-            ->with('end_date', $end_date ?? null)
-            ->with('date_range', $date_range ?? null);
+        return view("dash.$this->slug.detail", compact('offices', 'employees', 'attendances', 'date_range'))
+            ->with('show', $show);
+    }
+
+    /**
+     * Get employee by office
+     */
+    public function getEmployee(Request $request)
+    {
+        $office_id = $request->office_id;
+        $employees = Employee::where('office_id', $office_id)->where('is_active', true)->orderBy('name', 'asc')->get();
+        return response()->json($employees);
     }
 
     private function getAttendance($employees, $date_range) {

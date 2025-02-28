@@ -93,14 +93,14 @@ class Menu extends Component
                     ],
                     (object) [
                         'name' => 'Rekap Presensi',
-                        'icon' => 'mdi mdi-file-table',
+                        'icon' => 'mdi mdi-file-chart',
                         'route' => 'summaryattendance',
                         'show' => true,
                     ],
                     (object) [
-                        'name' => 'Cuti Karyawan',
-                        'icon' => 'mdi mdi-file-move',
-                        'route' => 'reportleav',
+                        'name' => 'Detail Presensi',
+                        'icon' => 'mdi mdi-file-document',
+                        'route' => 'reportdetail',
                         'show' => true,
                     ],
                 ],
