@@ -46,9 +46,10 @@ class ScheduleController extends Controller
      */
     public function regular(Request $request)
     {
+        $route_label = 'Reguler';
         $office = Office::where('is_active', true)->get();
         $employee = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'regular')->get();
-        return view("dash.$this->slug.regular", compact('office', 'employee'));
+        return view("dash.$this->slug.regular", compact('route_label', 'office', 'employee'));
     }
 
     /**
@@ -203,6 +204,7 @@ class ScheduleController extends Controller
      */
     public function shift(Request $request)
     {
+        $route_label = 'Shift';
         $office = Office::where('is_active', true)->get();
         $shifts = Shift::where('is_fixed', false)->get();
             
@@ -237,7 +239,7 @@ class ScheduleController extends Controller
             $show = true;
         }
 
-        return view("dash.$this->slug.shift", compact('office', 'shifts', 'schedule', 'employee'))
+        return view("dash.$this->slug.shift", compact('route_label', 'office', 'shifts', 'schedule', 'employee'))
             ->with('show', $show)
             ->with('start_date', $start_date)
             ->with('end_date', $end_date);

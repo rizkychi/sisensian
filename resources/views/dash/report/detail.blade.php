@@ -1,5 +1,5 @@
 @extends('master.dashboard-master')
-@section('title', $title)
+@section('title', "$title $route_label")
 
 @section('content')
     <div class="row">

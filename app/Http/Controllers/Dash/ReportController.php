@@ -62,6 +62,7 @@ class ReportController extends Controller
      */
     public function attendance()
     {
+        $route_label = 'Presensi Karyawan';
         $offices = Office::where('is_active', true)->orderBy('name', 'asc')->get();
         $show = false;
         $date_range = [];
@@ -95,7 +96,7 @@ class ReportController extends Controller
             $attendances = $this->getAttendance($employees, $date_range);
         }
 
-        return view("dash.$this->slug.attendance", compact('offices', 'date_range', 'attendances', 'employees', 'leave_type', 'late_type', 'early_type'))
+        return view("dash.$this->slug.attendance", compact('route_label', 'offices', 'date_range', 'attendances', 'employees', 'leave_type', 'late_type', 'early_type'))
             ->with('show', $show);
     }
 
@@ -104,6 +105,7 @@ class ReportController extends Controller
      */
     public function attendanceSummary()
     {
+        $route_label = 'Rekap Presensi';
         $offices = Office::where('is_active', true)->orderBy('name', 'asc')->get();
         $show = false;
         $date_range = [];
@@ -152,7 +154,7 @@ class ReportController extends Controller
             }
         }
 
-        return view("dash.$this->slug.attendance_summary", compact('offices', 'date_range', 'attendance_summary', 'employees', 'leave_type', 'late_type', 'early_type'))
+        return view("dash.$this->slug.attendance_summary", compact('route_label', 'offices', 'date_range', 'attendance_summary', 'employees', 'leave_type', 'late_type', 'early_type'))
             ->with('show', $show);
     }
 
@@ -161,6 +163,7 @@ class ReportController extends Controller
      */
     public function detail()
     {
+        $route_label = 'Detail Presensi';
         $offices = Office::where('is_active', true)->orderBy('name', 'asc')->get();
         $show = false;
         $employees = null;
@@ -186,7 +189,7 @@ class ReportController extends Controller
                 ->get();
         }
 
-        return view("dash.$this->slug.detail", compact('offices', 'employees', 'attendances', 'date_range'))
+        return view("dash.$this->slug.detail", compact('route_label', 'offices', 'employees', 'attendances', 'date_range'))
             ->with('show', $show);
     }
 

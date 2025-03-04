@@ -110,8 +110,9 @@ class LeaveController extends Controller
      */
     public function show(string $id)
     {
+        $route_label = 'Detail';
         $data = Leave::findOrFail($id);
-        return view('dash.leave.details', compact('data'));
+        return view('dash.leave.details', compact('data', 'route_label'));
     }
 
     /**

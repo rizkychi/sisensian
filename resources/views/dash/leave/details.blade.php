@@ -1,5 +1,5 @@
 @extends('master.dashboard-master')
-@section('title', $title)
+@section('title', "$route_label $title")
 
 @php
     $status = [
