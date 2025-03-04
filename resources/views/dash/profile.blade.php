@@ -1,7 +1,7 @@
 @extends('master.dashboard-master')
-@section('title', $title)
+@section('title', "$route_label")
+
 @section('content')
-    
 <div class="row">
     <div class="col-md-4">
         <div class="card">

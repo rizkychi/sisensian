@@ -1,7 +1,7 @@
 @extends('master.dashboard-master')
-@section('title', $title)
+@section('title', "$route_label")
+
 @section('content')
-    
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6 col-xl-5">
         <div class="card card-bg-fill">

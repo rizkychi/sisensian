@@ -54,6 +54,7 @@ class DashboardController extends Controller
      */
     public function profile()
     {
+        $route_label = 'Profil';
         $user = Auth::user();
         if ($user->employee != null) {
             $data = $user->employee;
@@ -71,7 +72,7 @@ class DashboardController extends Controller
             ];
         }
         $profilepic = $user->avatar ? \Storage::url($user->avatar) : 'assets/images/users/user-dummy-img.jpg';
-        return view('dash.profile', compact('data'))
+        return view('dash.profile', compact('data', 'route_label'))
             ->with('profilepic', $profilepic);
     }
 
@@ -135,7 +136,8 @@ class DashboardController extends Controller
      */
     public function password()
     {
-        return view('dash.password');
+        $route_label = 'Pengaturan';
+        return view('dash.password', compact('route_label'));
     }
 
     /**
