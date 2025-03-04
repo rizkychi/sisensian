@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use OpenSpout\Common\Entity\Row;
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
@@ -27,6 +27,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('json', [App\Http\Controllers\Dash\OfficeController::class, 'json'])->name('office.json');
         });
         Route::resource('office', App\Http\Controllers\Dash\OfficeController::class);
+
+        // Holiday
+        Route::prefix('holiday')->group(function () {
+            Route::get('json', [App\Http\Controllers\Dash\HolidayController::class, 'json'])->name('holiday.json');
+            Route::post('sync', [App\Http\Controllers\Dash\HolidayController::class, 'sync'])->name('holiday.sync');
+        });
+        Route::resource('holiday', App\Http\Controllers\Dash\HolidayController::class);
 
         // Shift
         Route::prefix('shift')->group(function () {

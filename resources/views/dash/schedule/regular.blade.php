@@ -7,6 +7,11 @@
             <div class="card">
                 <div class="card-header align-items-end">
                     <form method="get">
+                        <div class="row justify-content-md-start justify-content-center">
+                            <div class="col-auto mb-2">
+                                <h4 class="card-title">Penjadwalan Jadwal Reguler</h4>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 {{-- <label for="office_id" class="form-label">Kantor</label> --}}

@@ -130,6 +130,12 @@ class Menu extends Component
                         'route' => 'shift.index',
                         'show' => true,
                     ],
+                    (object) [
+                        'name' => 'Hari Libur',
+                        'icon' => 'ri-calendar-event-fill',
+                        'route' => 'holiday.index',
+                        'show' => true,
+                    ]
                 ],
             ],
             // (object) [
