@@ -217,20 +217,28 @@ class EmployeeController extends Controller
      */
     public function import(Request $request)
     {
+        set_time_limit(0); // Set timeout to unlimited
+
         $office = Office::findorFail($request->office_id);
 
         $request->validate([
             'file' => 'required|mimes:xlsx,xls|max:2048',
         ]);
 
+        $faker = \Faker\Factory::create();
+
         try {
-            \DB::transaction(function () use ($request) {
+            \DB::transaction(function () use ($request, $faker) {
                 $path = $request->file('file')->getRealPath();
                 $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
                 $data = $spreadsheet->getActiveSheet()->toArray();
 
                 foreach ($data as $key => $value) {
                     if ($key > 0) { // Skip header row
+                        if (empty($value[3])) {
+                            $value[3] = $faker->unique()->safeEmail(); // Set email to random if empty
+                        }
+
                         if (empty($value[1]) || empty($value[2]) || empty($value[3]) || empty($value[4]) || empty($value[5])) {
                             continue; // Skip row if any required column is empty
                         }
@@ -247,6 +255,15 @@ class EmployeeController extends Controller
                             $cat = 'shift';
                         }
 
+                        // Office
+                        $office_id = null;
+                        if (!empty($value[10])) {
+                            $ofc = Office::where('name', 'LIKE', "%$value[10]%")->first();
+                            if ($ofc) {
+                                $office_id = $ofc->id;
+                            }
+                        }
+
                         $user = new User();
                         $user->username = $value[1];
                         $user->password = Hash::make($value[2]);
@@ -260,7 +277,7 @@ class EmployeeController extends Controller
                         $employee->address = $value[6] ?? null;
                         $employee->phone = $value[7] ?? null;
                         $employee->position = $value[8] ?? null;
-                        $employee->office_id = $request->office_id;
+                        $employee->office_id = $office_id ? $office_id : $request->office_id;
                         $employee->is_active = true;
                         $employee->category = $cat;
                         $employee->save();

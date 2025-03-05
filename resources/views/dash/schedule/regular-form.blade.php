@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="office_id" class="form-label">Kantor</label>
-                                <select class="form-select" id="office_id" name="office_id" required {{ @$data ? 'disabled':'' }}>
+                                <select class="form-select" id="office_id" name="office_id" {{ @$data ? 'disabled':'' }}>
                                     <option value="" disabled selected>Pilih Kantor</option>
                                     @foreach ($office as $ofc)
                                         <option value="{{ $ofc->id }}"

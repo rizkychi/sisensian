@@ -69,10 +69,10 @@ class ScheduleController extends Controller
      */
     public function regularStore(Request $request)
     {
-        $office = Office::findOrfail($request->office_id);
+        $office = Office::find($request->office_id);
 
         $request->validate([
-            'office_id' => 'required|string',
+            'office_id' => 'nullable|string',
             'employee_id' => 'nullable|string',
         ]);
 
@@ -105,9 +105,39 @@ class ScheduleController extends Controller
                             ]);
                         }
                     }
-                } else {
+                } else if ($request->office_id) {
                     // Schedule for all employees in the office
                     $employees = Employee::where('office_id', $request->office_id)->where('is_active', true)->where('category', 'regular')->get();
+                    foreach ($employees as $employee) {
+                        foreach ($this->days as $d => $day) {
+                            // Check if the schedule already exists
+                            $schedule = Schedule::where('employee_id', $employee->id)
+                                ->where('day_of_week', $d)
+                                ->where('is_recurring', true)
+                                ->first();
+                            
+                            if ($schedule && @$request->shift_id[$d] != null) {
+                                // Update existing schedule
+                                $schedule->update([
+                                    'shift_id' => $request->shift_id[$d],
+                                ]);
+                            } else if ($schedule && @$request->shift_id[$d] == null) {
+                                // Delete existing schedule
+                                $schedule->delete();
+                            } else if (@$request->shift_id[$d] != null) {
+                                // Create new schedule
+                                Schedule::create([
+                                    'employee_id' => $employee->id,
+                                    'shift_id' => $request->shift_id[$d],
+                                    'day_of_week' => $d,
+                                    'is_recurring' => true,
+                                ]);
+                            }
+                        }
+                    }
+                } else {
+                    // Schedule for all employees
+                    $employees = Employee::where('is_active', true)->where('category', 'regular')->get();
                     foreach ($employees as $employee) {
                         foreach ($this->days as $d => $day) {
                             // Check if the schedule already exists
@@ -138,7 +168,11 @@ class ScheduleController extends Controller
                 }
             });
             
-            return redirect()->route('regular', ['office_id' => $office->id])->with('success', 'Jadwal berhasil disimpan.');
+            if ($office) {
+                return redirect()->route('regular', ['office_id' => $office->id])->with('success', 'Jadwal berhasil disimpan.');
+            } else {
+                return redirect()->route('regular')->with('success', 'Jadwal berhasil disimpan.');
+            }
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan jadwal: ' . $e->getMessage())->withInput();
         }
