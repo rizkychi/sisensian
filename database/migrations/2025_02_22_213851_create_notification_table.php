@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('notification', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(100000);
             $table->bigInteger('from_id')->unsigned();
             $table->bigInteger('to_id')->unsigned();
             $table->string('title');

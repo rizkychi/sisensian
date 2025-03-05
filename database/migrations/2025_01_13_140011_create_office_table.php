@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('office', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(100000);
             $table->string('name');
             $table->string('address')->nullable();
             $table->string('description')->nullable();

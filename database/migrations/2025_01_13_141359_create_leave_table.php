@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('leave', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(100000);
             $table->bigInteger('employee_id')->unsigned();
             $table->date('start_date');
             $table->date('end_date');

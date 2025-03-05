@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('schedule', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(100000);
             $table->bigInteger('employee_id')->unsigned();
             $table->bigInteger('shift_id')->unsigned();
             $table->date('date')->nullable();

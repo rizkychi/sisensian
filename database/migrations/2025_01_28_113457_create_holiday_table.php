@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('holiday', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(100000);
             $table->string('name');
             $table->date('date');
             $table->boolean('is_day_off')->default(true);
