@@ -177,9 +177,9 @@ class HolidayController extends Controller
 
             foreach ($data as $holiday) {
                 Holiday::updateOrCreate([
-                    'date' => $holiday['tanggal'],
-                    'name' => $holiday['keterangan'],
-                    'is_day_off' => $holiday['is_cuti'],
+                    'date' => $holiday['event_date'],
+                    'name' => $holiday['event_name'],
+                    'is_day_off' => $holiday['is_national_holiday'],
                 ]);
             }
 

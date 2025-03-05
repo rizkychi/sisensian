@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dash;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\Office;
 use App\Models\Shift;
 use App\Models\Leave;
@@ -40,12 +41,28 @@ class DashboardController extends Controller
                       ->whereMonth('date', date('m'))
                       ->count();
 
+        $upcoming = Holiday::where('date', '>=', date('Y-m-d'))->orderBy('date', 'asc')->limit(7)->get();
+        $masterholidays = Holiday::all();
+        $holidays = [];
+        foreach ($masterholidays as $holiday) {
+            $temp = new \stdClass();
+            $temp->id = $holiday->id;
+            $temp->title = $holiday->name;
+            $temp->start = $holiday->date;
+            $temp->allDay = !0;
+            $temp->className = $holiday->is_day_off ? 'bg-danger-subtle' : 'bg-info-subtle';
+            $holidays[] = $temp;
+            unset($temp);
+        }
+
         return view('dash.index', compact(
             'c_employee',
             'c_office',
             'c_shift',
             'c_leave',
-            'c_attendance'
+            'c_attendance',
+            'holidays',
+            'upcoming'
         ));
     }
 
