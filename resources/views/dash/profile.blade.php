@@ -31,7 +31,7 @@
     <div class="col-md-8">
         <div class="card mt-xxl-n5">
             <div class="card-header">
-                <h4 class="card-title mb-0 flex-grow-1">Informasi Personal</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Informasi Karyawan</h4>
             </div>
             <div class="card-body p-4 pt-3">
                 <div class="tab-content">
