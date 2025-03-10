@@ -14,7 +14,10 @@ class LoginController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard.index');
         }
-        return view('auth.login');
+
+        $app_company = session('app_company') == null ? env('APP_COMPANY') : session('app_company');
+        return view('auth.login')
+            ->with('app_company', $app_company);
     }
 
     // Handle login
