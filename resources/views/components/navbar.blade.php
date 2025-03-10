@@ -28,6 +28,10 @@
                 <span></span>
             </span>
         </button>
+        
+        <div class="ms-1 header-item d-sm-flex">
+            <span class="fw-medium user-name-text">{{ env('APP_COMPANY') }}</span>
+        </div>
 
     </div>
 
