@@ -4,18 +4,21 @@ namespace App\View\Components;
 
 use App\Models\Notification;
 use Closure;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class Navbar extends Component
 {
+    public $app_company;
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        //
+        // Company Name
+        $this->app_company = session('app_company') == null ? env('APP_COMPANY') : session('app_company');
     }
 
     /**
@@ -45,6 +48,7 @@ class Navbar extends Component
             ->with('username', $username)
             ->with('surname', $surname)
             ->with('role', $role)
+            ->with('app_company', $this->app_company)
             ->with('profilepic', $profilepic)
             ->with('notification', $notification)
             ->with('c_notif', $c_notif);
