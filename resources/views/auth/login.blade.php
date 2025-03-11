@@ -5,7 +5,14 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Sign In | {{ config('app.name') . (config('app.company') == null ? '' : ' - ' . config('app.company')) }}</title>
+    <title>
+        Sign In | {{ config('app.name') }}
+        @if (session('app_company') != null)
+            - {{ session('app_company') }}
+        @else
+            - {{ config('app.company') }}
+        @endif
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
