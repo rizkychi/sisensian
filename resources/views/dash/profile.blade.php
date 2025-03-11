@@ -153,9 +153,14 @@
             blocks: [0, 4, 4, 5],
         }));
 
-        document.querySelector('#fieldForm').addEventListener('submit', function(e) {
-            var phoneField = document.getElementById('phone');
-            phoneField.value = phoneField.value.replace(/\D/g, '');
+        document.querySelector('#fieldForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const confirmed = await confirms("Apakah Anda yakin ingin memperbarui profil?");
+            if (confirmed) {
+                var phoneField = document.getElementById('phone');
+                phoneField.value = phoneField.value.replace(/\D/g, '');
+                e.target.submit();
+            }
         });
     </script>
 

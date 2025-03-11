@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \RealRashid\SweetAlert\ToSweetAlert::class,
             \App\Http\Middleware\DetectSubdomain::class,
-            \App\Http\Middleware\MinifyHtml::class,
+            // \App\Http\Middleware\MinifyHtml::class, // disable because of the bug: password page
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

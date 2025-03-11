@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="p-2">
-                    <form action="{{ route('password.update') }}" method="post">
+                    <form action="{{ route('password.update') }}" method="post" id="password-form">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
@@ -147,5 +147,15 @@
                 length.classList.add("invalid");
             }
         };
+
+        // password form
+        var passwordForm = document.getElementById("password-form");
+        passwordForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const confirmed = await confirms("Apakah Anda yakin ingin mengubah password?");
+            if (confirmed) {
+                event.target.submit();
+            }
+        });
     </script>
 @endpush

@@ -621,6 +621,21 @@
                 $('.empty-notification-elem').find('h6').text('Hey! Kamu tidak memiliki pemberitahuan baru');
                 $('.empty-notification-elem').find('h6').parents('div').removeClass('pb-5');
             }
+
+            // confirm notification
+            async function confirms(title = 'Apakah Anda yakin?', text = 'Anda tidak akan bisa membatalkannya!') {
+                const result = await Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#405189',
+                    cancelButtonColor: '#6e7881',
+                    confirmButtonText: 'Ya!',
+                    cancelButtonText: 'Batal'
+                });
+                return result.isConfirmed;
+            }
         </script>
         @stack('scripts')
     </body>
