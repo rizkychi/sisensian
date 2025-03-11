@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \RealRashid\SweetAlert\ToSweetAlert::class,
             \App\Http\Middleware\DetectSubdomain::class,
+            \App\Http\Middleware\MinifyHtml::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

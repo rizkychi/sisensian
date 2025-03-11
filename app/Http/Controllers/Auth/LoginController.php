@@ -15,7 +15,7 @@ class LoginController extends Controller
             return redirect()->route('dashboard.index');
         }
 
-        $app_company = session('app_company') == null ? env('APP_COMPANY') : session('app_company');
+        $app_company = session('app_company') == null ? config('app.company') : session('app_company');
         return view('auth.login')
             ->with('app_company', $app_company);
     }

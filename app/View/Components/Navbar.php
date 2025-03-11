@@ -18,7 +18,7 @@ class Navbar extends Component
     public function __construct()
     {
         // Company Name
-        $this->app_company = session('app_company') == null ? env('APP_COMPANY') : session('app_company');
+        $this->app_company = session('app_company') == null ? config('app.company') : session('app_company');
     }
 
     /**
