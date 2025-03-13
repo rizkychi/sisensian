@@ -29,7 +29,7 @@
     </div>
     <!--end col-->
     <div class="col-md-8">
-        <div class="card mt-xxl-n5">
+        <div class="card">
             <div class="card-header">
                 <h4 class="card-title mb-0 flex-grow-1">Informasi Karyawan</h4>
             </div>

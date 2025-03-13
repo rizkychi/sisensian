@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div class="row" style="position: relative; z-index: 2;">
+<div class="row justify-content-center" style="position: relative; z-index: 2;">
     <div class="col-xxl-3">
         <div class="card mt-n5">
             <div class="card-body p-3">
