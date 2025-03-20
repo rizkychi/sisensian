@@ -115,7 +115,7 @@
                                         <div class="col-lg-3 col-sm-6">
                                             <div class="p-2 border border-dashed rounded text-center">
                                                 <div>
-                                                    <p class="text-muted fw-medium mb-1">Tanggal Pengajuan</p>
+                                                    <p class="text-muted fw-medium mb-1">Pengajuan</p>
                                                     <h5 class="fs-17 mb-0">{{ \Carbon\Carbon::parse($data->created_at)->format('d-m-Y') }}</h5>
                                                 </div>
                                             </div>
