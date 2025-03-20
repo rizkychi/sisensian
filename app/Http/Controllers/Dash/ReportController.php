@@ -209,7 +209,10 @@ class ReportController extends Controller
         $year = $date_range->first()->format('Y');
 
         // Get current month holidays
-        $holidays = Holiday::whereYear('date', $year)->whereMonth('date', $month)->get();
+        $holidays = Holiday::whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->where('is_day_off', true)
+            ->get();
 
         // Get all attendances
         foreach ($employees as $employee) {
