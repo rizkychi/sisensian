@@ -122,7 +122,7 @@ class AttendanceController extends Controller
         // check holiday
         $holiday = Holiday::where('date', $today->format('Y-m-d'))->first();
         // if today is holiday and day off
-        if ($holiday && $holiday->is_day_off) {
+        if ($holiday && $holiday->is_day_off && $employee->category == 'regular' && $schedule) {
             $label->text = 'Libur';
             $label->color = 'danger';
             $label->is_visible = false;
