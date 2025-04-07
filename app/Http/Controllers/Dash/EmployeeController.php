@@ -129,7 +129,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'username' => 'required|string|alpha_num|max:255|unique:users,username,' . $valid->user_id,
-            'password' => 'nullable|string|min:8|max:255',
+            // 'password' => 'nullable|string|min:8|max:255',
             'email' => 'required|string|max:255|unique:users,email,' . $valid->user_id,
             'id_number' => 'required|string|max:255|unique:employee,id_number,' . $valid->id,
             'name' => 'required|string|max:255',
@@ -159,7 +159,7 @@ class EmployeeController extends Controller
                 $user = User::findOrFail($data->user_id);
 
                 $user->username = $request->username;
-                $user->password = Hash::make($request->password);
+                // $user->password = Hash::make($request->password);
                 $user->email = $request->email;
                 $user->save();
             });
