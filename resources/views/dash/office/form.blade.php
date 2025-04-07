@@ -135,7 +135,8 @@
             var latlng = [lat, lng];
             marker.setLatLng(latlng);
             circle.setLatLng(latlng);
-            map.setView(latlng, 17);
+            // map.setView(latlng, 17);
+            map.setView(latlng, map.getZoom());
         }
 
         marker.on('dragend', function (e) {
@@ -175,6 +176,11 @@
             var lng = e.target.value;
             var lat = document.getElementById('lat').value;
             setLatLng(lat, lng);
+        });
+
+        $('form').on('submit', function (e) {
+            radius = document.getElementById('radius').value.replace(/,/g, '');
+            document.getElementById('radius').value = radius;
         });
     </script>
 @endpush
