@@ -143,7 +143,7 @@
                                 <a href="{{ route('sift.delete') }}" class="btn btn-soft-danger btn-delete">Hapus</a>
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-light d-none" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-success">Submit</button>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                         
                         <div class="row justify-content-end">
                             <div class="col-auto">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-light d-none" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-success">Submit</button>
                             </div>
                         </div>
