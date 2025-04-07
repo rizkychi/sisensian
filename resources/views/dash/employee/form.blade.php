@@ -29,7 +29,7 @@
                                         <div class="col-md-4 mb-3">
                                             <label for="password" class="form-label">Password</label>
                                             <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Password" value="{{ old('password') }}" {{ !isset($data) ? 'required' : '' }}>
+                                                placeholder="Password" value="{{ old('password') }}" {{ !isset($data) ? 'required' : 'disabled' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label for="email" class="form-label">Email</label>

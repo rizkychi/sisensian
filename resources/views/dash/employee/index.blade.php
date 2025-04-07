@@ -239,6 +239,7 @@
                 },
                 processing: true,
                 serverSide: true,
+                stateSave: true,
                 ajax: "{{ route('employee.json') }}",
                 columns: [{
                         data: 'DT_RowIndex',

@@ -309,6 +309,10 @@ class ScheduleController extends Controller
                             'date' => $request->date,
                             'is_recurring' => false,
                         ]);
+                    } else {
+                        $schedule->update([
+                            'shift_id' => $request->shift_id,
+                        ]);
                     }
                 }
 

@@ -337,6 +337,9 @@
                 $('#copyForm').find('input[name="date"]').val(date);
                 $('#copyModalLabel').html('Salin Shift Karyawan (' + dateName + ')');
 
+                // reset date
+                flatpickr('input[name="to_date"]').clear();
+
                 $('#copyModal').modal('show');
             });
 
@@ -347,9 +350,6 @@
                 var url = '{{ route('sift.copy') }}';
                 var data = form.serialize();
                 var loading = $('#copyloading');
-
-                // reset date
-                form.find('input[name="to_date"]').val('');
 
                 Swal.fire({
                     title: "Apakah anda yakin?",
@@ -364,7 +364,7 @@
                     buttonsStyling: false,
                     showCloseButton: true
                 }).then(function (result) {
-                    if (result.isConfirmed) {
+                    if (result.isConfirmed) {                        
                         $.ajax({
                             url: url,
                             type: 'POST',
