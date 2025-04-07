@@ -292,7 +292,7 @@ class ScheduleController extends Controller
         ]);
 
         try {
-            \DB::transaction(function () use ($request, $office) {
+            \DB::transaction(function () use ($request) {
                 foreach ($request->employee_id as $employee_id) {
                     // Check if the schedule already exists
                     $schedule = Schedule::where('employee_id', $employee_id)
@@ -317,8 +317,8 @@ class ScheduleController extends Controller
                 }
 
                 // Delete existing schedule for the specified office
-                $existing = Schedule::whereHas('employee', function ($query) use ($office) {
-                        $query->where('office_id', $office->id);
+                $existing = Schedule::whereHas('employee', function ($query) use ($request) {
+                        $query->where('office_id', $request->office_id);
                     })
                     ->where('date', $request->date)
                     ->where('shift_id', $request->shift_id)
@@ -341,6 +341,8 @@ class ScheduleController extends Controller
      */
     public function shiftDelete(Request $request)
     {
+        $office = Office::findOrfail($request->office_id);
+
         $request->validate([
             'date' => 'required|date',
             'shift_id' => 'required|string',
@@ -348,7 +350,10 @@ class ScheduleController extends Controller
 
         try {
             \DB::transaction(function () use ($request) {
-                $schedule = Schedule::where('date', $request->date)
+                $schedule = Schedule::whereHas('employee', function ($query) use ($request) {
+                        $query->where('office_id', $request->office_id);
+                    })
+                    ->where('date', $request->date)
                     ->where('shift_id', $request->shift_id)
                     ->where('is_recurring', false)
                     ->get();
@@ -369,6 +374,8 @@ class ScheduleController extends Controller
      */
     public function shiftCopy(Request $request)
     {
+        $office = Office::findOrfail($request->office_id);
+
         $request->validate([
             'date' => 'required|date',
             'to_date' => 'required|date',
