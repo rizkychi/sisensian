@@ -292,7 +292,7 @@ class ScheduleController extends Controller
         ]);
 
         try {
-            \DB::transaction(function () use ($request) {
+            \DB::transaction(function () use ($request, $office) {
                 foreach ($request->employee_id as $employee_id) {
                     // Check if the schedule already exists
                     $schedule = Schedule::where('employee_id', $employee_id)
@@ -316,8 +316,11 @@ class ScheduleController extends Controller
                     }
                 }
 
-                // Delete existing schedule
-                $existing = Schedule::where('date', $request->date)
+                // Delete existing schedule for the specified office
+                $existing = Schedule::whereHas('employee', function ($query) use ($office) {
+                        $query->where('office_id', $office->id);
+                    })
+                    ->where('date', $request->date)
                     ->where('shift_id', $request->shift_id)
                     ->where('is_recurring', false)
                     ->whereNotIn('employee_id', $request->employee_id)
