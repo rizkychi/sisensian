@@ -53,7 +53,7 @@
                             <div class="col-auto">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <h5 class="{{ $login->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_in ?? '00:00' }} | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
+                                        <h5 class="{{ $login->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_in ?? '00:00' }} | <span class="fw-normal">{{ $date_in ?? $label->text }}</span></h5>
                                         <p class="{{ $login->text_color }} mb-0" style="font-size: 10px">{!! $login->text !!}</p>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                             <div class="col-auto">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <h5 class="{{ $logout->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_out ?? '00:00' }} | <span class="fw-normal">{{ $today->translatedFormat('l, d F Y') }}</span></h5>
+                                        <h5 class="{{ $logout->text_color }} mb-0 fs-6 text-nowrap">{{ $schedule->shift->time_out ?? '00:00' }} | <span class="fw-normal">{{ $date_out ?? $label->text }}</span></h5>
                                         <p class="{{ $logout->text_color }} mb-0" style="font-size: 10px">{!! $logout->text !!}</p>
                                     </div>
                                 </div>
@@ -400,6 +400,10 @@
                                 card.find('.time-out').text(el.check_out_time ?? '--:--');
                                 card.find('.status-out').text(el.check_out_status);
                                 card.find('.location-out').text(el.check_out_address ?? '-');
+                                
+                                if (el.schedule.shift.is_next_day == true) {
+                                    card.find('.time-out').after('<div class="text-warning" style="font-size:10px">['+el.date_next_formatted+']</div>');
+                                }
 
                                 // set color
                                 card.find('.icon-in').addClass(el.check_in_color);
@@ -449,6 +453,10 @@
                                 card.find('.time-out').text(el.time_out);
                                 card.find('.status-out').text('Waktu Pulang');
                                 // card.find('.location-out').text(el.location_out ?? '-');
+
+                                if (el.is_next_day == true) {
+                                    card.find('.time-out').after('<div class="text-warning" style="font-size:10px">['+el.date_next_formatted+']</div>');
+                                }
 
                                 // set color
                                 card.find('.icon-in').addClass('text-muted');

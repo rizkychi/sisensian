@@ -71,10 +71,12 @@
                                             <td class="text-center align-middle">{{ \Carbon\Carbon::parse($attendance->date)->translatedFormat('d F Y') }}</td>
                                             <td class="text-center align-middle">{{ \Carbon\Carbon::parse($attendance->date)->translatedFormat('l') }}</td>
                                             <td class="text-center align-middle">
+                                                <p class="m-0">[{{ $attendance->date_today_formatted ?? '-' }}]</p>
                                                 <p class="m-0">{{ $attendance->check_in_time ?? '-' }}</p>
                                                 <p class="m-0">{{ $attendance->check_in_address}}</p>
                                             </td>
                                             <td class="text-center align-middle">
+                                                <p class="m-0">[{{ (@$attendance->schedule->shift->is_next_day ? $attendance->date_next_formatted : $attendance->date_today_formatted) ?? '-' }}]</p>
                                                 <p class="m-0">{{ $attendance->check_out_time ?? '-' }}</p>
                                                 <p class="m-0">{{ $attendance->check_out_address}}</p>
                                             </td>

@@ -38,6 +38,8 @@ class Attendance extends Model
         'check_in_color',
         'check_out_color',
         'status',
+        'date_next_formatted',
+        'date_today_formatted',
     ];
 
     protected $casts = [
@@ -57,9 +59,24 @@ class Attendance extends Model
         return $this->belongsTo(Office::class, 'office_id');
     }
 
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class, 'schedule_id');
+    }
+
     public function getDateFormattedAttribute()
     {
         return \Carbon\Carbon::parse($this->date)->translatedFormat('l, d F Y');
+    }
+
+    public function getDateNextFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->date)->addDay()->translatedFormat('d-m-Y');
+    }
+
+    public function getDateTodayFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->date)->translatedFormat('d-m-Y');
     }
 
     public function getCheckInStatusAttribute()

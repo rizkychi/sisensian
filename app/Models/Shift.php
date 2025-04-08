@@ -25,6 +25,10 @@ class Shift extends Model
         'is_fixed' => 'boolean',
     ];
 
+    protected $appends = [
+        'is_next_day',
+    ];
+
     public function employees()
     {
         return $this->hasMany(Employee::class);
@@ -33,5 +37,10 @@ class Shift extends Model
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
+    }
+    
+    public function getIsNextDayAttribute()
+    {
+        return $this->time_in > $this->time_out;
     }
 }
