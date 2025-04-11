@@ -28,7 +28,7 @@ class AttendanceController extends Controller
         $date_in = $date_out = null;
 
         // testing purpose
-        // $today = Carbon::now()->setHours(8)->setMinutes(1);
+        // $today = Carbon::now()->setHours(1)->setMinutes(1);
 
         $login = (object) [
             'text' => 'Belum melakukan presensi',
@@ -122,8 +122,8 @@ class AttendanceController extends Controller
                 $time_in = $schedule->shift->time_in;
                 $time_out = $schedule->shift->time_out;
 
-                $time_in_time = Carbon::createFromFormat('H:i', $time_in);
-                $time_out_time = Carbon::createFromFormat('H:i', $time_out);
+                $time_in_time = Carbon::createFromFormat('Y-m-d H:i', $schedule->date . ' ' . $time_in);
+                $time_out_time = Carbon::createFromFormat('Y-m-d H:i', $schedule->date . ' ' . $time_out);
 
                 if ($time_in_time->gt($time_out_time)) {
                     $time_out_time->addDay();
@@ -132,12 +132,12 @@ class AttendanceController extends Controller
                 $diff_in = abs($now_time->diffInSeconds($time_in_time));
                 $diff_out = abs($now_time->diffInSeconds($time_out_time));
 
-                if ($now_time->between($time_in_time->subHours($this->tolerance_in), $time_in_time) || ($now_time->between($time_in_time, $time_out_time) && $diff_in < $diff_out)) {
+                if ($now_time->between($time_in_time->copy()->subHours($this->tolerance_in), $time_in_time) || ($now_time->between($time_in_time, $time_out_time) && $diff_in < $diff_out)) {
                     $label->text = 'Berangkat';
                     $label->color = 'success';
                     $label->type = 'in';
                     $label->is_visible = $attendance && $attendance->check_in_time ? false : true;
-                } elseif ($now_time->between($time_out_time, $time_out_time->addHours($this->tolerance_out)) || ($now_time->between($time_in_time, $time_out_time) && $diff_in >= $diff_out)) {
+                } elseif ($now_time->between($time_out_time, $time_out_time->copy()->addHours($this->tolerance_out)) || ($now_time->between($time_in_time, $time_out_time) && $diff_in >= $diff_out)) {
                     $label->text = 'Pulang';
                     $label->color = 'success';
                     $label->type = 'out';
