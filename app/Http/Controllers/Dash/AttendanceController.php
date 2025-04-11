@@ -28,7 +28,7 @@ class AttendanceController extends Controller
         $date_in = $date_out = null;
 
         // testing purpose
-        // $today = Carbon::now()->setHours(1)->setMinutes(1);
+        // $today = Carbon::now()->setHours(14)->setMinutes(1);
 
         $login = (object) [
             'text' => 'Belum melakukan presensi',
