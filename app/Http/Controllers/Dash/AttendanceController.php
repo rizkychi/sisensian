@@ -275,7 +275,9 @@ class AttendanceController extends Controller
         ->get();
         
         foreach ($holidays as $holiday) {
-            $schedules[$holiday->date] = $holiday;
+            if ($holiday->is_day_off && $employee->category == 'regular') {
+                $schedules[$holiday->date] = $holiday;
+            }
         }
 
         // check leave
