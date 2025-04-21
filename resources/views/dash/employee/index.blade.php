@@ -196,7 +196,20 @@
     <script>
         $(function() {
             var table = $('#dtx').DataTable({
-                dom: "Bfrtip",
+                dom: '<"row mt-1"' +
+                        '<"col-sm-12 col-md-4 d-flex align-items-center"l>' + 
+                        '<"col-sm-12 col-md-4 d-flex justify-content-center"B>' + 
+                        '<"col-sm-12 col-md-4 d-flex justify-content-end"f>' +
+                    '>' +
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row"' +
+                        '<"col-sm-12 col-md-5"i>' +
+                        '<"col-sm-12 col-md-7"p>' +
+                    '><"clear">',
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
                 buttons: {
                     dom: {
                         button: {
