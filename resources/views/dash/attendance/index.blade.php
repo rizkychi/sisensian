@@ -284,13 +284,29 @@
 
                 // Display user's current location
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        var userLocation = [position.coords.latitude, position.coords.longitude];
-                        var userMarker = L.marker(userLocation, { icon: userIcon }).addTo(map)
-                            .bindPopup('Lokasimu saat ini');
-                        map.setView(userLocation, 16);
-                        checkProximity(userLocation);
-                    });
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            var userLocation = [position.coords.latitude, position.coords.longitude];
+                            var userMarker = L.marker(userLocation, { icon: userIcon }).addTo(map)
+                                .bindPopup('Lokasimu saat ini');
+                            map.setView(userLocation, 16);
+                            checkProximity(userLocation);
+                        },
+                        function(error) {
+                            console.error('Error getting location:', error);
+                            document.getElementById('locationLabel').textContent = 'Gagal mendapatkan lokasi';
+                            document.getElementById('locationLabel').classList.add('text-danger');
+                            document.getElementById('locationLabel').classList.remove('text-success');
+
+                            $('#loading-spinner').hide();
+                        },
+                        { enableHighAccuracy: true, maximumAge: 60000, timeout: 10000 }
+                    );
+                } else {
+                    document.getElementById('locationLabel').textContent = 'Browser tidak mendukung Geolocation. Silakan aktifkan lokasi di pengaturan browser atau ganti browser Anda.';
+                    document.getElementById('locationLabel').classList.add('text-danger');
+                    document.getElementById('locationLabel').classList.remove('text-success');
+                    $('#loading-spinner').hide();
                 }
 
                 document.getElementById('locate-btn').addEventListener('click', function (e) {
