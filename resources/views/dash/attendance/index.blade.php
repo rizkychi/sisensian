@@ -30,6 +30,11 @@
                 <h5 id="locationLabel" class="fs-6"></h5>
                 <p id="address" class="text-muted mb-0" style="font-size: 8pt"></p>
             </div>
+            <div id="loading-spinner" class="col-12 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
             <div class="col-12 justify-content-center d-flex my-3">
                 @if ($label->is_visible)
                 <div id="button-background" style="display: none;">
@@ -39,6 +44,13 @@
                     </div>
                 </div>
                 @endif
+            </div>
+            <div id="info-alert" class="col-12 text-center">
+                <!-- Info Alert -->
+                <div class="alert alert-info fade show material-shadow" role="alert" style="display: none;">
+                    Jika tombol presensi tidak muncul, tekan tombol <strong>Lokasi Saya</strong> atau refresh halaman.
+                    {{-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> --}}
+                </div>
             </div>
         </div>
 
@@ -265,6 +277,9 @@
                         document.getElementById('locationLabel').classList.add('text-danger');
                         document.getElementById('locationLabel').classList.remove('text-success');
                     }
+                    
+                    $('#loading-spinner').hide();
+                    $('#info-alert').alert('close');
                 }
 
                 // Display user's current location
@@ -478,6 +493,13 @@
                     }
                 });
             });
+
+            // Show info alert after 5 seconds if loading spinner is still visible
+            setTimeout(function() {
+                if ($('#loading-spinner').is(':visible')) {
+                    $('#info-alert .alert').show('fast');
+                }
+            }, 5000);
         });
     </script>
 @endpush
