@@ -294,7 +294,7 @@
                         },
                         function(error) {
                             console.error('Error getting location:', error);
-                            document.getElementById('locationLabel').textContent = 'Gagal mendapatkan lokasi';
+                            document.getElementById('locationLabel').textContent = 'Gagal mendapatkan lokasi. Error: ' + error.message;
                             document.getElementById('locationLabel').classList.add('text-danger');
                             document.getElementById('locationLabel').classList.remove('text-success');
 
