@@ -30,13 +30,27 @@ class AttendanceController extends Controller
      *  - No. 4  : duplikat ditolak + DB::transaction + lockForUpdate().
      *  - No. 5  : store() blokir cuti (is_on_leave) dan libur (regular saja).
      *  - No. 6  : radius Haversine dipertahankan + validasi lat/long numeric.
-     *  - No. 7  : guard null shift di index()/store(), hapus @$attendance.
+     *  - No. 7  : guard null shift di index()/store(), hapus @$attendance,
+     *             + guard null $employee di index() (cabang shift pakai
+     *             elseif ($employee), jadi user tanpa data karyawan tidak 500).
+     *             history()/schedule() masih belum di-guard (di luar patch ini).
      *  - No. 13 : use Illuminate\Support\Str (sudah benar di kode user).
      *  - No. 15 : catch tidak lagi membocorkan $e->getMessage(), diganti pesan generik + Log.
-     *  - Pulang cepat: kalau sudah check-in dan belum check-out, boleh check-out
-     *    kapan saja sampai time_out + 6 jam, tanpa peduli midpoint.
+     *  - Pulang cepat: REVISI 2026-11-10 14:37 WIB dari hasil tes user.
+     *    Check-out TIDAK boleh langsung setelah check-in. Tetap harus tunggu
+     *    midpoint (total durasi / 2). Berlaku sama untuk yang sudah check-in
+     *    maupun missed check-in: window pulang = [midpoint, time_out + 6 jam].
+     *    Aturan lama "boleh pulang cepat tanpa batas setelah check-in" DIBATALKAN.
+     *  - Tanggal Jam Pulang di report: JANGAN +1 hari buta kalau shift is_next_day.
+     *    Lihat resolveCheckOutDateTime() di bawah — tanggal pulang dihitung dari
+     *    jam pulang vs jam masuk/midpoint, bukan dari flag is_next_day saja.
+     *    Contoh bug: masuk 10 Nov 14:32, pulang 10 Nov 14:33 (50 detik) tampil
+     *    sebagai 11 Nov 14:33 karena report +1 hari. Dengan helper ini tampil
+     *    benar sebagai 10 Nov 14:33. Masuk 22:30, pulang 05:30 tetap +1 hari.
      * Yang BELUM disentuh di patch ini: history() & schedule() (No. 10-12),
      * exists:schedule,id (No. 14 — pastikan nama tabel memang `schedule`).
+     * Catatan: helper tanggal pulang butuh kode report-nya (bukan di controller
+     * ini). Minta kode report/blade-nya kalau mau diperbaiki di sana juga.
      */
 
     public function index()
@@ -77,7 +91,7 @@ class AttendanceController extends Controller
 
             $date_in = $date_out = $today->translatedFormat('l, d F Y');
             $effectiveDate = $today->format('Y-m-d');
-        } else {
+        } elseif ($employee) {
             // schedule (shift) — fix No. 9, dipertahankan dari kode user
             $yesterday = $today->copy()->subDay();
             $yesterday_schedule = Schedule::where('employee_id', $employee->id)
@@ -174,15 +188,17 @@ class AttendanceController extends Controller
                 $hasOut = $attendance && $attendance->check_out_time;
 
                 if ($hasIn && ! $hasOut) {
-                    // Sudah check-in: boleh pulang cepat kapan saja sampai deadline.
-                    if ($now_time->lte($checkOutDeadline)) {
+                    // REVISI: sudah check-in pun tetap harus tunggu midpoint.
+                    // Sebelum midpoint tidak ada tombol Pulang.
+                    if ($now_time->gte($midpoint) && $now_time->lte($checkOutDeadline)) {
                         $label->text = 'Pulang';
                         $label->color = 'success';
                         $label->type = 'out';
                         $label->is_visible = true;
                     } else {
-                        $label->text = 'Di luar waktu presensi';
+                        $label->text = 'Belum waktunya pulang';
                         $label->color = 'danger';
+                        $label->is_visible = false;
                     }
                 } elseif (! $hasIn && ! $hasOut) {
                     if ($now_time->gte($checkInStart) && $now_time->lt($midpoint)) {
@@ -308,14 +324,9 @@ class AttendanceController extends Controller
         }
 
         if ($request->att_type == 'out') {
-            $hasIn = $attendance && $attendance->check_in_time;
-            if ($hasIn) {
-                // Sudah check-in: boleh pulang cepat kapan saja sampai deadline
-                $outAllowed = $now_time->gte($checkInStart) && $now_time->lte($checkOutDeadline);
-            } else {
-                // Missed check-in: hanya boleh check-out setelah midpoint
-                $outAllowed = $now_time->gte($midpoint) && $now_time->lte($checkOutDeadline);
-            }
+            // REVISI: pulang hanya boleh setelah midpoint, baik sudah check-in
+            // maupun missed check-in. Tidak boleh langsung pulang setelah masuk.
+            $outAllowed = $now_time->gte($midpoint) && $now_time->lte($checkOutDeadline);
             if (! $outAllowed) {
                 return redirect()->route('attendance.index')->with('error', 'Waktu presensi keluar tidak sesuai jadwal');
             }
