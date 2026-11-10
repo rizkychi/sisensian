@@ -255,7 +255,7 @@ class AttendanceController extends Controller
         }
 
         $office = Office::find($employee->office_id);
-        if (! $office || $office->latitude === null || $office->longitude === null || $office->radius === null) {
+        if (! $office || $office->lat === null || $office->long === null || $office->radius === null) {
             return redirect()->route('attendance.index')->with('error', 'Data kantor tidak lengkap');
         }
 
@@ -325,8 +325,8 @@ class AttendanceController extends Controller
         $distance = $this->calculateDistance(
             (float) $request->att_lat,
             (float) $request->att_long,
-            (float) $office->latitude,
-            (float) $office->longitude
+            (float) $office->lat,
+            (float) $office->long
         );
         if ($distance > $office->radius) {
             return redirect()->route('attendance.index')->with('error', 'Anda berada di luar radius presensi (' . $distance . ' m). Radius presensi adalah ' . $office->radius . ' m');
